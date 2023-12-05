@@ -44,11 +44,12 @@ public class User extends BaseEntity {
 
     private boolean agreeMarketingSms;
 
-    private boolean isSocial;
 
     private Role role = Role.USER;
 
     private Status status = Status.ACTIVE;
+
+    private boolean isSocial;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ProjectPost> projectPosts;

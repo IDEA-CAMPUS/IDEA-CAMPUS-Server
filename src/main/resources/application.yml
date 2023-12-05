@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ideacdb.ce84mlt0kgjd.ap-northeast-2.rds.amazonaws.com:3306/ideacdb
+    url: jdbc:mysql://ideacdb.ce84mlt0kgjd.ap-northeast-2.rds.amazonaws.com:3306/ideacdb?useSSL=false
     username: admin
     password: '!ideacampus10'
   jpa:

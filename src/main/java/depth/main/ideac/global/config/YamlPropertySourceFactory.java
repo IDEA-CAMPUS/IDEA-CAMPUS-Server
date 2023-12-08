@@ -1,4 +1,4 @@
-package depth.main.ideac.global.config.security;
+package depth.main.ideac.global.config;
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;

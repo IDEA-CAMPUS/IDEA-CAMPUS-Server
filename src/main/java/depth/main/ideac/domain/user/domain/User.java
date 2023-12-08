@@ -44,6 +44,10 @@ public class User extends BaseEntity {
 
     private boolean agreeMarketingSms;
 
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
+    private String providerId;
 
     private Role role = Role.USER;
 
@@ -62,4 +66,8 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Banner> banners;
+
+    public void updateName(String name){
+        this.name = name;
+    }
 }

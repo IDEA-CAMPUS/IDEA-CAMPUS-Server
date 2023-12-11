@@ -2,6 +2,7 @@ package depth.main.ideac.domain.auth.presentation;
 
 
 import depth.main.ideac.domain.auth.application.AuthService;
+import depth.main.ideac.domain.auth.dto.FindIdReq;
 import depth.main.ideac.domain.auth.dto.SignUpReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
@@ -25,7 +26,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
+    @Operation(summary = "회원가입", description = "회원가입을 진행한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "회원가입 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
@@ -36,13 +37,15 @@ public class AuthController {
         System.out.println("접근");
         return authService.signup(signUpReq);
     }
-    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
+    @Operation(summary = "아이디찾기", description = "가입하신 이름과 전화번호로 아이디를 찾는다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "회원가입 실패")
+            @ApiResponse(responseCode = "200", description = "아이디 찾기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "아이디 찾기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @GetMapping(value = "/test")
-    public String test(){
-        return "test";
+    @GetMapping(value = "/findId")
+    public ResponseEntity<?> findId(@Parameter(description = "Schemas의 SignUpRequest를 참고해주세요.")
+                                                 @Valid @RequestBody FindIdReq findIdReq){
+
+        return authService.findId(findIdReq);
     }
 }

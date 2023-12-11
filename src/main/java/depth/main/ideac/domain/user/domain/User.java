@@ -41,8 +41,7 @@ public class User extends BaseEntity {
 
     private String organization;
 
-//    @Pattern(regexp = "^01(?:0|1|[6-9])(\\\\d{4})(\\\\d{4})$", message = "휴대폰번호를 정확하게 입력해주세요")
-    @Pattern(regexp = "^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$")
+    @Pattern(regexp = "^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$", message = "번호를 정확하게 입력해주세요")
     private String phoneNumber;
 
     private boolean agreeMarketingSms;

@@ -90,7 +90,18 @@ public class AuthService {
 
         return ResponseEntity.ok(apiResponse);
     }
+    public ResponseEntity<?> findId(FindIdReq findIdReq) {
+        Optional<User> findUser = userRepository.findByPhoneNumber(findIdReq.getPhoneNumber());
+        DefaultAssert.isTrue(findUser.isPresent(), "해당이메일을 갖고 있는 유저가 없습니다.");
 
+        User user = findUser.get();
+        ApiResponse apiResponse = ApiResponse.insertMessage()
+                .check(true)
+                .information(user.getEmail())
+                .message("가입하신 아이디를 찾아왔어요!")
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
     public ResponseEntity<?> refresh(RefreshTokenReq tokenRefreshRequest){
         //1차 검증
         boolean checkValid = valid(tokenRefreshRequest.getRefreshToken());

@@ -10,7 +10,6 @@ import lombok.Getter;
 public class SignUpReq {
 
     @Schema( type = "string", example = "idea00@naver.com", description="아이디(이메일)")
-    @Email
     private String idEmail;
 
     @Schema( type = "string", example = "홍길동", description="이름")

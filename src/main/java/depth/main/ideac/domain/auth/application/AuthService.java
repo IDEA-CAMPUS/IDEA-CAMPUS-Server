@@ -67,24 +67,28 @@ public class AuthService {
     }
 
     public ResponseEntity<?> signup(SignUpReq signUpRequest){
-        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getEmail()), "해당 이메일이 존재하지 않습니다.");
+        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
 
         User user = User.builder()
+                        .email(signUpRequest.getIdEmail())
+                        .password(signUpRequest.getPassword())
                         .name(signUpRequest.getName())
-                        .email(signUpRequest.getEmail())
-                        .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                        .provider(Provider.local)
-                        .role(Role.ADMIN)
+                        .nickname(signUpRequest.getNickname())
+                        .organization(signUpRequest.getOrganization())
+                        .phoneNumber(signUpRequest.getPhoneNumber())
+                        .agreeMarketingSms(signUpRequest.isAgreeMarketingSms())
                         .build();
 
         userRepository.save(user);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/auth/")
-                .buildAndExpand(user.getId()).toUri();
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원가입에 성공하였습니다.").build()).build();
+        ApiResponse apiResponse = ApiResponse.builder().
+                check(true)
+                .information(Message.builder()
+                        .message("회원가입에 성공하였습니다.")
+                        .build())
+                .build();
 
-        return ResponseEntity.created(location).body(apiResponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     public ResponseEntity<?> refresh(RefreshTokenReq tokenRefreshRequest){

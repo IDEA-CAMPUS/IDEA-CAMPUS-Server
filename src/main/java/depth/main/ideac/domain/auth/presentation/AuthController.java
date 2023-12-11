@@ -1,8 +1,8 @@
 package depth.main.ideac.domain.auth.presentation;
 
+
 import depth.main.ideac.domain.auth.application.AuthService;
-import depth.main.ideac.global.config.security.token.CurrentUser;
-import depth.main.ideac.global.config.security.token.UserPrincipal;
+import depth.main.ideac.domain.auth.dto.SignUpReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API", description = "Authorization 관련 API입니다.")
@@ -26,16 +25,24 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "회원가입 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "회원가입 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
     @PostMapping(value = "/sign-up")
-    @Operation(summary = "템플릿 화면", description = "템플릿 화면을 출력합니다.")
-    public String signup() {
-        System.out.println(" =zzz ");
-        return "test";
+    public ResponseEntity<?> signup(@Parameter(description = "Schemas의 SignUpRequest를 참고해주세요.")
+                                        @Valid @RequestBody SignUpReq signUpReq) {
+        System.out.println("접근");
+        return authService.signup(signUpReq);
     }
-    @GetMapping(value = "/sign-up")
-    @Operation(summary = "템플릿 화면", description = "템플릿 화면을 출력합니다.")
-    public String geTsignup() {
-        System.out.println(" =get ");
+    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "회원가입 성공"),
+            @ApiResponse(responseCode = "400", description = "회원가입 실패")
+    })
+    @GetMapping(value = "/test")
+    public String test(){
         return "test";
     }
 }

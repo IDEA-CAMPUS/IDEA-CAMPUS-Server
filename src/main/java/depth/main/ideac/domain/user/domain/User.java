@@ -33,7 +33,7 @@ public class User extends BaseEntity {
     @Size(min = 8, max = 16)
     private String password;
 
-    @Min(value = 2, message = "2자 이상 입력해주세요")
+    @Size(min = 2, message = "2자 이상 입력해주세요")
     private String name;
 
     @Column(unique = true)
@@ -41,7 +41,8 @@ public class User extends BaseEntity {
 
     private String organization;
 
-    @Pattern(regexp = "^01(?:0|1|[6-9])(\\\\d{3}|\\\\d{4})(\\\\d{4})$", message = "휴대폰번호를 정확하게 입력해주세요")
+//    @Pattern(regexp = "^01(?:0|1|[6-9])(\\\\d{4})(\\\\d{4})$", message = "휴대폰번호를 정확하게 입력해주세요")
+    @Pattern(regexp = "^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$")
     private String phoneNumber;
 
     private boolean agreeMarketingSms;
@@ -69,7 +70,4 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Banner> banners;
 
-    public void updateName(String name){
-        this.name = name;
-    }
 }

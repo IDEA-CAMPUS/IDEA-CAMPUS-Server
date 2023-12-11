@@ -6,8 +6,7 @@ import depth.main.ideac.domain.common.BaseEntity;
 import depth.main.ideac.domain.idea_post.domain.IdeaPost;
 import depth.main.ideac.domain.project_post.domain.ProjectPost;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,8 +30,10 @@ public class User extends BaseEntity {
     @NotBlank(message = "이메일이 입력되지 않았습니다.")
     private String email;
 
+    @Size(min = 8, max = 16)
     private String password;
 
+    @Min(value = 2, message = "2자 이상 입력해주세요")
     private String name;
 
     @Column(unique = true)
@@ -40,6 +41,7 @@ public class User extends BaseEntity {
 
     private String organization;
 
+    @Pattern(regexp = "^01(?:0|1|[6-9])(\\\\d{3}|\\\\d{4})(\\\\d{4})$", message = "휴대폰번호를 정확하게 입력해주세요")
     private String phoneNumber;
 
     private boolean agreeMarketingSms;

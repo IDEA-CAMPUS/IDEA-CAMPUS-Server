@@ -25,11 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(
-//        securedEnabled = true,
-//        jsr250Enabled = true,
-//        prePostEnabled = true
-//)
+
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -82,70 +78,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-//private final CustomUserDetailsService customUserDetailsService;
-//    private final CustomDefaultOAuth2UserService customOAuth2UserService;
-//    private final CustomSimpleUrlAuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-//    private final CustomSimpleUrlAuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-//    private final CustomAuthorizationRequestRepository customAuthorizationRequestRepository;
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    public CustomOncePerRequestFilter customOncePerRequestFilter() {
-//        return new CustomOncePerRequestFilter();
-//    }
-//
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//
-//        authenticationProvider.setUserDetailsService(customUserDetailsService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
-//
-//        return authenticationProvider;
-//    }
-//
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-//        return authenticationConfiguration.getAuthenticationManager();
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .cors(withDefaults())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .formLogin(AbstractHttpConfigurer::disable)
-//                .httpBasic(AbstractHttpConfigurer::disable)
-//                .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/", "/error", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js")
-//                        .permitAll()
-//                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
-//                        .permitAll()
-//                        .requestMatchers("/login/**","/auth/**", "/oauth2/**")
-//                        .permitAll()
-//                        .requestMatchers("/blog/**")
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated());
-////                .oauth2Login(oauth2 -> oauth2
-////                        .authorizationEndpoint(authorization -> authorization
-////                                .baseUri("/oauth2/authorize")
-////                                .authorizationRequestRepository(customAuthorizationRequestRepository))
-////                        .redirectionEndpoint(redirection -> redirection
-////                                .baseUri("/oauth2/callback/**"))
-////                        .userInfoEndpoint(userInfo -> userInfo
-////                                .userService(customOAuth2UserService))
-////                        .successHandler(oAuth2AuthenticationSuccessHandler)
-////                        .failureHandler(oAuth2AuthenticationFailureHandler));
-//
-//        http.addFilterBefore(customOncePerRequestFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-//
-//}

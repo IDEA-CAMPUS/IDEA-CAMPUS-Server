@@ -30,7 +30,6 @@ public class User extends BaseEntity {
     @NotBlank(message = "이메일이 입력되지 않았습니다.")
     private String email;
 
-    @Size(min = 8, max = 16)
     private String password;
 
     @Size(min = 2, message = "2자 이상 입력해주세요")

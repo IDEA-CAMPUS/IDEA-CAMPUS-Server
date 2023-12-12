@@ -3,6 +3,7 @@ package depth.main.ideac.domain.auth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
 
@@ -22,6 +23,7 @@ public class SignUpReq {
 
     @Schema( type = "string", example = "abc12345678", description="비밀번호")
     @NotBlank
+    @Size(min = 8, max = 16)
     private String password;
 
     @Schema( type = "string", example = "abc12345678", description="비밀번호 한번 더 확인")

@@ -10,15 +10,13 @@ import lombok.Data;
 @Data
 public class SignInReq {
 
-    @Schema( type = "string", example = "string@aa.bb", description="계정 이메일 입니다.")
+    @Schema( type = "string", example = "idea00@naver.com", description="계정 이메일 입니다.")
     @NotBlank
-    @NotNull
     @Email
     private String email;
 
-    @Schema( type = "string", example = "string", description="계정 비밀번호 입니다.")
+    @Schema( type = "string", example = "abc12345678", description="계정 비밀번호 입니다.")
     @NotBlank
-    @NotNull
     private String password;
 
 }

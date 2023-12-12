@@ -46,42 +46,6 @@ public class AuthService {
     }
 
     //로그인 하기
-    public ResponseEntity<?> signIn(SignInReq signInReq){
-
-        Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
-        DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
-
-        User findUser = user.get();
-        boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
-        System.out.println("signInReq = " + signInReq.getPassword());
-        System.out.println("findUser.getPassword() = " + findUser.getPassword());
-        System.out.println("checkPassword = " + checkPassword);
-        DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
-
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                    signInReq.getEmail(),
-                    signInReq.getPassword()
-            )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
-        Token token = Token.builder()
-                            .refreshToken(tokenMapping.getRefreshToken())
-                            .userEmail(tokenMapping.getUserEmail())
-                            .build();
-
-        tokenRepository.save(token);
-
-        AuthRes authResponse = AuthRes.builder()
-                .accessToken(tokenMapping.getAccessToken())
-                .refreshToken(token.getRefreshToken()).build();
-
-        return ResponseEntity.ok(authResponse);
-    }
-
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
         DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
@@ -109,6 +73,39 @@ public class AuthService {
 
         return ResponseEntity.ok(apiResponse);
     }
+    public ResponseEntity<?> signIn(SignInReq signInReq){
+
+        Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
+        DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
+
+        User findUser = user.get();
+        boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
+        DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
+
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    signInReq.getEmail(),
+                    signInReq.getPassword()
+            )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
+        Token token = Token.builder()
+                            .refreshToken(tokenMapping.getRefreshToken())
+                            .userEmail(tokenMapping.getUserEmail())
+                            .build();
+
+        tokenRepository.save(token);
+
+        AuthRes authResponse = AuthRes.builder()
+                .accessToken(tokenMapping.getAccessToken())
+                .refreshToken(token.getRefreshToken()).build();
+
+        return ResponseEntity.ok(authResponse);
+    }
+
     // 핸드폰번호로 아이디(이메일) 찾기
     public ResponseEntity<?> findId(FindIdReq findIdReq) {
         Optional<User> findUser = userRepository.findByPhoneNumber(findIdReq.getPhoneNumber());

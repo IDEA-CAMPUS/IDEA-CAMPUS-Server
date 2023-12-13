@@ -55,7 +55,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "아이디 찾기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping(value = "/findId")
-    public ResponseEntity<?> findId(@Parameter(description = "Schemas의 SignUpRequest를 참고해주세요.")
+    public ResponseEntity<?> findId(@Parameter(description = "Schemas의 FindIdRequest를 참고해주세요.")
                                                  @Valid @RequestBody FindIdReq findIdReq){
 
         return authService.findId(findIdReq);

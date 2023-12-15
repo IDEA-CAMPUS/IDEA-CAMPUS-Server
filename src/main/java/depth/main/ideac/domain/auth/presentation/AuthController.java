@@ -43,7 +43,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
             @ApiResponse(responseCode = "400", description = "로그인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping(value = "/signIn")
+    @PostMapping(value = "/sign-in")
     public ResponseEntity<?> signIn(@Parameter(description = "Schemas의 SignInRequest를 참고해주세요.")
                                     @Valid @RequestBody SignInReq signInReq){
 
@@ -54,7 +54,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "아이디 찾기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디 찾기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @GetMapping(value = "/findId")
+    @GetMapping(value = "/find-id")
     public ResponseEntity<?> findId(@Parameter(description = "Schemas의 FindIdRequest를 참고해주세요.")
                                                  @Valid @RequestBody FindIdReq findIdReq){
 

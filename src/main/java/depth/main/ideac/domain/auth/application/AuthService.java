@@ -5,6 +5,7 @@ import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
 import depth.main.ideac.domain.auth.dto.*;
 import depth.main.ideac.domain.user.domain.Provider;
 import depth.main.ideac.domain.user.domain.Role;
+import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
@@ -45,7 +46,6 @@ public class AuthService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    //로그인 하기
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
         DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
@@ -60,6 +60,7 @@ public class AuthService {
                         .phoneNumber(signUpRequest.getPhoneNumber())
                         .agreeMarketingSms(signUpRequest.isAgreeMarketingSms())
                         .role(Role.USER)
+                        .status(Status.ACTIVE)
                         .build();
 
         userRepository.save(user);
@@ -73,6 +74,8 @@ public class AuthService {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());

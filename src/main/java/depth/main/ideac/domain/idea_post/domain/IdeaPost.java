@@ -40,7 +40,7 @@ public class IdeaPost extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "ideaPost", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "ideaPost", cascade = CascadeType.ALL)
     private IdeaPostView ideaPostView;
 
 }

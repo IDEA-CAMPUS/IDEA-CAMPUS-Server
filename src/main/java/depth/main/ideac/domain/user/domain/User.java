@@ -50,22 +50,21 @@ public class User extends BaseEntity {
 
     private String providerId;
 
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
     private boolean isSocial;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<ProjectPost> projectPosts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<IdeaPost> ideaPosts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     private List<ClubPost> clubPosts;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<Banner> banners;
 
 }

@@ -37,7 +37,7 @@ public class ClubPost extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "clubPost", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "clubPost", cascade = CascadeType.ALL)
     private List<ClubPostImage> clubPostImages;
 
 }

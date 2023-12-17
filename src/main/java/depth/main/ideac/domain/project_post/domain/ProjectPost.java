@@ -53,9 +53,9 @@ public class ProjectPost extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "projectPost", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "projectPost", cascade = CascadeType.ALL)
     private ProjectPostView projectPostView;
 
-    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.ALL)
     private List<ProjectPostImage> projectPostImages;
 }

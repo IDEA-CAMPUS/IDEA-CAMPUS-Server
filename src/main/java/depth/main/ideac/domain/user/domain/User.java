@@ -6,7 +6,8 @@ import depth.main.ideac.domain.common.BaseEntity;
 import depth.main.ideac.domain.idea_post.domain.IdeaPost;
 import depth.main.ideac.domain.project_post.domain.ProjectPost;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +33,6 @@ public class User extends BaseEntity {
 
     private String password;
 
-    @Size(min = 2, message = "2자 이상 입력해주세요")
     private String name;
 
     @Column(unique = true)
@@ -40,15 +40,10 @@ public class User extends BaseEntity {
 
     private String organization;
 
-    @Pattern(regexp = "^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$", message = "번호를 정확하게 입력해주세요")
     private String phoneNumber;
 
     private boolean agreeMarketingSms;
 
-    @Enumerated(EnumType.STRING)
-    private Provider provider;
-
-    private String providerId;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;

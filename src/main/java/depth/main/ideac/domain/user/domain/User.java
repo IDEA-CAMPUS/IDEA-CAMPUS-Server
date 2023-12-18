@@ -68,4 +68,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Banner> banners;
 
+    public void updatePassWord(String pw){
+        this.password = pw;
+    }
+
 }

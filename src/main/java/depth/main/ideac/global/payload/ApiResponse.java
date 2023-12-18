@@ -20,11 +20,6 @@ public class ApiResponse {
     public ApiResponse(){};
 
     @Builder
-    public ApiResponse(boolean check, Object information) {
-        this.check = check;
-        this.information = information;
-    }
-    @Builder(builderMethodName = "insertMessage")
     public ApiResponse(boolean check, Object information, String message) {
         this.check = check;
         this.information = information;

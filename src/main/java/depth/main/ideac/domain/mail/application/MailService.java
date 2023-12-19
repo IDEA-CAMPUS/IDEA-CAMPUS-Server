@@ -3,7 +3,7 @@ package depth.main.ideac.domain.mail.application;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.mail.dto.FindPasswordReq;
-import depth.main.ideac.domain.mail.dto.PassWordReq;
+import depth.main.ideac.domain.mail.dto.PasswordReq;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
@@ -75,12 +75,12 @@ public class MailService {
     }
 
     @Transactional
-    public ResponseEntity<?> changePassword(@Valid PassWordReq passWordReq, String code){
+    public ResponseEntity<?> changePassword(@Valid PasswordReq passwordReq, String code){
         Verify verify = mailRepository.findByCode(code);
         Optional<User> findUser = userRepository.findByEmail(verify.getEmail());
 
         User user = findUser.get();
-        user.updatePassWord(passwordEncoder.encode(passWordReq.getPassword()));
+        user.updatePassWord(passwordEncoder.encode(passwordReq.getPassword()));
 
 //        userRepository.save(user);
 

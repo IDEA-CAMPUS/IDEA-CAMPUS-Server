@@ -25,6 +25,7 @@ public class Banner extends BaseEntity {
 
     private String imagePath;
 
+    @Enumerated(EnumType.STRING)
     private Type type;
 
     @ManyToOne(fetch = FetchType.LAZY)

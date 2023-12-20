@@ -32,4 +32,5 @@ public class UserController {
                                                     @PathVariable String code) {
         return userService.changePassword(passwordReq,code);
     }
+    .
 }

@@ -7,7 +7,9 @@ import depth.main.ideac.domain.mail.dto.PasswordReq;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
+import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
+import depth.main.ideac.global.payload.ErrorCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -32,7 +35,7 @@ public class MailService {
         // 이메일이 존재하는지 확인
         Optional<User> user = userRepository.findByEmail(findPasswordReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "존재하지 않은 유저입니다.");
-
+        System.out.println("\"hi1\" = " + "hi1");
         String code = RandomStringUtils.random(20, 33, 125, true, true);
         Verify verify = saveCode(findPasswordReq.getEmail(),code);
 
@@ -68,21 +71,35 @@ public class MailService {
 
     // 코드 저장
     private Verify saveCode(String email,String code) {
+
+        // 메일을 보내기만하고 인증을 안했을경우 이미있던 메일 삭제하고 진행
         if (mailRepository.existsByEmail(email)){
             mailRepository.deleteByEmail(email);
         }
-        return mailRepository.save(new Verify(code,email));
+        return mailRepository.save(new Verify(code,email, LocalDateTime.now().plusMinutes(3)));
     }
 
     @Transactional
     public ResponseEntity<?> changePassword(@Valid PasswordReq passwordReq, String code){
+
+        //검증
+        DefaultAssert.isTrue(passwordReq.getPassword().equals(passwordReq.getRePassword()), "비밀번호가 서로 다릅니다.");
+        //만료시간 검증
         Verify verify = mailRepository.findByCode(code);
+
+        if (verify == null){
+            throw new DefaultException(ErrorCode.INVALID_CHECK, "이미변경되었습니다?");
+        }
+
+        DefaultAssert.isTrue(verify.checkExpiration(LocalDateTime.now()), "만료되었습니다.");
+
         Optional<User> findUser = userRepository.findByEmail(verify.getEmail());
 
         User user = findUser.get();
         user.updatePassWord(passwordEncoder.encode(passwordReq.getPassword()));
 
-//        userRepository.save(user);
+        // 인증완료 후 삭제
+        mailRepository.delete(verify);
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)

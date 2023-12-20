@@ -9,7 +9,9 @@ import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
+import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
+import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -67,10 +69,16 @@ public class AuthService {
     //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
+
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
 
         User findUser = user.get();
+        if (findUser.getStatus() == Status.SUSPENDED || findUser.getStatus() == Status.DELETE){
+            throw new DefaultException(ErrorCode.INVALID_CHECK, "정지되었거나 탈퇴된 유저입니다.");
+        }
+
+
         boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
         DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
 
@@ -166,4 +174,5 @@ public class AuthService {
 
         return true;
     }
+
 }

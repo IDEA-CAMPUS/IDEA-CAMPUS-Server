@@ -9,8 +9,9 @@ import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
-import depth.main.ideac.global.config.security.token.UserPrincipal;
+import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
+import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Optional;
 
 
@@ -37,20 +36,12 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
-
-    public ResponseEntity<?> whoAmI(UserPrincipal userPrincipal){
-        Optional<User> user = userRepository.findById(userPrincipal.getId());
-        DefaultAssert.isOptionalPresent(user);
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(user.get()).build();
-
-        return ResponseEntity.ok(apiResponse);
-    }
-
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
+        //검증
         DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
-        System.out.println("signUpRequest.getPassword() = " + signUpRequest.getPassword());
-        System.out.println(passwordEncoder.encode(signUpRequest.getPassword()));
+        DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
+
         User user = User.builder()
                         .email(signUpRequest.getIdEmail())
                         .password(passwordEncoder.encode(signUpRequest.getPassword()))
@@ -78,10 +69,16 @@ public class AuthService {
     //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
+
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
 
         User findUser = user.get();
+        if (findUser.getStatus() == Status.SUSPENDED || findUser.getStatus() == Status.DELETE){
+            throw new DefaultException(ErrorCode.INVALID_CHECK, "정지되었거나 탈퇴된 유저입니다.");
+        }
+
+
         boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
         DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
 
@@ -115,7 +112,7 @@ public class AuthService {
         DefaultAssert.isTrue(findUser.isPresent(), "해당이메일을 갖고 있는 유저가 없습니다.");
 
         User user = findUser.get();
-        ApiResponse apiResponse = ApiResponse.insertMessage()
+        ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(user.getEmail())
                 .message("가입하신 아이디를 찾아왔어요!")
@@ -177,4 +174,5 @@ public class AuthService {
 
         return true;
     }
+
 }

@@ -3,6 +3,7 @@ package depth.main.ideac.domain.auth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class SignUpReq {
     @Schema( type = "string", example = "abc12345678", description="비밀번호")
     @NotBlank
     @Size(min = 8, max = 16)
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,16}",
+            message = "비밀번호는 영문과 숫자 조합으로 8 ~ 16자리까지 가능합니다.")
     private String password;
 
     @Schema( type = "string", example = "abc12345678", description="비밀번호 한번 더 확인")

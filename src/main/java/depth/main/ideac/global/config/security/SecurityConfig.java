@@ -71,6 +71,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/error")
                         .permitAll()
+                        .requestMatchers("/mail/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated());
 

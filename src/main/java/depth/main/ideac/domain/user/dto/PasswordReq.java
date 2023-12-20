@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.mail.dto;
+package depth.main.ideac.domain.user.dto;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

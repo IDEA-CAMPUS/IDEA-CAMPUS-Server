@@ -2,7 +2,6 @@ package depth.main.ideac.domain.mail.presentation;
 
 import depth.main.ideac.domain.mail.application.MailService;
 import depth.main.ideac.domain.mail.dto.FindPasswordReq;
-import depth.main.ideac.domain.mail.dto.PasswordReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,13 +33,5 @@ public class MailController {
                                     @Valid @RequestBody FindPasswordReq findPasswordReq) {
 
         return mailService.sendEmail(findPasswordReq);
-    }
-
-    @PostMapping(value = "/change-password/{code}")
-    public ResponseEntity<?> changePassword(@Parameter(description = "Schemas의 PassWordReq를 참고해주세요.")
-                                       @Valid @RequestBody PasswordReq passwordReq,
-                                            @PathVariable String code) {
-
-        return mailService.changePassword(passwordReq,code);
     }
 }

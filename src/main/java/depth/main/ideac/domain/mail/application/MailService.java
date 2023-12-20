@@ -35,7 +35,6 @@ public class MailService {
         // 이메일이 존재하는지 확인
         Optional<User> user = userRepository.findByEmail(findPasswordReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "존재하지 않은 유저입니다.");
-        System.out.println("\"hi1\" = " + "hi1");
         String code = RandomStringUtils.random(20, 33, 125, true, true);
         Verify verify = saveCode(findPasswordReq.getEmail(),code);
 
@@ -76,7 +75,7 @@ public class MailService {
         if (mailRepository.existsByEmail(email)){
             mailRepository.deleteByEmail(email);
         }
-        return mailRepository.save(new Verify(code,email, LocalDateTime.now().plusMinutes(3)));
+        return mailRepository.save(new Verify(code,email, LocalDateTime.now().plusHours(1)));
     }
 
 

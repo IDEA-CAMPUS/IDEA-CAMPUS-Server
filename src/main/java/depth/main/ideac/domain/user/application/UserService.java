@@ -86,4 +86,23 @@ public class UserService {
         Optional<User> findUser = userRepository.findByEmail(userPrincipal.getEmail());
         return findUser.get();
     }
+
+    @Transactional
+    public ResponseEntity<?> logOutUser(UserPrincipal userPrincipal) {
+
+        Optional<Token> byUserEmail = tokenRepository.findByUserEmail(userPrincipal.getEmail());
+        DefaultAssert.isTrue(byUserEmail.isPresent(), "이미 로그인 되어있습니다.");
+
+        //토큰삭제로 로그아웃처리
+        Token token = byUserEmail.get();
+        tokenRepository.delete(token);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(null)
+                .message("로그아웃 완료!")
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
 }

@@ -56,13 +56,13 @@ public class User extends BaseEntity {
 
     private boolean isSocial;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<ProjectPost> projectPosts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<IdeaPost> ideaPosts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<ClubPost> clubPosts;
 
 

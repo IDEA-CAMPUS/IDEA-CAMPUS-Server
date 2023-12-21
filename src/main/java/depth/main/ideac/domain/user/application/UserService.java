@@ -1,11 +1,14 @@
 package depth.main.ideac.domain.user.application;
 
+import depth.main.ideac.domain.auth.domain.Token;
+import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.DefaultAssert;
+import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
 import depth.main.ideac.global.payload.ErrorCode;
@@ -26,6 +29,7 @@ public class UserService {
     private final MailRepository mailRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
     @Transactional
     public ResponseEntity<?> changePassword(@Valid PasswordReq passwordReq, String code){
 
@@ -55,5 +59,31 @@ public class UserService {
                 .build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteUser(UserPrincipal userPrincipal) {
+        
+        User user = getUser(userPrincipal);
+
+        Optional<Token> byUserEmail = tokenRepository.findByUserEmail(userPrincipal.getEmail());
+        Token userToken = byUserEmail.get();
+
+        //유저삭제
+        userRepository.delete(user);
+        //유저가 가지고 있는 토큰삭제
+        tokenRepository.delete(userToken);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(null)
+                .message("회원탈퇴 완료!")
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+    private User getUser(UserPrincipal userPrincipal){
+        Optional<User> findUser = userRepository.findByEmail(userPrincipal.getEmail());
+        return findUser.get();
     }
 }

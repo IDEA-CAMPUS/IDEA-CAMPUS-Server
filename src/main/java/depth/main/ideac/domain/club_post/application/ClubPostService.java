@@ -64,6 +64,7 @@ public class ClubPostService {
                 .build();
     }
 
+    @Transactional
     public ClubPostDetailRes createClubPost(Long userId, ClubPostReq clubPostReq) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
@@ -109,6 +110,15 @@ public class ClubPostService {
                 // ImagePath 추후 추가
                 .build();
 
+    }
+
+    // 글 삭제
+    @Transactional
+    public void deleteClubPost(Long clubPostId) {
+        ClubPost clubPost = clubPostRepository.findById(clubPostId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        clubPostRepository.delete(clubPost);
     }
 
     // 로그인한 사용자가 관리자인지 작성자 본인인지 확인하는 메소드

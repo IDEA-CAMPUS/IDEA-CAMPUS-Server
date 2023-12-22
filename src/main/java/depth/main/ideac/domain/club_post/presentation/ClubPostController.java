@@ -8,6 +8,7 @@ import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "ClubPost API", description = "동아리/학회 관련 API입니다.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/club")
@@ -83,13 +85,24 @@ public class ClubPostController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 글 삭제하기
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id) {
+
+        checkPermission(id, userPrincipal.getId());
+
+        clubPostService.deleteClubPost(id);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information("글이 삭제되었습니다.")
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
     private void checkPermission(Long clubPostId, Long userId) {
         if (!clubPostService.isAdminOrWriter(clubPostId, userId)) {
-            throw new AccessDeniedException("글을 수정할 권한이 없습니다.");
+            throw new AccessDeniedException("권한이 없습니다.");
         }
     }
 
-    // 글 삭제하기
-    // @PreAuthorize("hasRole('ADMIN') or @clubPostService.isOwner(#clubId, authentication.principal.username)")
-    // @PostMapping("/{id}/delete")
 }

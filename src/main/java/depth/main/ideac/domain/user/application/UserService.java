@@ -4,6 +4,8 @@ import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
+import depth.main.ideac.domain.user.domain.Role;
+import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.domain.user.dto.PasswordReq;
@@ -70,7 +72,13 @@ public class UserService {
         Token userToken = byUserEmail.get();
 
         //유저삭제
-        userRepository.delete(user);
+        user.updateStatus(Status.DELETE);
+
+        //논리삭제를 하기때문에 닉네임을 업데이트한다.
+
+        //유저닉네임변경(추후 같은 아이디로 재 가입시 닉네임 중복을 방지하게 위헤)
+        user.updateNickName("deletedUser"+user.getNickname());
+
         //유저가 가지고 있는 토큰삭제
         tokenRepository.delete(userToken);
 
@@ -88,7 +96,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> logOutUser(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> signOutUser(UserPrincipal userPrincipal) {
 
         Optional<Token> byUserEmail = tokenRepository.findByUserEmail(userPrincipal.getEmail());
         DefaultAssert.isTrue(byUserEmail.isPresent(), "이미 로그인 되어있습니다.");

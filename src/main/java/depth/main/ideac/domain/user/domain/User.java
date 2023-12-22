@@ -50,8 +50,10 @@ public class User extends BaseEntity {
 
     private String providerId;
 
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
     private boolean isSocial;
@@ -69,5 +71,11 @@ public class User extends BaseEntity {
     public void updatePassWord(String pw){
         this.password = pw;
     }
+    public void updateStatus(Status status){
+        this.status = status;
+    }
 
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
+    }
 }

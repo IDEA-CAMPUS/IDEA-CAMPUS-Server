@@ -52,10 +52,10 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "로그아웃 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping("/logout")
-    public ResponseEntity<?> logOutUser(
+    @PostMapping("/sign-out")
+    public ResponseEntity<?> signOut(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return userService.logOutUser(userPrincipal);
+        return userService.signOutUser(userPrincipal);
     }
 }

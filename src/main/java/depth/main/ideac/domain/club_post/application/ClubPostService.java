@@ -5,6 +5,8 @@ import depth.main.ideac.domain.club_post.domain.repository.ClubPostRepository;
 import depth.main.ideac.domain.club_post.dto.ClubPostDetailRes;
 import depth.main.ideac.domain.club_post.dto.ClubPostReq;
 import depth.main.ideac.domain.club_post.dto.ClubPostRes;
+import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
+import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,4 +88,43 @@ public class ClubPostService {
                 // ImagePath 추후 추가
                 .build();
     }
+
+    // 글 수정
+    @Transactional
+    public ClubPostDetailRes updateClubPost(Long clubPostId, UpdateClubPostReq updateClubPostReq) {
+
+        ClubPost clubPost = clubPostRepository.findById(clubPostId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        clubPost.updateFromRequest(updateClubPostReq);
+        clubPostRepository.save(clubPost);
+
+        return ClubPostDetailRes.builder()
+                .title(clubPost.getTitle())
+                .description(clubPost.getDetailedDescription())
+                .url1(clubPost.getUrl1())
+                .url2(clubPost.getUrl2())
+                .nickname(clubPost.getUser().getNickname())
+                .createdAt(clubPost.getCreatedAt())
+                // ImagePath 추후 추가
+                .build();
+
+    }
+
+    // 로그인한 사용자가 관리자인지 작성자 본인인지 확인하는 메소드
+    public boolean isAdminOrWriter(Long clubPostId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        ClubPost clubPost = clubPostRepository.findById(clubPostId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        boolean isAdmin = user.getRole() == Role.ADMIN || user.getRole() == Role.OWNER ;
+        boolean isWriter = clubPost.getUser().getId().equals(userId);
+
+        return isAdmin || isWriter;
+    }
+
+
+
 }

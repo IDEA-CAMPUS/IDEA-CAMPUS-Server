@@ -65,8 +65,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/club/register").hasRole("USER") // 회원만 등록 가능한 엔드포인트
-                        .requestMatchers("/api/club/**").permitAll()
+                        .requestMatchers("/api/club", "/api/club/{id}")
+                        .permitAll()
                         .requestMatchers( "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers("/","/login/**","/auth/**", "/oauth2/**")

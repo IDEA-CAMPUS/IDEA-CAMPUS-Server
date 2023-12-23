@@ -8,6 +8,12 @@ import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
+import depth.main.ideac.global.payload.ErrorResponse;
+import depth.main.ideac.global.payload.Message;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +35,7 @@ public class ClubPostController {
     private final ClubPostService clubPostService;
 
     // 글 전체 조회
+    @Operation(summary = "글 전체 조회", description = "동아리/학회 페이지의 글을 전체 조회하는 API입니다.")
     @GetMapping
     public ResponseEntity<?> getAllClubPosts(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size) {
@@ -47,6 +54,7 @@ public class ClubPostController {
     }
 
     // 글 상세 조회
+    @Operation(summary = "글 상세 조회", description = "동아리/학회 페이지의 글을 상세 조회하는 API입니다.")
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetailClubPosts(@PathVariable Long id) {
         ClubPostDetailRes clubPostDetailRes = clubPostService.getDetailClubPosts(id);
@@ -59,6 +67,7 @@ public class ClubPostController {
     }
 
     // 글 등록하기
+    @Operation(summary = "글 등록", description = "동아리/학회 글을 등록하는 API입니다.")
     @PostMapping("/register")
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
                                             @Valid @RequestBody ClubPostReq clubPostReq) {
@@ -71,6 +80,7 @@ public class ClubPostController {
     }
 
     // 글 수정하기
+    @Operation(summary = "글 수정", description = "동아리/학회 글을 수정하는 API입니다.")
     @PutMapping("/{id}/update")
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
                                             @Valid @RequestBody UpdateClubPostReq updateClubPostReq) {
@@ -86,6 +96,7 @@ public class ClubPostController {
     }
 
     // 글 삭제하기
+    @Operation(summary = "글 삭제", description = "동아리/학회 글을 삭제하는 API입니다.")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<?> deleteClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id) {
 
@@ -101,7 +112,7 @@ public class ClubPostController {
 
     private void checkPermission(Long clubPostId, Long userId) {
         if (!clubPostService.isAdminOrWriter(clubPostId, userId)) {
-            throw new AccessDeniedException("권한이 없습니다.");
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
         }
     }
 

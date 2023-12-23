@@ -68,7 +68,8 @@ public class ClubPostController {
 
     // 글 등록하기
     @Operation(summary = "글 등록", description = "동아리/학회 글을 등록하는 API입니다.")
-    @PostMapping("/register")
+    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'OWNER')")
+    @PostMapping
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
                                             @Valid @RequestBody ClubPostReq clubPostReq) {
         ClubPostDetailRes clubPostDetailRes = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq);
@@ -81,7 +82,7 @@ public class ClubPostController {
 
     // 글 수정하기
     @Operation(summary = "글 수정", description = "동아리/학회 글을 수정하는 API입니다.")
-    @PutMapping("/{id}/update")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
                                             @Valid @RequestBody UpdateClubPostReq updateClubPostReq) {
 
@@ -97,7 +98,7 @@ public class ClubPostController {
 
     // 글 삭제하기
     @Operation(summary = "글 삭제", description = "동아리/학회 글을 삭제하는 API입니다.")
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id) {
 
         checkPermission(id, userPrincipal.getId());

@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.club_post.domain;
 
+import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
 import depth.main.ideac.domain.club_post_image.domain.ClubPostImage;
 import depth.main.ideac.domain.common.BaseEntity;
 import depth.main.ideac.domain.user.domain.User;
@@ -39,5 +40,14 @@ public class ClubPost extends BaseEntity {
 
     @OneToMany(mappedBy = "clubPost", cascade = CascadeType.ALL)
     private List<ClubPostImage> clubPostImages;
+
+
+    public void updateFromRequest(UpdateClubPostReq updateClubPostReq) {
+        this.title = updateClubPostReq.getTitle();
+        this.detailedDescription = updateClubPostReq.getDescription();
+        this.url1 = updateClubPostReq.getUrl1();
+        this.url2 = updateClubPostReq.getUrl2();
+        // 이미지path 추가 필요
+    }
 
 }

@@ -38,6 +38,7 @@ public class AuthService {
 
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
+
         //검증
         DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
         DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
@@ -144,18 +145,6 @@ public class AuthService {
         AuthRes authResponse = AuthRes.builder().accessToken(tokenMapping.getAccessToken()).refreshToken(updateToken.getRefreshToken()).build();
 
         return ResponseEntity.ok(authResponse);
-    }
-
-    public ResponseEntity<?> signout(RefreshTokenReq tokenRefreshRequest){
-        boolean checkValid = valid(tokenRefreshRequest.getRefreshToken());
-        DefaultAssert.isAuthentication(checkValid);
-
-        //4 token 정보를 삭제한다.
-        Optional<Token> token = tokenRepository.findByRefreshToken(tokenRefreshRequest.getRefreshToken());
-        tokenRepository.delete(token.get());
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("로그아웃 하였습니다.").build()).build();
-
-        return ResponseEntity.ok(apiResponse);
     }
 
     private boolean valid(String refreshToken){

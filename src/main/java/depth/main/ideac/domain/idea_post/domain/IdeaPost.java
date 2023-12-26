@@ -1,5 +1,7 @@
 package depth.main.ideac.domain.idea_post.domain;
 
+import depth.main.ideac.domain.idea_post.dto.GetDetailIdeaRes;
+import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
 import depth.main.ideac.domain.idea_post_view.domain.IdeaPostView;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.common.BaseEntity;
@@ -43,4 +45,11 @@ public class IdeaPost extends BaseEntity {
     @OneToOne(mappedBy = "ideaPost", cascade = CascadeType.ALL)
     private IdeaPostView ideaPostView;
 
+    public void updateIdea(UpdateIdeaReq updateIdeaReq) {
+        this.title = updateIdeaReq.getTitle();
+        this.simpleDescription = updateIdeaReq.getSimpleDescription();
+        this.detailedDescription = updateIdeaReq.getDetailedDescription();
+        this.url1 = updateIdeaReq.getUrl1();
+        this.url2 = updateIdeaReq.getUrl2();
+    }
 }

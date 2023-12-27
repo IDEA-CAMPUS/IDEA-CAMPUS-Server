@@ -9,6 +9,8 @@ allprojects {
     group 'org.example'
     version '1.0-SNAPSHOT'
     sourceCompatibility = '17'
+    targetCompatibility = '17'
+    //compileJava.options.encoding = 'UTF-8'
 
     repositories {
         mavenCentral()
@@ -20,6 +22,13 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
 }
 
 subprojects {
@@ -68,32 +77,57 @@ subprojects {
 project(':ideac-core') {
 
     // core 에서는 bootjar로 패키징 할 필요가 없으므로 추가
-    bootJar.enabled = false
-    jar.enabled = true
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
 
     dependencies {
     }
+
 }
 
 project(':ideac-user') {
 
+    bootJar {
+        enabled = true
+    }
+
     jar {
         enabled = false
     }
+
     dependencies {
         // 컴파일시 core 모듈을 가져온다.
         compileOnly project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
     }
+
+    springBoot {
+        mainClass = 'depth.main.ideac.IdeacUserApplication' // 메인 클래스명
+    }
+
 }
 
 project(':ideac-admin') {
 
+    bootJar {
+        enabled = true
+    }
+
     jar {
         enabled = false
     }
+
     dependencies {
         compileOnly project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+
+    springBoot {
+        mainClass = 'depth.main.ideac.IdeacAdminApplication' // admin 모듈의 메인 클래스명
     }
 }

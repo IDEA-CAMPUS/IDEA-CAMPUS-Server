@@ -1,3 +1,0 @@
-springBoot {
-    mainClass = 'depth.main.ideac.IdeacAdminApplication' // admin 모듈의 메인 클래스명
-}

@@ -39,4 +39,4 @@ out/
 /src/main/resources/application.yml
 /src/main/resources/application-mail.yml
 /src/main/resources/application-swagger.yml
-/src/main/resources/application-oauth2.yml
+/src/main/resources/oauth2/application-oauth2.yml

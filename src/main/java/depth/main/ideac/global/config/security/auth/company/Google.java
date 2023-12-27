@@ -1,9 +1,10 @@
-package com.sample.global.config.security.auth.company;
+package depth.main.ideac.global.config.security.auth.company;
+
+
+import depth.main.ideac.domain.user.domain.Provider;
+import depth.main.ideac.global.config.security.auth.OAuth2UserInfo;
 
 import java.util.Map;
-
-import com.sample.global.config.security.auth.OAuth2UserInfo;
-import com.sample.domain.user.domain.Provider;
 
 public class Google extends OAuth2UserInfo {
 

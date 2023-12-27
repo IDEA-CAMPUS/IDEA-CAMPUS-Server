@@ -1,23 +1,21 @@
-package com.sample.domain.auth.application;
+package depth.main.ideac.domain.auth.application;
 
-import java.util.Optional;
-
-import com.sample.global.DefaultAssert;
-import com.sample.global.config.security.auth.OAuth2UserInfo;
-import com.sample.global.config.security.auth.OAuth2UserInfoFactory;
-import com.sample.global.config.security.token.UserPrincipal;
-import com.sample.domain.user.domain.Provider;
-import com.sample.domain.user.domain.Role;
-import com.sample.domain.user.domain.User;
-import com.sample.domain.user.domain.repository.UserRepository;
-
+import depth.main.ideac.domain.user.domain.Provider;
+import depth.main.ideac.domain.user.domain.Role;
+import depth.main.ideac.domain.user.domain.User;
+import depth.main.ideac.domain.user.domain.repository.UserRepository;
+import depth.main.ideac.global.DefaultAssert;
+import depth.main.ideac.global.config.security.auth.OAuth2UserInfo;
+import depth.main.ideac.global.config.security.auth.OAuth2UserInfoFactory;
+import depth.main.ideac.global.config.security.token.UserPrincipal;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -60,7 +58,7 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                     .providerId(oAuth2UserInfo.getId())
                     .name(oAuth2UserInfo.getName())
                     .email(oAuth2UserInfo.getEmail())
-                    .imageUrl(oAuth2UserInfo.getImageUrl())
+//                    .imageUrl(oAuth2UserInfo.getImageUrl())
                     .role(Role.USER)
                     .build();
         
@@ -68,9 +66,9 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
     }
 
     private User updateExistingUser(User user, OAuth2UserInfo oAuth2UserInfo) {
-
-        user.updateName(oAuth2UserInfo.getName());
-        user.updateImageUrl(oAuth2UserInfo.getImageUrl());
+//        추후 사용시 바뀔예정인 함수
+//        user.updateName(oAuth2UserInfo.getName());
+//        user.updateImageUrl(oAuth2UserInfo.getImageUrl());
 
         return userRepository.save(user);
     }

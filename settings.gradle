@@ -1,2 +1,5 @@
 rootProject.name = 'ideac'
+include 'ideac-admin'
+include 'ideac-core'
+include 'ideac-user'
 

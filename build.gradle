@@ -4,19 +4,16 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.2'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+allprojects {
 
-java {
+    group 'org.example'
+    version '1.0-SNAPSHOT'
     sourceCompatibility = '17'
-}
 
-jar {
-    enabled = false
-}
+    repositories {
+        mavenCentral()
+    }
 
-repositories {
-    mavenCentral()
 }
 
 configurations {
@@ -25,38 +22,78 @@ configurations {
     }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'com.mysql:mysql-connector-j'
-    compileOnly 'org.projectlombok:lombok'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+        implementation 'com.mysql:mysql-connector-j'
+        compileOnly 'org.projectlombok:lombok'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+        runtimeOnly 'com.mysql:mysql-connector-j'
 
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    // jwt 설정
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    // swagger 설정
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
-    testImplementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-api', version: '2.1.0'
+        // jwt 설정
+        implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+        runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-    // Mail 설정
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+        // swagger 설정
+        implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
+        testImplementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-api', version: '2.1.0'
+
+        // Mail 설정
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':ideac-core') {
+
+    // core 에서는 bootjar로 패키징 할 필요가 없으므로 추가
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+    }
+}
+
+project(':ideac-user') {
+
+    jar {
+        enabled = false
+    }
+    dependencies {
+        // 컴파일시 core 모듈을 가져온다.
+        compileOnly project(':ideac-core')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+}
+
+project(':ideac-admin') {
+
+    jar {
+        enabled = false
+    }
+    dependencies {
+        compileOnly project(':ideac-core')
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
 }

@@ -1,9 +1,9 @@
-package depth.main.ideac.global.config.security.auth;
+package depth.main.ideac.global.config;
 
 
 import depth.main.ideac.domain.user.domain.Provider;
 import depth.main.ideac.global.DefaultAssert;
-import depth.main.ideac.global.config.security.auth.company.Google;
+import depth.main.ideac.global.config.company.Google;
 
 import java.util.Map;
 

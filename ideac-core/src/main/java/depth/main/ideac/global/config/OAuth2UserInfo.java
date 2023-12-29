@@ -1,4 +1,4 @@
-package depth.main.ideac.global.config.security.auth;
+package depth.main.ideac.global.config;
 
 import java.util.Map;
 

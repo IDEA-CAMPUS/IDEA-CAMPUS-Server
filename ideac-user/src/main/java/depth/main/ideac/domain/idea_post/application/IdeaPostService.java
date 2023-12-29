@@ -1,8 +1,8 @@
 package depth.main.ideac.domain.idea_post.application;
 
-import depth.main.ideac.domain.idea_post.domain.IdeaPost;
-import depth.main.ideac.domain.idea_post.domain.repository.IdeaPostRepository;
+import depth.main.ideac.domain.idea_post.IdeaPost;
 import depth.main.ideac.domain.idea_post.dto.*;
+import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;

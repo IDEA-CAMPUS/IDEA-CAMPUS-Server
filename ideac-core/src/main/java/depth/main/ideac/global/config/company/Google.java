@@ -1,8 +1,8 @@
-package depth.main.ideac.global.config.security.auth.company;
+package depth.main.ideac.global.config.company;
 
 
 import depth.main.ideac.domain.user.domain.Provider;
-import depth.main.ideac.global.config.security.auth.OAuth2UserInfo;
+import depth.main.ideac.global.config.OAuth2UserInfo;
 
 import java.util.Map;
 

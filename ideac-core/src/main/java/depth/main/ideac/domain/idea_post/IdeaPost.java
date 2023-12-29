@@ -1,16 +1,15 @@
-package depth.main.ideac.domain.idea_post.domain;
+package depth.main.ideac.domain.idea_post;
 
-import depth.main.ideac.domain.idea_post.dto.GetDetailIdeaRes;
-import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
-import depth.main.ideac.domain.idea_post_view.domain.IdeaPostView;
-import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.common.BaseEntity;
+import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
+import depth.main.ideac.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Builder

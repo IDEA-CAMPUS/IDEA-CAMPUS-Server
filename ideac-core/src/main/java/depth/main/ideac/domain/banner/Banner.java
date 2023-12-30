@@ -23,7 +23,12 @@ public class Banner extends BaseEntity {
     @NotBlank(message = "제목이 입력되지 않았습니다.")
     private String title;
 
-    private String imagePath;
+    @NotBlank(message = "파일이 업로드되지 않았습니다.")
+    private String fileName;
+
+    private String saveFileName;
+
+    private String contentType;
 
     @Enumerated(EnumType.STRING)
     private Type type;

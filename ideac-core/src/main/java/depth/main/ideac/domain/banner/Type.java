@@ -2,5 +2,9 @@ package depth.main.ideac.domain.banner;
 
 public enum Type {
 
-    PROJECT, IDEA, CLUB;
+    HOME, PROJECT, IDEA;
+
+    public static Type fromString(String text) {
+        return Type.valueOf(text.toUpperCase());
+    }
 }

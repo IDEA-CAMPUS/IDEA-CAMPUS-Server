@@ -69,6 +69,7 @@ jobs:
             --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA-core-admin.zip,bundleType=zip
 
   deploy_core_user:
+    needs: deploy_core_admin
     name: Deploy Core and User modules
     runs-on: ubuntu-latest
     environment: production

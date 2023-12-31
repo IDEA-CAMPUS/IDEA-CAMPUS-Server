@@ -55,6 +55,8 @@ jobs:
 
       - name: Upload Core and Admin modules to AWS S3
         run: |
+          cp -r ideac-admin/appspec.yml .
+          cp -r ideac-admin/scripts .
           # ideac-core와 ideac-admin 모듈을 함께 압축하여 업로드할 파일을 생성합니다.
           zip -r $GITHUB_SHA-core-admin.zip ideac-core ideac-admin appspec.yml scripts
 
@@ -111,6 +113,8 @@ jobs:
 
       - name: Upload Core and User modules to AWS S3
         run: |
+          cp -r ideac-user/appspec.yml .
+          cp -r ideac-user/scripts .
           # ideac-core와 ideac-user 모듈을 함께 압축하여 업로드할 파일을 생성합니다.
           zip -r $GITHUB_SHA-core-user.zip ideac-core ideac-user appspec.yml scripts
 

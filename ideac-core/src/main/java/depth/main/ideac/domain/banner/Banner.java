@@ -37,4 +37,10 @@ public class Banner extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public void updateBanner(String title, String fileName, String saveFileName, String contentType) {
+        this.title = title;
+        this.fileName = fileName;
+        this.saveFileName = saveFileName;
+        this.contentType = contentType;
+    }
 }

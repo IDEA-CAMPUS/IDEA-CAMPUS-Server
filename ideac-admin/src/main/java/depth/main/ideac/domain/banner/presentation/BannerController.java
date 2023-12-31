@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.banner.presentation;
 
 import depth.main.ideac.domain.admin.application.AdminService;
-import depth.main.ideac.domain.admin.dto.UserRes;
 import depth.main.ideac.domain.banner.Type;
 import depth.main.ideac.domain.banner.application.BannerService;
 import depth.main.ideac.domain.banner.dto.BannerDetailRes;
@@ -100,7 +99,20 @@ public class BannerController {
     }
 
     // 배너 수정
-    // @PutMapping
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBanner(@CurrentUser UserPrincipal userPrincipal,
+                                          @PathVariable Long id,
+                                          @RequestPart("title") String title,
+                                          @RequestPart("file") MultipartFile file) throws IOException {
+        checkPermission(userPrincipal.getEmail());
+
+        BannerDetailRes bannerDetailRes = bannerService.updateBanner(file, title, id);
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(bannerDetailRes)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 
     // 배너 삭제
     @Operation(summary = "배너 삭제", description = "배너를 삭제하는 API입니다.")

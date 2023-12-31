@@ -132,7 +132,36 @@ public class BannerService {
         return convertToBannerDetailRes(banner);
     }
 
-    // 배너 수정하기 - 자고 일어나서
+    // 배너 수정하기
+    @Transactional
+    public BannerDetailRes updateBanner(MultipartFile file, String title, Long bannerId) throws IOException {
+        Banner banner = bannerRepository.findById(bannerId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        String originalFileName = file.getOriginalFilename();
+        String saveFileName = createSaveFileName(originalFileName);
+
+        boolean isDelete = deleteFile(banner.getSaveFileName());
+
+        if (!isDelete) {
+            throw new RuntimeException("파일 삭제에 실패했습니다.");
+        }
+        file.transferTo(new File(getFullPath(saveFileName)));
+
+        String contentType = file.getContentType();
+
+        banner.updateBanner(title, originalFileName, saveFileName, contentType);
+
+        return convertToBannerDetailRes(banner);
+    }
+
+    private boolean deleteFile(String fileName) {
+        File fileToDelete = new File(getFullPath(fileName));
+
+        if (fileToDelete.exists()) {
+            return fileToDelete.delete();
+        } else { return false; }
+    }
 
     // 배너 삭제하기
     @Transactional

@@ -54,11 +54,11 @@ jobs:
 
       - name: Upload Core and Admin modules to AWS S3
         run: |
-          aws deploy push \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
-            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-admin.zip \
-            --source ideac-core ideac-admin
+          # ideac-core와 ideac-admin 모듈을 함께 압축하여 업로드할 파일을 생성합니다.
+          zip -r $GITHUB_SHA-core-admin.zip ideac-core ideac-admin
+
+          # 생성한 파일을 S3로 업로드합니다.
+          aws s3 cp $GITHUB_SHA-core-admin.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-admin.zip
 
       - name: Deploy Core and Admin modules to AWS EC2 from S3
         run: |
@@ -110,11 +110,11 @@ jobs:
 
       - name: Upload Core and User modules to AWS S3
         run: |
-          aws deploy push \
-            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-            --ignore-hidden-files \
-            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-user.zip \
-            --source ideac-core ideac-user
+          # ideac-core와 ideac-user 모듈을 함께 압축하여 업로드할 파일을 생성합니다.
+          zip -r $GITHUB_SHA-core-user.zip ideac-core ideac-user
+
+          # 생성한 파일을 S3로 업로드합니다.
+          aws s3 cp $GITHUB_SHA-core-user.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-user.zip
 
       - name: Deploy Core and User modules to AWS EC2 from S3
         run: |

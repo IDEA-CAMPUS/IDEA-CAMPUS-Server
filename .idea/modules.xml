@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-admin/ideac.ideac-admin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-admin/ideac.ideac-admin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-core/ideac.ideac-core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-core/ideac.ideac-core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac.main.iml" />
     </modules>
   </component>

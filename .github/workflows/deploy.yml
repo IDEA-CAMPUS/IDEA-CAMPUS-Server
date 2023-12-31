@@ -10,6 +10,7 @@ env:
   S3_BUCKET_NAME: ideac-github-actions-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: ideac-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: ideac-codedeploy-deployment-group
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME2: ideac-admin-codedeploy-deployment-group
 
 jobs:
   deploy_core_admin:
@@ -65,11 +66,10 @@ jobs:
           aws deploy create-deployment \
             --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME2 }} \
             --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA-core-admin.zip,bundleType=zip
 
   deploy_core_user:
-    needs: deploy_core_admin
     name: Deploy Core and User modules
     runs-on: ubuntu-latest
     environment: production

@@ -51,6 +51,9 @@ app:
     access-token-expiration-msec: 3600000
     refresh-token-expiration-msec: 1209600000
   cors:
-    allowed-origins: http://localhost:8080
+    allowed-origins:
+      - http://localhost:8080
+      - http://localhost:8081
+      - http://ec2-3-34-14-75.ap-northeast-2.compute.amazonaws.com
 #  oauth2:
 #    authorized-redirect-uris: http://localhost:3000/oauth2/redirect, myandroidapp://oauth2/redirect, myiosapp://oauth2/redirect

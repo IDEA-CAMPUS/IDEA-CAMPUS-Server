@@ -24,3 +24,7 @@ server:
 
   #port 설정
   port: 8081
+
+# 파일 업로드 경로(배포 후 원격 서버로 수정)
+upload:
+  path: C:\\Users\\LG\\Desktop\\Study\\

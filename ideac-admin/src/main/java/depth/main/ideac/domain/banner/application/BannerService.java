@@ -141,6 +141,7 @@ public class BannerService {
         String originalFileName = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFileName);
 
+        // 기존 서버에 올라가있는 파일 삭제
         boolean isDelete = deleteFile(banner.getSaveFileName());
 
         if (!isDelete) {
@@ -168,6 +169,10 @@ public class BannerService {
     public void deleteBanner(Long id) {
         Banner banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
+        // 서버에 올라가있는 파일 삭제
+        deleteFile(banner.getSaveFileName());
+
         bannerRepository.delete(banner);
     }
 

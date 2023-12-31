@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.admin.application;
 
 import depth.main.ideac.domain.admin.dto.UserRes;
-import depth.main.ideac.domain.club_post.ClubPost;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;

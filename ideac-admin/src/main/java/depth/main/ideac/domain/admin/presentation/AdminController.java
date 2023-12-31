@@ -1,11 +1,15 @@
 package depth.main.ideac.domain.admin.presentation;
 
 import depth.main.ideac.domain.admin.application.AdminService;
+import depth.main.ideac.domain.admin.dto.PagedUserRes;
 import depth.main.ideac.domain.admin.dto.UserRes;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +30,12 @@ public class AdminController {
     private final AdminService adminService;
 
     @Operation(summary = "사용자 전체 조회", description = "사용자를 전체 조회하는 API입니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))
+            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
+    })
     @GetMapping
     public ResponseEntity<?> getAllUsers(@CurrentUser UserPrincipal userPrincipal,
                                          @RequestParam(defaultValue = "0") int page,
@@ -49,6 +59,10 @@ public class AdminController {
 
     // 검색
     @Operation(summary = "사용자 검색", description = "사용자를 닉네임 또는 이름으로 검색하는 API입니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))}),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
+    })
     @GetMapping("/search")
     public ResponseEntity<?> searchUser(@CurrentUser UserPrincipal userPrincipal,
                                         @RequestParam String word,
@@ -72,6 +86,7 @@ public class AdminController {
     }
 
     @Operation(summary = "사용자 상태 변경", description = "사용자의 상태를 변경하는 API입니다.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserRes.class))})
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateStatus(@CurrentUser UserPrincipal userPrincipal,
                                           @PathVariable Long id) {
@@ -86,6 +101,7 @@ public class AdminController {
     }
 
     @Operation(summary = "사용자 역할 변경", description = "사용자의 역할을 변경하는 API입니다.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserRes.class))})
     // @PreAuthorize("hasRole('OWNER')")
     @PatchMapping("/{id}/role")
     public ResponseEntity<?> updateRole(@CurrentUser UserPrincipal userPrincipal,

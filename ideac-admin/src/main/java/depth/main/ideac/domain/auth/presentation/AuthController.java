@@ -34,7 +34,7 @@ public class AuthController {
     private final AuthService authService;
     private final AdminService adminService;
 
-    @Operation(summary = "로그인", description = "로그인을 진행한다.")
+    @Operation(summary = "로그인", description = "로그인 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthRes.class))}),
             @ApiResponse(responseCode = "400", description = "로그인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
@@ -54,7 +54,7 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "아이디찾기", description = "가입한 이름과 전화번호로 아이디를 찾는다.")
+    @Operation(summary = "아이디 찾기", description = "가입한 이름과 전화번호로 아이디를 찾는 API입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아이디 찾기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디 찾기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})

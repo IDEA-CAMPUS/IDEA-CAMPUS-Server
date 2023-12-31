@@ -5,69 +5,121 @@ on:
     branches:
       - release
 
-# 본인이 설정한 값을 여기서 채워넣습니다.
-# 리전, 버킷 이름, CodeDeploy 앱 이름, CodeDeploy 배포 그룹 이름
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: ideac-github-actions-s3-bucket
   CODE_DEPLOY_APPLICATION_NAME: ideac-codedeploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: ideac-codedeploy-deployment-group
 
-permissions:
-  contents: read
-
 jobs:
-  deploy:
-    name: Deploy
+  deploy_core_admin:
+    name: Deploy Core and Admin modules
     runs-on: ubuntu-latest
     environment: production
 
     steps:
-    # (1) 기본 체크아웃
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    # (2) JDK 17 세팅
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Set YML
-      run: |
-        mkdir -p src/main/resources
-        echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-        find src
+      - name: Set IDEAC-CORE YML
+        run: |
+          mkdir -p ideac-core/src/main/resources
+          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application.yml
+          mkdir -p ideac-core/src/main/resources/oauth2
+          echo "${{ secrets.APPLICATION_OAUTH2_YML }}" | base64 --decode > ideac-core/src/main/resources/oauth2/application-oauth2.yml
 
-    # (3) Gradle build (Test 제외)
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      with:
-        arguments: clean build -x test
+      - name: Set IDEAC-ADMIN YML
+        run: |
+          mkdir -p ideac-admin/src/main/resources
+          echo "${{ secrets.ADMIN_APPLICATION_YML }}" | base64 --decode > ideac-admin/src/main/resources/application.yml
+          echo "${{ secrets.ADMIN_APPLICATION_SWAGGER_YML }}" | base64 --decode > ideac-admin/src/main/resources/application-swagger.yml
 
-    # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Build Core and Admin modules with Gradle
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: clean build -x test
 
-    # (5) 빌드 결과물을 S3 버킷에 업로드
-    - name: Upload to AWS S3
-      run: |
-        aws deploy push \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --ignore-hidden-files \
-          --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
-          --source .
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
-    - name: Deploy to AWS EC2 from S3
-      run: |
-        aws deploy create-deployment \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --deployment-config-name CodeDeployDefault.AllAtOnce \
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-          --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+      - name: Upload Core and Admin modules to AWS S3
+        run: |
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-admin.zip \
+            --source ideac-core ideac-admin
+
+      - name: Deploy Core and Admin modules to AWS EC2 from S3
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA-core-admin.zip,bundleType=zip
+
+  deploy_core_user:
+    name: Deploy Core and User modules
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set IDEAC-CORE YML
+        run: |
+          mkdir -p ideac-core/src/main/resources
+          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application.yml
+          mkdir -p ideac-core/src/main/resources/oauth2
+          echo "${{ secrets.APPLICATION_OAUTH2_YML }}" | base64 --decode > ideac-core/src/main/resources/oauth2/application-oauth2.yml
+
+      - name: Set IDEAC-USER YML
+        run: |
+          mkdir -p ideac-user/src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ideac-user/src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_SWAGGER_YML }}" | base64 --decode > ideac-user/src/main/resources/application-swagger.yml
+
+      - name: Build Core and User modules with Gradle
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: clean build -x test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload Core and User modules to AWS S3
+        run: |
+          aws deploy push \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --ignore-hidden-files \
+            --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA-core-user.zip \
+            --source ideac-core ideac-user
+
+      - name: Deploy Core and User modules to AWS EC2 from S3
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA-core-user.zip,bundleType=zip

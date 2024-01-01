@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ubuntu/app"
+PROJECT_ROOT="/home/ubuntu/app/ideac-admin"
 JAR_FILE="$PROJECT_ROOT/spring-webapp.jar"
 
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"

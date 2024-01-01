@@ -1,5 +1,8 @@
 package depth.main.ideac.domain.banner.application;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import depth.main.ideac.domain.banner.Banner;
 import depth.main.ideac.domain.banner.Type;
 import depth.main.ideac.domain.banner.dto.BannerListRes;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -31,9 +35,11 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
     private final UserRepository userRepository;
+    private final AmazonS3 amazonS3Client;
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
 
     // controller에서 type만 바꿔서 호출
     @Transactional
@@ -42,22 +48,24 @@ public class BannerService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
-        // 서버에 파일 저장 & DB에 파일 정보 저장
+        // s3에 파일 저장 & DB에 파일 정보 저장
         // - 동일 파일명을 피하기 위해 random값 사용
         String originalFileName = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFileName);
 
-        // 2-1.서버에 파일 저장
-        file.transferTo(new File(getFullPath(saveFileName)));
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
 
-        // 2-2. DB에 정보 저장
-        String contentType = file.getContentType();
+        String s3Key = "image/banner/" + saveFileName;
+        InputStream inputStream = file.getInputStream();
+        amazonS3Client.putObject(bucket, s3Key, inputStream, metadata);
 
+        // DB에 정보 저장
         Banner banner = Banner.builder()
                 .title(title)
                 .fileName(originalFileName)
-                .saveFileName(saveFileName)
-                .contentType(contentType)
+                .saveFileUrl(getFullPath(saveFileName))
                 .type(type)
                 .user(user)
                 .build();
@@ -81,8 +89,8 @@ public class BannerService {
     }
 
     // fullPath 만들기
-    private String getFullPath(String filename) {
-        return uploadPath + filename;
+    private String getFullPath(String fileName) {
+        return "https://" + bucket + ".s3.amazonaws.com/image/banner/" + fileName;
     }
 
     private BannerDetailRes convertToBannerDetailRes(Banner banner) {
@@ -90,8 +98,7 @@ public class BannerService {
                 .id(banner.getId())
                 .title(banner.getTitle())
                 .originalFileName(banner.getFileName())
-                .saveFileName(banner.getSaveFileName())
-                .contentType(banner.getContentType())
+                .saveFileUrl(banner.getSaveFileUrl())
                 .type(banner.getType())
                 .nickName(banner.getUser().getNickname())
                 .createdAt(banner.getCreatedAt())
@@ -138,31 +145,39 @@ public class BannerService {
         Banner banner = bannerRepository.findById(bannerId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
+        // s3에 올라가있는 파일 삭제
+        // boolean isDelete = deleteS3File(banner.getSaveFileUrl());
+
+        // if (!isDelete) {
+        //     throw new RuntimeException("파일 삭제에 실패했습니다.");
+        // }
+
         String originalFileName = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFileName);
 
-        // 기존 서버에 올라가있는 파일 삭제
-        boolean isDelete = deleteFile(banner.getSaveFileName());
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
 
-        if (!isDelete) {
-            throw new RuntimeException("파일 삭제에 실패했습니다.");
-        }
-        file.transferTo(new File(getFullPath(saveFileName)));
+        String s3Key = "image/banner/" + saveFileName;
+        InputStream inputStream = file.getInputStream();
+        amazonS3Client.putObject(bucket, s3Key, inputStream, metadata);
 
-        String contentType = file.getContentType();
-
-        banner.updateBanner(title, originalFileName, saveFileName, contentType);
+        banner.updateBanner(title, originalFileName, getFullPath(saveFileName));
 
         return convertToBannerDetailRes(banner);
     }
 
-    private boolean deleteFile(String fileName) {
-        File fileToDelete = new File(getFullPath(fileName));
-
-        if (fileToDelete.exists()) {
-            return fileToDelete.delete();
-        } else { return false; }
-    }
+    // private boolean deleteS3File(String fileName) {
+    //     try {
+    //         amazonS3Client.deleteObject(bucket, fileName);
+    //         return true;
+    //     } catch (AmazonServiceException e) {
+    //         // 삭제 실패
+    //         e.printStackTrace();
+    //         return false;
+    //     }
+    // }
 
     // 배너 삭제하기
     @Transactional
@@ -170,8 +185,7 @@ public class BannerService {
         Banner banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
-        // 서버에 올라가있는 파일 삭제
-        deleteFile(banner.getSaveFileName());
+    //     deleteS3File(banner.getSaveFileUrl());
 
         bannerRepository.delete(banner);
     }

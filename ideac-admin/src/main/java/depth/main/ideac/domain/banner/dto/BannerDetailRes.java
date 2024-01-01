@@ -16,9 +16,7 @@ public class BannerDetailRes {
 
     private String originalFileName;
 
-    private String saveFileName;
-
-    private String contentType;
+    private String saveFileUrl;
 
     private Type type;
 

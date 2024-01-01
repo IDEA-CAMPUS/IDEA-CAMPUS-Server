@@ -26,9 +26,7 @@ public class Banner extends BaseEntity {
     @NotBlank(message = "파일이 업로드되지 않았습니다.")
     private String fileName;
 
-    private String saveFileName;
-
-    private String contentType;
+    private String saveFileUrl;
 
     @Enumerated(EnumType.STRING)
     private Type type;
@@ -37,10 +35,9 @@ public class Banner extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateBanner(String title, String fileName, String saveFileName, String contentType) {
+    public void updateBanner(String title, String fileName, String saveFileUrl) {
         this.title = title;
         this.fileName = fileName;
-        this.saveFileName = saveFileName;
-        this.contentType = contentType;
+        this.saveFileUrl = saveFileUrl;
     }
 }

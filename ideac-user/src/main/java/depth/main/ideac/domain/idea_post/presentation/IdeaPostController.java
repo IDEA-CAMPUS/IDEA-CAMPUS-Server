@@ -34,7 +34,7 @@ public class IdeaPostController {
             @ApiResponse(responseCode = "201", description = "아이디어 등록 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 등록 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @PostMapping("/resister")
+    @PostMapping("")
     ResponseEntity<?> resisterIdea(@Parameter(description = "Access Token을 입력해주세요.", required = true)
                                    @CurrentUser UserPrincipal userPrincipal,
                                    @Valid @RequestBody ResisterIdeaReq resisterIdeaReq){
@@ -46,10 +46,18 @@ public class IdeaPostController {
             @ApiResponse(responseCode = "200", description = "아이디어 전체 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 전체 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllIdea(
-            @PageableDefault(page = 0, size = 3, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
-        return ideaPostService.getAllIdea(pageable);
+    // 만든시점으로 정렬
+    @GetMapping("/latest")
+    public ResponseEntity<?> getLatestAllIdea(
+            @PageableDefault(page = 0, size = 12, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ideaPostService.getLatestAllIdea(pageable);
+    }
+    //조회수로 정렬
+    @GetMapping("/views")
+    public ResponseEntity<?> getViewsAllIdea(
+            @PageableDefault(page = 0, size = 12, sort = "views", direction = Sort.Direction.ASC) Pageable pageable) {
+        //추후 조회수 로직 구현후 테스트 예정
+        return ideaPostService.getViewsAllIdea(pageable);
     }
 
     @Operation(summary = "글 상세 조회", description = "아이디어의 글을 상세 조회한다.")
@@ -57,7 +65,7 @@ public class IdeaPostController {
             @ApiResponse(responseCode = "200", description = "아이디어 상세 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 상세 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getDetailIdea(@PathVariable Long id) {
         return ideaPostService.getDetailIdea(id);
     }

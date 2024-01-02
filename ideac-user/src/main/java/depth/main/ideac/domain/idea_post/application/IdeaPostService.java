@@ -45,6 +45,7 @@ public class IdeaPostService {
         ResisterIdeaRes resisterIdeaRes = ResisterIdeaRes.builder()
                 .title(resisterIdeaReq.getTitle())
                 .simpleDescription(resisterIdeaReq.getSimpleDescription())
+                .keyWord(resisterIdeaReq.getKeyword())
                 .detailedDescription(resisterIdeaReq.getDetailedDescription())
                 .url1(resisterIdeaReq.getUrl1())
                 .url2(resisterIdeaReq.getUrl2())
@@ -63,10 +64,12 @@ public class IdeaPostService {
     public ResponseEntity<?> getDetailIdea(Long id) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
-        System.out.println("ideaPost.getTitle() = " + ideaPost.getTitle());
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
+                //이미지 추가
+                .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
                 .simpleDescription(ideaPost.getSimpleDescription())
+                .keyWord(ideaPost.getKeyword())
                 .detailedDescription(ideaPost.getDetailedDescription())
                 .url1(ideaPost.getUrl1())
                 .url2(ideaPost.getUrl2())
@@ -84,7 +87,12 @@ public class IdeaPostService {
     public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
-        ideaPost.updateIdea(updateIdeaReq);
+        ideaPost.setTitle(updateIdeaReq.getTitle());
+        ideaPost.setKeyword(updateIdeaReq.getKeyWord());
+        ideaPost.setSimpleDescription(updateIdeaReq.getSimpleDescription());
+        ideaPost.setDetailedDescription(updateIdeaReq.getDetailedDescription());
+        ideaPost.setUrl1(updateIdeaReq.getUrl1());
+        ideaPost.setUrl2(updateIdeaReq.getUrl2());
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
@@ -106,7 +114,24 @@ public class IdeaPostService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> getAllIdea(Pageable pageable) {
+    public ResponseEntity<?> getLatestAllIdea(Pageable pageable) {
+        Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
+        List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
+                .map(tmp -> new GetAllIdeasRes(
+                        tmp.getUser().getNickname(),
+                        tmp.getTitle(),
+                        tmp.getSimpleDescription(),
+                        tmp.getKeyword()))
+                .collect(Collectors.toList());
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(getAllIdeasRes)
+                .message("조회목록들이에요")
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+    public ResponseEntity<?> getViewsAllIdea(Pageable pageable) {
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
                 .map(tmp -> new GetAllIdeasRes(

@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/mail/**")
                         .permitAll()
-                        .anyRequest().hasAnyRole("ADMIN", "OWNER"));
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(customOncePerRequestFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

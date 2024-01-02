@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-core/ideac.ideac-core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-core/ideac.ideac-core.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac-user/ideac.ideac-user.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ideac.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ideac.main.iml" />
     </modules>
   </component>
 </project>

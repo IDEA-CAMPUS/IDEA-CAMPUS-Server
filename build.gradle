@@ -102,7 +102,7 @@ project(':ideac-user') {
 
     dependencies {
         // 컴파일시 core 모듈을 가져온다.
-        compileOnly project(':ideac-core')
+        implementation project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
     }
 
@@ -123,8 +123,9 @@ project(':ideac-admin') {
     }
 
     dependencies {
-        compileOnly project(':ideac-core')
+        implementation project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     }
 
     springBoot {

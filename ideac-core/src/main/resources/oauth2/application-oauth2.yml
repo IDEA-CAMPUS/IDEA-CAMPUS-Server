@@ -4,9 +4,9 @@ spring:
       client:
         registration:
           google:
-            client-id: 798378632047-ed8p02g2h8h8m4ekvrdqe0iijjdc0rlb.apps.googleusercontent.com](http://798378632047-ed8p02g2h8h8m4ekvrdqe0iijjdc0rlb.apps.googleusercontent.com/)
+            client-id: 798378632047-ed8p02g2h8h8m4ekvrdqe0iijjdc0rlb.apps.googleusercontent.com
             client-secret: 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
-#            redirect-uri: http://localhost:8080/oauth2/callback/google
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - profile
               - email

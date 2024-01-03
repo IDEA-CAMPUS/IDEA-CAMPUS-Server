@@ -60,5 +60,4 @@ public class AuthController {
 
         return authService.findId(findIdReq);
     }
-
 }

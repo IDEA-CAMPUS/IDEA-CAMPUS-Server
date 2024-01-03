@@ -98,6 +98,7 @@ public class SecurityConfig {
                 .redirectionEndpoint(redirection -> redirection
                         //callbackUri
                         .baseUri("/oauth2/callback/**"))
+//                        http://localhost:8080/login/oauth2/code/google
                 .userInfoEndpoint(userInfo -> userInfo
                         .userService(customOAuth2UserService))
                 .successHandler(oAuth2AuthenticationSuccessHandler)

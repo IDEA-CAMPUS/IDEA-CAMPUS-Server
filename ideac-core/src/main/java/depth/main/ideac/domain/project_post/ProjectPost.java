@@ -35,17 +35,17 @@ public class ProjectPost extends BaseEntity {
 
     private String githubUrl;
 
-    private String githubUrl1;
-
     private String webUrl;
 
     private String googlePlayUrl;
 
-    private boolean isWeb;
+    private boolean booleanWeb;
 
-    private boolean isApp;
+    private boolean booleanApp;
 
-    private boolean isData;
+    private boolean booleanAi;
+
+    private String team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

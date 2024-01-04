@@ -9,6 +9,7 @@ import depth.main.ideac.global.config.OAuth2UserInfo;
 import depth.main.ideac.global.config.OAuth2UserInfoFactory;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
     
     private final UserRepository userRepository;
@@ -47,6 +49,8 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            log.info("통과1");
+
         }
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
@@ -61,7 +65,6 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
 //                    .imageUrl(oAuth2UserInfo.getImageUrl())
                     .role(Role.USER)
                     .build();
-        
         return userRepository.save(user);
     }
 

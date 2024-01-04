@@ -97,8 +97,7 @@ public class SecurityConfig {
                             .authorizationRequestRepository(customAuthorizationRequestRepository))
                 .redirectionEndpoint(redirection -> redirection
                         //callbackUri
-                        .baseUri("/oauth2/callback/**"))
-//                        http://localhost:8080/haut/login/oauth2/code/google
+                        .baseUri("/oauth2/callback/google"))
                 .userInfoEndpoint(userInfo -> userInfo
                         .userService(customOAuth2UserService))
                 .successHandler(oAuth2AuthenticationSuccessHandler)

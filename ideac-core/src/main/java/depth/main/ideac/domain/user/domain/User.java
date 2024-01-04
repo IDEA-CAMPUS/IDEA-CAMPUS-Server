@@ -58,7 +58,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    private boolean isSocial;
+//    private boolean isSocial;
 
     @OneToMany(mappedBy = "user")
     private List<ProjectPost> projectPosts;

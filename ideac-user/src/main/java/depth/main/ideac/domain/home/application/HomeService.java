@@ -30,17 +30,13 @@ public class HomeService {
         List<IdeaPost> ideaPosts = ideaPostRepository.findTop3ByOrderByCreatedAtDesc();
 
         return ideaPosts.stream()
-                .map(this::convertToGetAllIdeasRes)
+                .map(ideaPost -> GetAllIdeasRes.builder()
+                        .title(ideaPost.getTitle())
+                        .simpleDescription(ideaPost.getSimpleDescription())
+                        .keyword(ideaPost.getKeyword())
+                        .nickName(ideaPost.getUser().getNickname())
+                        .build())
                 .collect(Collectors.toList());
-    }
-
-    private GetAllIdeasRes convertToGetAllIdeasRes(IdeaPost ideaPost) {
-        return GetAllIdeasRes.builder()
-                .title(ideaPost.getTitle())
-                .simpleDescription(ideaPost.getSimpleDescription())
-                .keyword(ideaPost.getKeyword())
-                .nickName(ideaPost.getUser().getNickname())
-                .build();
     }
 
     // 프로젝트
@@ -48,19 +44,15 @@ public class HomeService {
         List<ProjectPost> projectPosts = projectPostRepository.findTop3ByOrderByCreatedAtDesc();
 
         return projectPosts.stream()
-                .map(this::convertToProjectRes)
+                .map(projectPost -> ProjectRes.builder()
+                        .title(projectPost.getTitle())
+                        .simpleDescription(projectPost.getSimpleDescription())
+                        .team(projectPost.getTeam())
+                        .booleanWeb(projectPost.isBooleanWeb())
+                        .booleanApp(projectPost.isBooleanApp())
+                        .booleanAi(projectPost.isBooleanAi())
+                        .build())
                 .collect(Collectors.toList());
-    }
-
-    private ProjectRes convertToProjectRes(ProjectPost projectPost) {
-        return ProjectRes.builder()
-                .title(projectPost.getTitle())
-                .simpleDescription(projectPost.getSimpleDescription())
-                .team(projectPost.getTeam())
-                .booleanWeb(projectPost.isBooleanWeb())
-                .booleanApp(projectPost.isBooleanApp())
-                .booleanAi(projectPost.isBooleanAi())
-                .build();
     }
 
     // 동아리
@@ -68,16 +60,12 @@ public class HomeService {
         List<ClubPost> clubPosts = clubPostRepository.findTop3ByOrderByCreatedAtDesc();
 
         return clubPosts.stream()
-                .map(this::convertToClubPostRes)
+                .map(clubPost -> ClubPostRes.builder()
+                        .title(clubPost.getTitle())
+                        .description(clubPost.getDetailedDescription())
+                        .createdAt(clubPost.getCreatedAt())
+                        .nickname(clubPost.getUser().getNickname())
+                        .build())
                 .collect(Collectors.toList());
-    }
-
-    private ClubPostRes convertToClubPostRes(ClubPost clubPost) {
-        return ClubPostRes.builder()
-                .title(clubPost.getTitle())
-                .description(clubPost.getDetailedDescription())
-                .createdAt(clubPost.getCreatedAt())
-                .nickname(clubPost.getUser().getNickname())
-                .build();
     }
 }

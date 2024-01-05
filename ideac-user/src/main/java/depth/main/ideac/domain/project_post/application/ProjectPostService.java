@@ -2,6 +2,7 @@ package depth.main.ideac.domain.project_post.application;
 
 import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
+import depth.main.ideac.domain.project_post.dto.response.ProjectDetailRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
 import depth.main.ideac.domain.user.domain.User;
@@ -66,4 +67,22 @@ public class ProjectPostService {
 
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
+
+    public ProjectDetailRes getProjectDetail(Long projectId) {
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트 내용을 찾을 수 없습니다."));
+        return ProjectDetailRes.builder()
+                .title(projectPost.getTitle())
+                .simpleDescription(projectPost.getSimpleDescription())
+                .detailedDescription(projectPost.getDetailedDescription())
+                .teamInformation(projectPost.getTeamInformation())
+                .githubUrl(projectPost.getGithubUrl())
+                .webUrl(projectPost.getWebUrl())
+                .googlePlayUrl(projectPost.getGooglePlayUrl())
+                .booleanWeb(projectPost.isBooleanWeb())
+                .booleanApp(projectPost.isBooleanApp())
+                .booleanAi(projectPost.isBooleanAi())
+                .build();
+    }
+
 }

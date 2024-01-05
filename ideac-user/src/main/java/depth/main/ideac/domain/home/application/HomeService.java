@@ -48,6 +48,7 @@ public class HomeService {
                         .title(projectPost.getTitle())
                         .simpleDescription(projectPost.getSimpleDescription())
                         .team(projectPost.getTeam())
+                        // 이미지
                         .booleanWeb(projectPost.isBooleanWeb())
                         .booleanApp(projectPost.isBooleanApp())
                         .booleanAi(projectPost.isBooleanAi())
@@ -63,6 +64,7 @@ public class HomeService {
                 .map(clubPost -> ClubPostRes.builder()
                         .title(clubPost.getTitle())
                         .description(clubPost.getDetailedDescription())
+                        // 이미지
                         .createdAt(clubPost.getCreatedAt())
                         .nickname(clubPost.getUser().getNickname())
                         .build())

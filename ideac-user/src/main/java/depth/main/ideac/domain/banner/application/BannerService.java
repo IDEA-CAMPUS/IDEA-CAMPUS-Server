@@ -19,19 +19,13 @@ public class BannerService {
     private final BannerRepository bannerRepository;
 
     public List<BannerRes> getBanners(Type type) {
-        List<Banner> banners = bannerRepository.findAllByType(type);
+        List<Banner> banners = bannerRepository.findAllByTypeOrderByCreatedAtAsc(type);
 
         return banners.stream()
-                .map(this::convertToBannerRes)
+                .map(banner -> BannerRes.builder()
+                        .title(banner.getTitle())
+                        .saveFileUrl(banner.getSaveFileUrl())
+                        .build())
                 .collect(Collectors.toList());
-    }
-
-    private BannerRes convertToBannerRes(Banner banner) {
-        return BannerRes.builder()
-                .title(banner.getTitle())
-                .originalFileName(banner.getFileName())
-                .saveFileUrl(banner.getSaveFileUrl())
-                .createdAt(banner.getCreatedAt())
-                .build();
     }
 }

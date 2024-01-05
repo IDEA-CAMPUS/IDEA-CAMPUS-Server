@@ -71,6 +71,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/club", "/api/club/{id}")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/project", "/api/project/{project-id}")
+                        .permitAll()
                         .requestMatchers("/","/oauth2/**","/login/**", "/auth/**")
                         .permitAll()
                         .requestMatchers("/mail/**")

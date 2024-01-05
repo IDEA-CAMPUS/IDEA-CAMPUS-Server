@@ -32,9 +32,9 @@ public class BannerController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping
-    public ResponseEntity<?> viewBannersByType(@Parameter(description = "배너 타입: HOME, PROJECT, IDEA", schema = @Schema(allowableValues = {"HOME", "PROJECT", "IDEA"}))
+    public ResponseEntity<?> getBannersByType(@Parameter(description = "배너 타입: HOME, PROJECT, IDEA", schema = @Schema(allowableValues = {"HOME", "PROJECT", "IDEA"}))
                                                    @RequestParam String type) {
-        List<BannerRes> banners = bannerService.viewBanners(Type.fromString(type));
+        List<BannerRes> banners = bannerService.getBanners(Type.fromString(type));
 
         if (banners.isEmpty()) {
             return ResponseEntity.noContent().build();

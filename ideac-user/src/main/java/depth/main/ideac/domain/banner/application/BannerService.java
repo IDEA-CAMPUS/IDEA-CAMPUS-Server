@@ -19,7 +19,7 @@ public class BannerService {
     private final BannerRepository bannerRepository;
 
     // 배너
-    public List<BannerRes> viewBanners(Type type) {
+    public List<BannerRes> getBanners(Type type) {
         List<Banner> banners = bannerRepository.findAllByType(type);
 
         return banners.stream()

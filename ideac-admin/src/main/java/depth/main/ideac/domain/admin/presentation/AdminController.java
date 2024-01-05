@@ -31,9 +31,7 @@ public class AdminController {
 
     @Operation(summary = "사용자 전체 조회", description = "사용자를 전체 조회하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))
-            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping

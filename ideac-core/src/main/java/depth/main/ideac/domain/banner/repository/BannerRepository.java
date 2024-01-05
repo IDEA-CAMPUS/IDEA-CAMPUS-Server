@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BannerRepository extends JpaRepository<Banner, Long> {
     Page<Banner> findAllByTypeOrderByCreatedAtAsc(Type type, Pageable pageable);
@@ -15,4 +17,5 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
     @Query("SELECT b FROM Banner b WHERE b.type = :type AND LOWER(b.title) LIKE %:searchWord%")
     Page<Banner> findByTypeAndTitleContainingIgnoreCase(Type type, String searchWord, Pageable pageable);
 
+    List<Banner> findAllByTypeOrderByCreatedAtAsc(Type type);
 }

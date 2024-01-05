@@ -2,9 +2,11 @@ package depth.main.ideac.domain.idea_post.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class GetAllIdeasRes {
     private String title;

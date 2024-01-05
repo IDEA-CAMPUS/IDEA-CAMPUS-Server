@@ -65,4 +65,12 @@ public class ProjectPostController {
         projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "프로젝트 삭제", description = "프로젝트 게시글 한 건을 삭제하는 API입니다.")
+    @DeleteMapping("/{project-id}")
+    public ResponseEntity<?> deleteProject(@CurrentUser UserPrincipal userPrincipal,
+                                           @PathVariable("project-id") Long projectId) {
+        projectPostService.deleteProject(userPrincipal.getId(), projectId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -104,4 +104,17 @@ public class ProjectPostService {
         projectPost.setBooleanApp(updateProjectReq.isBooleanApp());
         projectPost.setBooleanAi(updateProjectReq.isBooleanAi());
     }
+
+    @Transactional
+    public void deleteProject(Long userId, Long projectId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+        if (user.getRole() != Role.ADMIN && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+            throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
+        }
+        projectPostRepository.deleteById(projectId);
+    }
+
+
 }

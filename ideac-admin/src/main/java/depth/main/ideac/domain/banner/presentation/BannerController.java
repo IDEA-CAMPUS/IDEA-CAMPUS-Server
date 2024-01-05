@@ -40,9 +40,7 @@ public class BannerController {
     // 배너 목록 보기
     @Operation(summary = "특정 타입의 배너 목록 조회", description = "특정 타입의 배너를 전체 조회하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))
-            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping
@@ -70,9 +68,7 @@ public class BannerController {
     // 배너 검색
     @Operation(summary = "특정 타입의 배너 검색", description = "특정 타입의 배너를 제목으로 검색하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))
-            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping("/search")
@@ -101,9 +97,7 @@ public class BannerController {
 
     // 배너 상세 조회
     @Operation(summary = "배너 상세 조회", description = "배너를 상세 조회하는 API입니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))
-    })
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))})
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetailBanner(@CurrentUser UserPrincipal userPrincipal,
                                              @PathVariable Long id) {
@@ -119,9 +113,7 @@ public class BannerController {
 
     // 배너 수정
     @Operation(summary = "배너 수정", description = "배너를 수정하는 API입니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))
-    })
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))})
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBanner(@CurrentUser UserPrincipal userPrincipal,
                                           @PathVariable Long id,
@@ -139,9 +131,7 @@ public class BannerController {
 
     // 배너 삭제
     @Operation(summary = "배너 삭제", description = "배너를 삭제하는 API입니다.")
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-    })
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))})
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBanner(@CurrentUser UserPrincipal userPrincipal,
                                           @PathVariable Long id) {
@@ -158,12 +148,8 @@ public class BannerController {
     // 배너 등록
     @Operation(summary = "배너 등록", description = "배너를 등록하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))
-            }),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Failed", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))
-            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = BannerDetailRes.class))}),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Failed", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))}),
     })
     @PostMapping
     public ResponseEntity<?> uploadBanner(@CurrentUser UserPrincipal userPrincipal,

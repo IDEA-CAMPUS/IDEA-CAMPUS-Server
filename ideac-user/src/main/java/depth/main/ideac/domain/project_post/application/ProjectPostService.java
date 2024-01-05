@@ -5,6 +5,7 @@ import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
 import depth.main.ideac.domain.project_post.dto.response.ProjectDetailRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
+import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
@@ -85,4 +86,22 @@ public class ProjectPostService {
                 .build();
     }
 
+    @Transactional
+    public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+        if (user.getRole() != Role.ADMIN && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+            throw new DefaultException(ErrorCode.UNAUTHORIZED, "수정 권한이 없습니다.");
+        }
+        projectPost.setTitle(updateProjectReq.getTitle());
+        projectPost.setSimpleDescription(updateProjectReq.getSimpleDescription());
+        projectPost.setDetailedDescription(updateProjectReq.getDetailedDescription());
+        projectPost.setTeamInformation(updateProjectReq.getTeamInformation());
+        projectPost.setGithubUrl(updateProjectReq.getGithubUrl());
+        projectPost.setWebUrl(updateProjectReq.getWebUrl());
+        projectPost.setBooleanWeb(updateProjectReq.isBooleanWeb());
+        projectPost.setBooleanApp(updateProjectReq.isBooleanApp());
+        projectPost.setBooleanAi(updateProjectReq.isBooleanAi());
+    }
 }

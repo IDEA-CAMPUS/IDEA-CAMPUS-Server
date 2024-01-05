@@ -26,11 +26,8 @@ public class BannerController {
 
     @Operation(summary = "특정 타입의 배너 노출", description = "특정 타입의 배너를 노출하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = BannerRes.class))
-            }),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
-    })
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = BannerRes.class)) }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content") })
     @GetMapping
     public ResponseEntity<?> getBannersByType(@Parameter(description = "배너 타입: HOME, PROJECT, IDEA", schema = @Schema(allowableValues = {"HOME", "PROJECT", "IDEA"}))
                                                    @RequestParam String type) {

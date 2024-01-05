@@ -6,6 +6,9 @@ import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.idea_post.IdeaPost;
 import depth.main.ideac.domain.idea_post.dto.GetAllIdeasRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
+import depth.main.ideac.domain.project_post.ProjectPost;
+import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
+import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ public class HomeService {
 
     private final ClubPostRepository clubPostRepository;
     private final IdeaPostRepository ideaPostRepository;
+    private final ProjectPostRepository projectPostRepository;
 
     // 아이디어
     public List<GetAllIdeasRes> getIdeas() {
@@ -38,7 +42,27 @@ public class HomeService {
                 .nickName(ideaPost.getUser().getNickname())
                 .build();
     }
+
     // 프로젝트
+    public List<ProjectRes> getProjects() {
+        List<ProjectPost> projectPosts = projectPostRepository.findTop3ByOrderByCreatedAtDesc();
+
+        return projectPosts.stream()
+                .map(this::convertToProjectRes)
+                .collect(Collectors.toList());
+    }
+
+    private ProjectRes convertToProjectRes(ProjectPost projectPost) {
+        return ProjectRes.builder()
+                .title(projectPost.getTitle())
+                .simpleDescription(projectPost.getSimpleDescription())
+                .team(projectPost.getTeam())
+                .booleanWeb(projectPost.isBooleanWeb())
+                .booleanApp(projectPost.isBooleanApp())
+                .booleanAi(projectPost.isBooleanAi())
+                .build();
+    }
+
     // 동아리
     public List<ClubPostRes> getClubs() {
         List<ClubPost> clubPosts = clubPostRepository.findTop3ByOrderByCreatedAtDesc();

@@ -18,7 +18,6 @@ public class BannerService {
 
     private final BannerRepository bannerRepository;
 
-    // 배너
     public List<BannerRes> getBanners(Type type) {
         List<Banner> banners = bannerRepository.findAllByType(type);
 

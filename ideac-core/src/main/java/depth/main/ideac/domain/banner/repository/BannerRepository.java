@@ -17,5 +17,5 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
     @Query("SELECT b FROM Banner b WHERE b.type = :type AND LOWER(b.title) LIKE %:searchWord%")
     Page<Banner> findByTypeAndTitleContainingIgnoreCase(Type type, String searchWord, Pageable pageable);
 
-    List<Banner> findAllByType(Type type);
+    List<Banner> findAllByTypeOrderByCreatedAtAsc(Type type);
 }

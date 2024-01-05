@@ -28,7 +28,7 @@ public class ProjectPostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void postProject(Long userId, PostProjectReq postProjectReq) {
+    public Long postProject(Long userId, PostProjectReq postProjectReq) {
         User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
         if (!postProjectReq.isBooleanWeb() && !postProjectReq.isBooleanApp() && !postProjectReq.isBooleanAi()) {
                 throw new DefaultException(ErrorCode.INVALID_PARAMETER, "키워드는 하나 이상 표시해야 합니다.");
@@ -50,6 +50,7 @@ public class ProjectPostService {
 //                .projectPostImages(postProjectReq.getProjectPostImages)
                 .build();
         projectPostRepository.save(projectPost);
+        return projectPost.getId();
     }
 
     public Page<ProjectRes> getAllProjects(Pageable pageable) {

@@ -15,6 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/project")
@@ -27,8 +30,12 @@ public class ProjectPostController {
     @PostMapping("")
     public ResponseEntity<?> postProject(@CurrentUser UserPrincipal userPrincipal,
                                          @Valid @RequestBody PostProjectReq postProjectReq) {
-        projectPostService.postProject(userPrincipal.getId(), postProjectReq);
-        return ResponseEntity.ok().build();
+        Long createdProjectId = projectPostService.postProject(userPrincipal.getId(), postProjectReq);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{project-id}")
+                .buildAndExpand(createdProjectId)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "프로젝트 전체 조회", description = "프로젝트 게시글을 {size}개 최신 순 조회하는 API입니다.")

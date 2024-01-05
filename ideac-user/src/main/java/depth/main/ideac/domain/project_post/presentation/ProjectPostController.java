@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/project-post")
+@RequestMapping("/api/project")
 @RequiredArgsConstructor
 public class ProjectPostController {
 

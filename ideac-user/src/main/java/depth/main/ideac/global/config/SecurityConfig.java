@@ -77,6 +77,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/mail/**")
                         .permitAll()
+                        .requestMatchers("/api/idea/detail/{id}","/api/idea/all")
+                        .permitAll()
                         .anyRequest()
                         .authenticated());
 

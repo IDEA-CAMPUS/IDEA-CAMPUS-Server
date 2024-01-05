@@ -2,14 +2,20 @@ package depth.main.ideac.domain.project_post.application;
 
 import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
+import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,5 +48,22 @@ public class ProjectPostService {
 //                .projectPostImages(postProjectReq.getProjectPostImages)
                 .build();
         projectPostRepository.save(projectPost);
+    }
+
+    public Page<ProjectRes> getAllProjects(Pageable pageable) {
+        Page<ProjectPost> projectPosts = projectPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        List<ProjectRes> projectResList = projectPosts.getContent()
+                .stream()
+                .map(projectPost -> ProjectRes.builder()
+                        .booleanWeb(projectPost.isBooleanWeb())
+                        .booleanApp(projectPost.isBooleanApp())
+                        .booleanAi(projectPost.isBooleanAi())
+                        .team(projectPost.getTeam())
+                        .title(projectPost.getTitle())
+                        .simpleDescription(projectPost.getSimpleDescription())
+                        .build())
+                .toList();
+
+        return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 }

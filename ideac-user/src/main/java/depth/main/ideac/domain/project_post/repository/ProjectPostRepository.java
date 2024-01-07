@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> {
-    Page<ProjectPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<ProjectPost> findAll(Pageable pageable);
+    Page<ProjectPost> findByBooleanWebAndBooleanAppAndBooleanAi(boolean booleanWeb, boolean booleanApp, boolean booleanAi, Pageable pageable);
     List<ProjectPost> findTop3ByOrderByCreatedAtDesc();
     List<ProjectPost> findAllByUserId(Long userId);
 }

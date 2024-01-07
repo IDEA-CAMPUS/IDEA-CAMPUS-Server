@@ -45,4 +45,14 @@ public class MyPageController {
         myPageService.updateUserInfo(userPrincipal.getId(), updateUserReq);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "내 게시물 조회", description = "프로젝트, 아이디어, 동아리학회 게시판의 모든 작성글을 최신순으로 조회하는 API입니다.")
+    @GetMapping("/posts")
+    public ResponseEntity<?> getAllMyPosts(@CurrentUser UserPrincipal userPrincipal){
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(myPageService.getAllMyPosts(userPrincipal.getId()))
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 }

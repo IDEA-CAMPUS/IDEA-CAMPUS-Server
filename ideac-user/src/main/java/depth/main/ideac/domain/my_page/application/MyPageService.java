@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.my_page.application;
 
+import depth.main.ideac.domain.my_page.dto.request.UpdateUserReq;
 import depth.main.ideac.domain.my_page.dto.response.UserRes;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
@@ -34,5 +35,16 @@ public class MyPageService {
                 .phoneNumber(user.getPhoneNumber())
                 .organization(user.getOrganization())
                 .build();
+    }
+    @Transactional
+    public void updateUserInfo(Long userId, UpdateUserReq updateUserReq) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        user.setName(updateUserReq.getName());
+        user.setNickname(updateUserReq.getNickname());
+        user.setEmail(updateUserReq.getEmail());
+        user.setPhoneNumber(updateUserReq.getPhoneNumber());
+        user.setOrganization(updateUserReq.getOrganization());
+        user.setColor(updateUserReq.getColor());
+        userRepository.save(user);
     }
 }

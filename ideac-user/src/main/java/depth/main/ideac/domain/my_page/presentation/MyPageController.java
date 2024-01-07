@@ -1,10 +1,12 @@
 package depth.main.ideac.domain.my_page.presentation;
 
 import depth.main.ideac.domain.my_page.application.MyPageService;
+import depth.main.ideac.domain.my_page.dto.request.UpdateUserReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +36,13 @@ public class MyPageController {
                 .information(myPageService.getMyPageUserInfo(userPrincipal.getId()))
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @Operation(summary = "회원정보 수정", description = "회원정보 수정 API입니다.")
+    @PutMapping("/user-info")
+    public ResponseEntity<?> updateUserInfo(@CurrentUser UserPrincipal userPrincipal,
+                                            @Valid @RequestBody UpdateUserReq updateUserReq){
+        myPageService.updateUserInfo(userPrincipal.getId(), updateUserReq);
+        return ResponseEntity.ok().build();
     }
 }

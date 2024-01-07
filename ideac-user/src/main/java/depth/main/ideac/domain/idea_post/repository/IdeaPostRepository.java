@@ -20,4 +20,6 @@ public interface IdeaPostRepository extends JpaRepository<IdeaPost, Long> {
     @Modifying
     @Query("UPDATE IdeaPost i SET i.hits = i.hits + :hits WHERE i.id = :id")
     void updateHits(@Param("id") Long id, @Param("hits") Long hits);
+
+    List<IdeaPost> findAllByUserId(Long userId);
 }

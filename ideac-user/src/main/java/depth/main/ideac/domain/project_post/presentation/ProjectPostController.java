@@ -2,6 +2,7 @@ package depth.main.ideac.domain.project_post.presentation;
 
 import depth.main.ideac.domain.project_post.application.ProjectPostService;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
+import depth.main.ideac.domain.project_post.dto.request.ProjectKeywordReq;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
@@ -57,9 +58,26 @@ public class ProjectPostController {
     @Operation(summary = "프로젝트 전체 조회", description = "프로젝트 게시글을 {size}개 조회수 순 조회하는 API입니다.")
     @GetMapping("/views")
     public ResponseEntity<?> getAllProjectsByHits(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "12") int size) {
+                                                  @RequestParam(defaultValue = "12") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("hits").descending());
         Page<ProjectRes> projectRes = projectPostService.getAllProjectsByHits(pageable);
+        if (projectRes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(projectRes)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @Operation(summary = "프로젝트 키워드별 조회", description = "프로젝트 게시글을 키워드에 따라 {size}개 최신 순 조회하는 API입니다.")
+    @GetMapping("/keyword")
+    public ResponseEntity<?> getProjectsByKeyword(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "12") int size,
+                                                  @RequestBody ProjectKeywordReq projectKeywordReq) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(pageable, projectKeywordReq);
         if (projectRes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -13,8 +13,8 @@ import java.util.List;
 
 @Repository
 public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> {
-    Page<ProjectPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
+    Page<ProjectPost> findAll(Pageable pageable);
+    Page<ProjectPost> findByBooleanWebAndBooleanAppAndBooleanAi(boolean booleanWeb, boolean booleanApp, boolean booleanAi, Pageable pageable);
     List<ProjectPost> findTop3ByOrderByCreatedAtDesc();
 
     // @Query("SELECT p.hits FROM ProjectPost p WHERE p.id = :id")
@@ -23,4 +23,5 @@ public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> 
     @Modifying
     @Query("UPDATE ProjectPost p SET p.hits = p.hits + :hits WHERE p.id = :id")
     void updateHits(@Param("id") Long id, @Param("hits") Long hits);
+    List<ProjectPost> findAllByUserId(Long userId);
 }

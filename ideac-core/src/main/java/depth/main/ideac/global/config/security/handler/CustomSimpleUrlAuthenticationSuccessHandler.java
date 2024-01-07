@@ -54,8 +54,8 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
 
         DefaultAssert.isAuthentication( !(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) );
 
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
+//        String targetUrl = redirectUri.orElse(getDefaultTargetUrl()); //
+        String targetUrl = redirectUri.orElse("/auth/test");
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
         Token token = Token.builder()
                             .userEmail(tokenMapping.getUserEmail())

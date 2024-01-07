@@ -2,6 +2,7 @@ package depth.main.ideac.domain.project_post.application;
 
 import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
+import depth.main.ideac.domain.project_post.dto.request.ProjectKeywordReq;
 import depth.main.ideac.domain.project_post.dto.response.ProjectDetailRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
@@ -54,7 +55,7 @@ public class ProjectPostService {
     }
 
     public Page<ProjectRes> getAllProjects(Pageable pageable) {
-        Page<ProjectPost> projectPosts = projectPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
                 .map(projectPost -> ProjectRes.builder()
@@ -70,6 +71,27 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
+    public Page<ProjectRes> getProjectsByKeyword(Pageable pageable, ProjectKeywordReq projectKeywordReq) {
+        boolean booleanWeb = projectKeywordReq.isBooleanWeb();
+        boolean booleanApp = projectKeywordReq.isBooleanApp();
+        boolean booleanAi = projectKeywordReq.isBooleanAi();
+
+        Page<ProjectPost> projectPosts = projectPostRepository
+                .findByBooleanWebAndBooleanAppAndBooleanAi(booleanWeb, booleanApp, booleanAi, pageable);
+        List<ProjectRes> projectResList = projectPosts.getContent()
+                .stream()
+                .map(projectPost -> ProjectRes.builder()
+                        .booleanWeb(projectPost.isBooleanWeb())
+                        .booleanApp(projectPost.isBooleanApp())
+                        .booleanAi(projectPost.isBooleanAi())
+                        .team(projectPost.getTeam())
+                        .title(projectPost.getTitle())
+                        .simpleDescription(projectPost.getSimpleDescription())
+                        .build())
+                .toList();
+
+        return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
+    }
     public ProjectDetailRes getProjectDetail(Long projectId) {
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트 내용을 찾을 수 없습니다."));

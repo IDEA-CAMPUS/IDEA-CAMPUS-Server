@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ClubPostRepository extends JpaRepository<ClubPost, Long> {
     Page<ClubPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
     List<ClubPost> findTop3ByOrderByCreatedAtDesc();
+    List<ClubPost> findAllByUserId(Long userId);
 }

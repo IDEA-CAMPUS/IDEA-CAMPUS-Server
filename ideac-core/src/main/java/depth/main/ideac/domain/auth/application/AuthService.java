@@ -52,6 +52,7 @@ public class AuthService {
                         .agreeMarketingSms(signUpRequest.isAgreeMarketingSms())
                         .role(Role.USER)
                         .status(Status.ACTIVE)
+                        .color("#FFCF4A")
                         .build();
 
         userRepository.save(user);

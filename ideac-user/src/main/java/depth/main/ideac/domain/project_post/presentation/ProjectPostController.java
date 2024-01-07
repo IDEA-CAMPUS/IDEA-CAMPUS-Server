@@ -54,6 +54,22 @@ public class ProjectPostController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @Operation(summary = "프로젝트 전체 조회", description = "프로젝트 게시글을 {size}개 조회수 순 조회하는 API입니다.")
+    @GetMapping("/views")
+    public ResponseEntity<?> getAllProjectsByHits(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "12") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        Page<ProjectRes> projectRes = projectPostService.getAllProjectsByHits(pageable);
+        if (projectRes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(projectRes)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @Operation(summary = "프로젝트 상세 조회", description = "프로젝트 게시글 한 건을 상세 조회하는 API입니다.")
     @GetMapping("/{project-id}")
     public ResponseEntity<?> getProjectDetail(@PathVariable("project-id") Long projectId) {

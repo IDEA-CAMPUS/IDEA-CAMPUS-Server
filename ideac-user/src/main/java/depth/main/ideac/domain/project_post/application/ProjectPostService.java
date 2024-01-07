@@ -78,6 +78,23 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
+    public Page<ProjectRes> getAllProjectsByHits(Pageable pageable) {
+        Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
+        List<ProjectRes> projectResList = projectPosts.getContent()
+                .stream()
+                .map(projectPost -> ProjectRes.builder()
+                        .booleanWeb(projectPost.isBooleanWeb())
+                        .booleanApp(projectPost.isBooleanApp())
+                        .booleanAi(projectPost.isBooleanAi())
+                        .team(projectPost.getTeam())
+                        .title(projectPost.getTitle())
+                        .simpleDescription(projectPost.getSimpleDescription())
+                        .build())
+                .toList();
+
+        return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
+    }
+
     public ProjectDetailRes getProjectDetail(Long projectId) {
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트 내용을 찾을 수 없습니다."));

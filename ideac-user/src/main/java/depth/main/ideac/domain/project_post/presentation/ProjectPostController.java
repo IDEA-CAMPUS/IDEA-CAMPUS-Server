@@ -2,6 +2,7 @@ package depth.main.ideac.domain.project_post.presentation;
 
 import depth.main.ideac.domain.project_post.application.ProjectPostService;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
+import depth.main.ideac.domain.project_post.dto.request.ProjectKeywordReq;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
@@ -53,7 +54,22 @@ public class ProjectPostController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
-
+    @Operation(summary = "프로젝트 키워드별 조회", description = "프로젝트 게시글을 키워드에 따라 {size}개 최신 순 조회하는 API입니다.")
+    @GetMapping("/keyword")
+    public ResponseEntity<?> getProjectsByKeyword(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "12") int size,
+                                                  @RequestBody ProjectKeywordReq projectKeywordReq) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(pageable, projectKeywordReq);
+        if (projectRes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(projectRes)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
     @Operation(summary = "프로젝트 상세 조회", description = "프로젝트 게시글 한 건을 상세 조회하는 API입니다.")
     @GetMapping("/{project-id}")
     public ResponseEntity<?> getProjectDetail(@PathVariable("project-id") Long projectId) {

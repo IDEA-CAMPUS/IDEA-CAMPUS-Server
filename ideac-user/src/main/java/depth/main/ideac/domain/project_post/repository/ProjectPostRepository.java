@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> {
-    Page<ProjectPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<ProjectPost> findAll(Pageable pageable);
+    Page<ProjectPost> findByBooleanWebAndBooleanAppAndBooleanAi(boolean booleanWeb, boolean booleanApp, boolean booleanAi, Pageable pageable);
 }

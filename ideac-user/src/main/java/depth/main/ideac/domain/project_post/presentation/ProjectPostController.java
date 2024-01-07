@@ -57,6 +57,7 @@ public class ProjectPostController {
     @Operation(summary = "프로젝트 상세 조회", description = "프로젝트 게시글 한 건을 상세 조회하는 API입니다.")
     @GetMapping("/{project-id}")
     public ResponseEntity<?> getProjectDetail(@PathVariable("project-id") Long projectId) {
+        projectPostService.addHitToRedis(projectId);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(projectPostService.getProjectDetail(projectId))

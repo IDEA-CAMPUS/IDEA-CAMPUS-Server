@@ -11,13 +11,20 @@ import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,6 +33,7 @@ public class ProjectPostService {
 
     private final ProjectPostRepository projectPostRepository;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public Long postProject(Long userId, PostProjectReq postProjectReq) {
@@ -45,8 +53,8 @@ public class ProjectPostService {
                 .booleanApp(postProjectReq.isBooleanApp())
                 .booleanAi(postProjectReq.isBooleanAi())
                 .team(user.getOrganization())
+                .hits(0L)
                 .user(user)
-//                .projectPostView(null)
 //                .projectPostImages(postProjectReq.getProjectPostImages)
                 .build();
         projectPostRepository.save(projectPost);
@@ -115,5 +123,33 @@ public class ProjectPostService {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
         projectPostRepository.deleteById(projectId);
+    }
+
+    @Transactional
+    public void addHitToRedis(Long id) {
+        String key = "projectPostHitCnt::" + id;
+        ValueOperations<String,String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(key);
+        if(value==null)
+            valueOperations.set(key, "1");
+        else {
+            Long incrementedValue = Long.parseLong(value) + 1L;
+            valueOperations.set(key, String.valueOf(incrementedValue));
+        }
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0/3 * * * ?")
+    public void deleteHitFromRedis() {
+        Set<String> keys = redisTemplate.keys("projectPostHitCnt*");
+        for (String data : keys) {
+            Long id = Long.parseLong(data.split("::")[1]);
+            Long hits = Long.parseLong(Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
+
+            projectPostRepository.updateHits(id, hits);
+            redisTemplate.delete(data);
+        }
+
+        System.out.println("projectPost hits update complete");
     }
 }

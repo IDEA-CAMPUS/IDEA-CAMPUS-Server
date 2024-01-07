@@ -41,7 +41,7 @@ public class IdeaPostController {
         return ideaPostService.resisterIdea(userPrincipal, resisterIdeaReq);
     }
 
-    @Operation(summary = "글 전체 조회", description = "아이디어의 글을 상세 조회한다.")
+    @Operation(summary = "글 최신순 정렬", description = "아이디어의 글을 최신순으로 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아이디어 전체 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 전체 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
@@ -49,15 +49,15 @@ public class IdeaPostController {
     // 만든시점으로 정렬
     @GetMapping("/latest")
     public ResponseEntity<?> getLatestAllIdea(
-            @PageableDefault(page = 0, size = 12, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ideaPostService.getLatestAllIdea(pageable);
     }
+
     //조회수로 정렬
     @GetMapping("/views")
     public ResponseEntity<?> getViewsAllIdea(
-            @PageableDefault(page = 0, size = 12, sort = "views", direction = Sort.Direction.ASC) Pageable pageable) {
-        //추후 조회수 로직 구현후 테스트 예정
-        return ideaPostService.getViewsAllIdea(pageable);
+            @PageableDefault(page = 0, size = 12, sort = "hits", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ideaPostService.getHitsAllIdea(pageable);
     }
 
     @Operation(summary = "글 상세 조회", description = "아이디어의 글을 상세 조회한다.")
@@ -67,6 +67,7 @@ public class IdeaPostController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<?> getDetailIdea(@PathVariable Long id) {
+        ideaPostService.addHitToRedis(id);
         return ideaPostService.getDetailIdea(id);
     }
 

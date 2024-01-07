@@ -43,12 +43,12 @@ public class ProjectPost extends BaseEntity {
 
     private String team;
 
+    private Long hits;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToOne(mappedBy = "projectPost", cascade = CascadeType.ALL)
-//    private ProjectPostView projectPostView;
 
 //    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.ALL)
 //    private List<ProjectPostImage> projectPostImages;

@@ -77,11 +77,11 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/project", "/api/project/{project-id}")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/idea/latest", "/api/idea/views","/api/idea/{id}")
+                        .permitAll()
                         .requestMatchers("/","/oauth2/**","/login/**", "/auth/**")
                         .permitAll()
                         .requestMatchers("/mail/**")
-                        .permitAll()
-                        .requestMatchers("/api/idea/detail/{id}","/api/idea/all")
                         .permitAll()
                         .anyRequest()
                         .authenticated());

@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ProjectPostRepository extends JpaRepository<ProjectPost, Long> {
     Page<ProjectPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
     List<ProjectPost> findTop3ByOrderByCreatedAtDesc();
+    List<ProjectPost> findAllByUserId(Long userId);
 }

@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface IdeaPostRepository extends JpaRepository<IdeaPost, Long> {
     List<IdeaPost> findTop3ByOrderByCreatedAtDesc();
+    List<IdeaPost> findAllByUserId(Long userId);
 }

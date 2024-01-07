@@ -79,13 +79,8 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
-    public Page<ProjectRes> getProjectsByKeyword(Pageable pageable, ProjectKeywordReq projectKeywordReq) {
-        boolean booleanWeb = projectKeywordReq.isBooleanWeb();
-        boolean booleanApp = projectKeywordReq.isBooleanApp();
-        boolean booleanAi = projectKeywordReq.isBooleanAi();
-
-        Page<ProjectPost> projectPosts = projectPostRepository
-                .findByBooleanWebAndBooleanAppAndBooleanAi(booleanWeb, booleanApp, booleanAi, pageable);
+    public Page<ProjectRes> getAllProjectsByHits(Pageable pageable) {
+        Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
                 .map(projectPost -> ProjectRes.builder()
@@ -101,8 +96,13 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
-    public Page<ProjectRes> getAllProjectsByHits(Pageable pageable) {
-        Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
+    public Page<ProjectRes> getProjectsByKeyword(Pageable pageable, ProjectKeywordReq projectKeywordReq) {
+        boolean booleanWeb = projectKeywordReq.isBooleanWeb();
+        boolean booleanApp = projectKeywordReq.isBooleanApp();
+        boolean booleanAi = projectKeywordReq.isBooleanAi();
+
+        Page<ProjectPost> projectPosts = projectPostRepository
+                .findByBooleanWebAndBooleanAppAndBooleanAi(booleanWeb, booleanApp, booleanAi, pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
                 .map(projectPost -> ProjectRes.builder()

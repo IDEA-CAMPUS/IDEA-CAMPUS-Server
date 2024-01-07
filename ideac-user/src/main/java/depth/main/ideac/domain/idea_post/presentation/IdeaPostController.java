@@ -46,8 +46,7 @@ public class IdeaPostController {
             @ApiResponse(responseCode = "200", description = "아이디어 전체 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 전체 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    // 만든시점으로 정렬
-    @GetMapping("/latest")
+    @GetMapping("")
     public ResponseEntity<?> getLatestAllIdea(
             @PageableDefault(page = 0, size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ideaPostService.getLatestAllIdea(pageable);

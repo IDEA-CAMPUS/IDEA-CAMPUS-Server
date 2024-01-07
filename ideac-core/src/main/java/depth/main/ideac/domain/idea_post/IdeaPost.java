@@ -5,10 +5,7 @@ import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
 import depth.main.ideac.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -16,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class IdeaPost extends BaseEntity {
 
     @Id
@@ -44,11 +42,11 @@ public class IdeaPost extends BaseEntity {
     @OneToOne(mappedBy = "ideaPost", cascade = CascadeType.ALL)
     private IdeaPostView ideaPostView;
 
-    public void updateIdea(UpdateIdeaReq updateIdeaReq) {
-        this.title = updateIdeaReq.getTitle();
-        this.simpleDescription = updateIdeaReq.getSimpleDescription();
-        this.detailedDescription = updateIdeaReq.getDetailedDescription();
-        this.url1 = updateIdeaReq.getUrl1();
-        this.url2 = updateIdeaReq.getUrl2();
-    }
+//    public void updateIdea(UpdateIdeaReq updateIdeaReq) {
+//        this.title = updateIdeaReq.getTitle();
+//        this.simpleDescription = updateIdeaReq.getSimpleDescription();
+//        this.detailedDescription = updateIdeaReq.getDetailedDescription();
+//        this.url1 = updateIdeaReq.getUrl1();
+//        this.url2 = updateIdeaReq.getUrl2();
+//    }
 }

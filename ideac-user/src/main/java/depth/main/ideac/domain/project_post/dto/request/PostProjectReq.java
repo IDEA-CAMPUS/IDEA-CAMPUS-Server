@@ -24,7 +24,4 @@ public class PostProjectReq {
     private boolean booleanApp;
     private boolean booleanAi;
 
-//    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.ALL)
-//    private List<ProjectPostImage> projectPostImages;
-
 }

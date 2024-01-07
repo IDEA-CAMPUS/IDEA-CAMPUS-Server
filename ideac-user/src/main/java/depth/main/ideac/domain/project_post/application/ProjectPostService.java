@@ -1,23 +1,29 @@
 package depth.main.ideac.domain.project_post.application;
 
 import depth.main.ideac.domain.project_post.ProjectPost;
+import depth.main.ideac.domain.project_post.ProjectPostImage;
 import depth.main.ideac.domain.project_post.dto.request.PostProjectReq;
 import depth.main.ideac.domain.project_post.dto.request.ProjectKeywordReq;
 import depth.main.ideac.domain.project_post.dto.response.ProjectDetailRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
+import depth.main.ideac.domain.project_post.repository.ProjectPostImageRepository;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
+import depth.main.ideac.global.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,14 +31,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectPostService {
 
+    private final FileService fileService;
     private final ProjectPostRepository projectPostRepository;
+    private final ProjectPostImageRepository projectPostImageRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public Long postProject(Long userId, PostProjectReq postProjectReq) {
+    public Long postProject(Long userId, PostProjectReq postProjectReq, List<MultipartFile> images) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
         if (!postProjectReq.isBooleanWeb() && !postProjectReq.isBooleanApp() && !postProjectReq.isBooleanAi()) {
-                throw new DefaultException(ErrorCode.INVALID_PARAMETER, "키워드는 하나 이상 표시해야 합니다.");
+            throw new DefaultException(ErrorCode.INVALID_PARAMETER, "키워드는 하나 이상 표시해야 합니다.");
         }
         ProjectPost projectPost = ProjectPost.builder()
                 .title(postProjectReq.getTitle())
@@ -47,9 +55,26 @@ public class ProjectPostService {
                 .booleanAi(postProjectReq.isBooleanAi())
                 .team(user.getOrganization())
                 .user(user)
-//                .projectPostView(null)
-//                .projectPostImages(postProjectReq.getProjectPostImages)
                 .build();
+
+        // 이미지 업로드 및 thumbnail 설정
+        List<ProjectPostImage> projectPostImages = new ArrayList<>();
+        boolean isFirstImage = true;
+
+        for (MultipartFile image : images) {
+            String imageUrl = fileService.uploadFile(image, getClass().getSimpleName());
+
+            // 첫 번째 이미지인 경우에만 thumbnail로 설정
+            boolean isThumbnail = isFirstImage;
+            isFirstImage = false;
+
+            projectPostImages.add(ProjectPostImage.builder()
+                    .imagePath(imageUrl)
+                    .isThumbnail(isThumbnail)
+                    .projectPost(projectPost)
+                    .build());
+        }
+        projectPostImageRepository.saveAll(projectPostImages);
         projectPostRepository.save(projectPost);
         return projectPost.getId();
     }

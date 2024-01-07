@@ -13,9 +13,7 @@ import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -62,7 +60,14 @@ public class ProjectPostService {
         return projectPost.getId();
     }
 
-    public Page<ProjectRes> getAllProjects(Pageable pageable) {
+    public Page<ProjectRes> getAllProjects(int page, int size, String sortBy) {
+        Pageable pageable;
+        if (sortBy.equals("hits")) {
+            pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        }
+
         Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
@@ -79,24 +84,14 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
-    public Page<ProjectRes> getAllProjectsByHits(Pageable pageable) {
-        Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
-        List<ProjectRes> projectResList = projectPosts.getContent()
-                .stream()
-                .map(projectPost -> ProjectRes.builder()
-                        .booleanWeb(projectPost.isBooleanWeb())
-                        .booleanApp(projectPost.isBooleanApp())
-                        .booleanAi(projectPost.isBooleanAi())
-                        .team(projectPost.getTeam())
-                        .title(projectPost.getTitle())
-                        .simpleDescription(projectPost.getSimpleDescription())
-                        .build())
-                .toList();
+    public Page<ProjectRes> getProjectsByKeyword(int page, int size, String sortBy, ProjectKeywordReq projectKeywordReq) {
+        Pageable pageable;
+        if (sortBy.equals("hits")) {
+            pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        }
 
-        return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
-    }
-
-    public Page<ProjectRes> getProjectsByKeyword(Pageable pageable, ProjectKeywordReq projectKeywordReq) {
         boolean booleanWeb = projectKeywordReq.isBooleanWeb();
         boolean booleanApp = projectKeywordReq.isBooleanApp();
         boolean booleanAi = projectKeywordReq.isBooleanAi();

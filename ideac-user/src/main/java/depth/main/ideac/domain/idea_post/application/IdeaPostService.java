@@ -12,7 +12,9 @@ import depth.main.ideac.global.payload.ApiResponse;
 import depth.main.ideac.global.payload.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
@@ -124,24 +126,13 @@ public class IdeaPostService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> getLatestAllIdea(Pageable pageable) {
-        Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
-        List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
-                .map(tmp -> new GetAllIdeasRes(
-                        tmp.getUser().getNickname(),
-                        tmp.getTitle(),
-                        tmp.getSimpleDescription(),
-                        tmp.getKeyword()))
-                .collect(Collectors.toList());
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(getAllIdeasRes)
-                .message("조회목록들이에요")
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-    public ResponseEntity<?> getHitsAllIdea(Pageable pageable) {
+    public ResponseEntity<?> getAllIdea(int page, int size, String sortBy) {
+        Pageable pageable;
+        if (sortBy.equals("hits")) {
+            pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        }
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
                 .map(tmp -> new GetAllIdeasRes(

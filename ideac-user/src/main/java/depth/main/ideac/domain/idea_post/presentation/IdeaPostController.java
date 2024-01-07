@@ -41,22 +41,17 @@ public class IdeaPostController {
         return ideaPostService.resisterIdea(userPrincipal, resisterIdeaReq);
     }
 
-    @Operation(summary = "글 최신순 정렬", description = "아이디어의 글을 최신순으로 조회한다.")
+    @Operation(summary = "글 전체 조회", description = "아이디어의 글을 정렬하여 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "아이디어 전체 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "아이디어 전체 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
-    @GetMapping("")
-    public ResponseEntity<?> getLatestAllIdea(
-            @PageableDefault(page = 0, size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ideaPostService.getLatestAllIdea(pageable);
-    }
-
-    //조회수로 정렬
-    @GetMapping("/views")
-    public ResponseEntity<?> getViewsAllIdea(
-            @PageableDefault(page = 0, size = 12, sort = "hits", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ideaPostService.getHitsAllIdea(pageable);
+    @GetMapping
+    public ResponseEntity<?> getLatestAllIdea(@Parameter(description = "정렬: createdAt, hits", schema = @Schema(allowableValues = {"createdAt", "hits"}))
+                                              @RequestParam(defaultValue = "createdAt") String sortBy,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "12") int size) {
+        return ideaPostService.getAllIdea(page, size, sortBy);
     }
 
     @Operation(summary = "글 상세 조회", description = "아이디어의 글을 상세 조회한다.")

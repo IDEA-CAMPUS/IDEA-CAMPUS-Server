@@ -25,4 +25,14 @@ public class MyPageController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+    @Operation(summary = "마이페이지 유저 정보", description = "마이페이지에 표기될 유저 정보를 조회하는 API입니다. 필요 정보를 필터링해 재사용 가능합니다.")
+    @GetMapping("/user-info")
+    ResponseEntity<?> getMyPageUserInfo(@CurrentUser UserPrincipal userPrincipal){
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(myPageService.getMyPageUserInfo(userPrincipal.getId()))
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 }

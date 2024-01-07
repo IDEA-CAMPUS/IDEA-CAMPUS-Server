@@ -24,4 +24,15 @@ public class MyPageService {
                 .color(user.getColor())
                 .build();
     }
+    public UserRes.MyPageInfoRes getMyPageUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        return UserRes.MyPageInfoRes.builder()
+                .color(user.getColor())
+                .name(user.getName())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .organization(user.getOrganization())
+                .build();
+    }
 }

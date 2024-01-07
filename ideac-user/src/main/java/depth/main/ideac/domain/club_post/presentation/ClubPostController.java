@@ -19,6 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "ClubPost API", description = "동아리/학회 관련 API입니다.")
 @RequiredArgsConstructor
@@ -65,8 +69,9 @@ public class ClubPostController {
     // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'OWNER')")
     @PostMapping
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
-                                            @Valid @RequestBody ClubPostReq clubPostReq) {
-        ClubPostDetailRes clubPostDetailRes = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq);
+                                            @Valid @RequestPart ClubPostReq clubPostReq,
+                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
+        ClubPostDetailRes clubPostDetailRes = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(clubPostDetailRes)

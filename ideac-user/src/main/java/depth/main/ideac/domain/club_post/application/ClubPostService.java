@@ -1,23 +1,30 @@
 package depth.main.ideac.domain.club_post.application;
 
 import depth.main.ideac.domain.club_post.ClubPost;
+import depth.main.ideac.domain.club_post.ClubPostImage;
 import depth.main.ideac.domain.club_post.dto.ClubPostReq;
 import depth.main.ideac.domain.club_post.dto.ClubPostRes;
+import depth.main.ideac.domain.club_post.repository.ClubPostImageRepository;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.club_post.dto.ClubPostDetailRes;
 import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
+import depth.main.ideac.domain.project_post.ProjectPostImage;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
+import depth.main.ideac.global.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +34,8 @@ public class ClubPostService {
 
     private final UserRepository userRepository;
     private final ClubPostRepository clubPostRepository;
+    private final ClubPostImageRepository clubPostImageRepository;
+    private final FileService fileService;
     
     // 전체 조회
     public Page<ClubPostRes> getAllClubPosts(Pageable pageable) {
@@ -64,7 +73,7 @@ public class ClubPostService {
     }
 
     @Transactional
-    public ClubPostDetailRes createClubPost(Long userId, ClubPostReq clubPostReq) {
+    public ClubPostDetailRes createClubPost(Long userId, ClubPostReq clubPostReq, List<MultipartFile> images) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
@@ -74,8 +83,26 @@ public class ClubPostService {
                 .url1(clubPostReq.getUrl1())
                 .url2(clubPostReq.getUrl2())
                 .user(user)
-                //.clubPostImages()
                 .build();
+
+        // 이미지 업로드 및 thumbnail 설정
+        List<ClubPostImage> clubPostImages = new ArrayList<>();
+        boolean isFirstImage = true;
+
+        for (MultipartFile image : images) {
+            String imageUrl = fileService.uploadFile(image, getClass().getSimpleName());
+
+            // 첫 번째 이미지인 경우에만 thumbnail로 설정
+            boolean isThumbnail = isFirstImage;
+            isFirstImage = false;
+
+            clubPostImages.add(ClubPostImage.builder()
+                    .imagePath(imageUrl)
+                    .isThumbnail(isThumbnail)
+                    .clubPost(clubPost)
+                    .build());
+        }
+        clubPostImageRepository.saveAll(clubPostImages);
         clubPostRepository.save(clubPost);
 
         return ClubPostDetailRes.builder()
@@ -85,7 +112,6 @@ public class ClubPostService {
                 .url2(clubPost.getUrl2())
                 .nickname(clubPost.getUser().getNickname())
                 .createdAt(clubPost.getCreatedAt())
-                // ImagePath 추후 추가
                 .build();
     }
 

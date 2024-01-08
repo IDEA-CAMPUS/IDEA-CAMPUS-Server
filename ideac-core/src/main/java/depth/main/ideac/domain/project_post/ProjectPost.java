@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -52,8 +54,7 @@ public class ProjectPost extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-//    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.ALL)
-//    private List<ProjectPostImage> projectPostImages;
+    @OneToMany(mappedBy = "projectPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectPostImage> projectPostImages;
 
 }

@@ -16,11 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/project")
@@ -30,10 +34,11 @@ public class ProjectPostController {
     private final ProjectPostService projectPostService;
 
     @Operation(summary = "프로젝트 게시", description = "프로젝트 게시글을 생성하는 API입니다.")
-    @PostMapping
+    @PostMapping(path= "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> postProject(@CurrentUser UserPrincipal userPrincipal,
-                                         @Valid @RequestBody PostProjectReq postProjectReq) {
-        Long createdProjectId = projectPostService.postProject(userPrincipal.getId(), postProjectReq);
+                                         @Valid @RequestPart PostProjectReq postProjectReq,
+                                         @RequestPart("images") List<MultipartFile> images) throws IOException {
+        Long createdProjectId = projectPostService.postProject(userPrincipal.getId(), postProjectReq, images);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{project-id}")
                 .buildAndExpand(createdProjectId)
@@ -94,8 +99,9 @@ public class ProjectPostController {
     @PutMapping("/{project-id}")
     public ResponseEntity<?> updateProject(@CurrentUser UserPrincipal userPrincipal,
                                            @PathVariable("project-id") Long projectId,
-                                           @Valid @RequestBody PostProjectReq updateProjectReq) {
-        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq);
+                                           @Valid @RequestPart PostProjectReq updateProjectReq,
+                                           @RequestPart("images") List<MultipartFile> images) throws IOException {
+        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq, images);
         return ResponseEntity.ok().build();
     }
 

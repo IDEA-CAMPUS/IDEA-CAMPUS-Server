@@ -1,7 +1,7 @@
 package depth.main.ideac.domain.idea_post.presentation;
 
 import depth.main.ideac.domain.idea_post.application.IdeaPostService;
-import depth.main.ideac.domain.idea_post.dto.ResisterIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.RegisterIdeaReq;
 import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
@@ -15,12 +15,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,10 +35,16 @@ public class IdeaPostController {
             @ApiResponse(responseCode = "400", description = "아이디어 등록 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("")
-    ResponseEntity<?> resisterIdea(@Parameter(description = "Access Token을 입력해주세요.", required = true)
+    ResponseEntity<?> registerIdea(@Parameter(description = "Access Token을 입력해주세요.", required = true)
                                    @CurrentUser UserPrincipal userPrincipal,
-                                   @Valid @RequestBody ResisterIdeaReq resisterIdeaReq){
-        return ideaPostService.resisterIdea(userPrincipal, resisterIdeaReq);
+                                   @Valid @RequestBody RegisterIdeaReq registerIdeaReq){
+
+        Long id = ideaPostService.registerIdea(userPrincipal, registerIdeaReq);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "글 전체 조회", description = "아이디어의 글을 정렬하여 조회한다.")

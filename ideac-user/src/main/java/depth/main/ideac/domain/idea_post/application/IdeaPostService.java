@@ -22,7 +22,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -39,37 +38,22 @@ public class IdeaPostService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public ResponseEntity<?> resisterIdea(UserPrincipal userPrincipal, ResisterIdeaReq resisterIdeaReq){
+    public Long registerIdea(UserPrincipal userPrincipal, RegisterIdeaReq registerIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
         IdeaPost ideapost = IdeaPost.builder()
-                .title(resisterIdeaReq.getTitle())
-                .keyword(resisterIdeaReq.getKeyword())
-                .simpleDescription(resisterIdeaReq.getSimpleDescription())
-                .detailedDescription(resisterIdeaReq.getDetailedDescription())
-                .url1(resisterIdeaReq.getUrl1())
-                .url2(resisterIdeaReq.getUrl2())
+                .title(registerIdeaReq.getTitle())
+                .keyword(registerIdeaReq.getKeyword())
+                .simpleDescription(registerIdeaReq.getSimpleDescription())
+                .detailedDescription(registerIdeaReq.getDetailedDescription())
+                .url1(registerIdeaReq.getUrl1())
+                .url2(registerIdeaReq.getUrl2())
                 .hits(0L)
                 .user(user)
                 .build();
 
         ideaPostRepository.save(ideapost);
 
-        ResisterIdeaRes resisterIdeaRes = ResisterIdeaRes.builder()
-                .title(resisterIdeaReq.getTitle())
-                .simpleDescription(resisterIdeaReq.getSimpleDescription())
-                .keyWord(resisterIdeaReq.getKeyword())
-                .detailedDescription(resisterIdeaReq.getDetailedDescription())
-                .url1(resisterIdeaReq.getUrl1())
-                .url2(resisterIdeaReq.getUrl2())
-                .build();
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(resisterIdeaRes)
-                .message("아이디어를 만들었어요!")
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+        return ideapost.getId();
     }
 
     @Transactional
@@ -77,7 +61,7 @@ public class IdeaPostService {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
-                //이미지 추가
+                .color(ideaPost.getUser().getColor())
                 .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
                 .simpleDescription(ideaPost.getSimpleDescription())
@@ -137,6 +121,7 @@ public class IdeaPostService {
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
                 .map(tmp -> new GetAllIdeasRes(
+                        tmp.getUser().getColor(),
                         tmp.getUser().getNickname(),
                         tmp.getTitle(),
                         tmp.getSimpleDescription(),

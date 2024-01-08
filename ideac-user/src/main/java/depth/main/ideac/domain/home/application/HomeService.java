@@ -1,12 +1,14 @@
 package depth.main.ideac.domain.home.application;
 
 import depth.main.ideac.domain.club_post.ClubPost;
+import depth.main.ideac.domain.club_post.ClubPostImage;
 import depth.main.ideac.domain.club_post.dto.ClubPostRes;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.idea_post.IdeaPost;
 import depth.main.ideac.domain.idea_post.dto.GetAllIdeasRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.project_post.ProjectPost;
+import depth.main.ideac.domain.project_post.ProjectPostImage;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.domain.project_post.repository.ProjectPostRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class HomeService {
                         .title(ideaPost.getTitle())
                         .simpleDescription(ideaPost.getSimpleDescription())
                         .keyword(ideaPost.getKeyword())
+                        .color(ideaPost.getUser().getColor())
                         .nickName(ideaPost.getUser().getNickname())
                         .build())
                 .collect(Collectors.toList());
@@ -44,15 +47,22 @@ public class HomeService {
         List<ProjectPost> projectPosts = projectPostRepository.findTop3ByOrderByCreatedAtDesc();
 
         return projectPosts.stream()
-                .map(projectPost -> ProjectRes.builder()
-                        .title(projectPost.getTitle())
-                        .simpleDescription(projectPost.getSimpleDescription())
-                        .team(projectPost.getTeam())
-                        // 이미지
-                        .booleanWeb(projectPost.isBooleanWeb())
-                        .booleanApp(projectPost.isBooleanApp())
-                        .booleanAi(projectPost.isBooleanAi())
-                        .build())
+                .map(projectPost -> {
+                    String thumbnail = projectPost.getProjectPostImages().stream()
+                            .filter(ProjectPostImage::isThumbnail)
+                            .findFirst()
+                            .map(ProjectPostImage::getImagePath)
+                            .orElse(null);
+                    return ProjectRes.builder()
+                            .booleanWeb(projectPost.isBooleanWeb())
+                            .booleanApp(projectPost.isBooleanApp())
+                            .booleanAi(projectPost.isBooleanAi())
+                            .team(projectPost.getTeam())
+                            .title(projectPost.getTitle())
+                            .simpleDescription(projectPost.getSimpleDescription())
+                            .thumbnail(thumbnail)
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +74,10 @@ public class HomeService {
                 .map(clubPost -> ClubPostRes.builder()
                         .title(clubPost.getTitle())
                         .description(clubPost.getDetailedDescription())
-                        // 이미지
+                        .thumbnail(clubPost.getClubPostImages().stream()
+                                .filter(ClubPostImage::isThumbnail)
+                                .findFirst()
+                                .map(ClubPostImage::getImagePath).orElse(null))
                         .createdAt(clubPost.getCreatedAt())
                         .nickname(clubPost.getUser().getNickname())
                         .build())

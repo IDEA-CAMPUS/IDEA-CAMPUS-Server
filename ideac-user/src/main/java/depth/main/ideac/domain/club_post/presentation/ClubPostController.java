@@ -19,6 +19,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 
 @Tag(name = "ClubPost API", description = "동아리/학회 관련 API입니다.")
 @RequiredArgsConstructor
@@ -65,27 +71,29 @@ public class ClubPostController {
     // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'OWNER')")
     @PostMapping
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
-                                            @Valid @RequestBody ClubPostReq clubPostReq) {
-        ClubPostDetailRes clubPostDetailRes = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(clubPostDetailRes)
-                .build();
-        return ResponseEntity.ok(apiResponse);
+                                            @Valid @RequestPart ClubPostReq clubPostReq,
+                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
+        Long clubPostId = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(clubPostId)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     // 글 수정하기
     @Operation(summary = "글 수정", description = "동아리/학회 글을 수정하는 API입니다.")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
-                                            @Valid @RequestBody UpdateClubPostReq updateClubPostReq) {
+                                            @Valid @RequestPart UpdateClubPostReq updateClubPostReq,
+                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
 
         checkPermission(id, userPrincipal.getId());
 
-        ClubPostDetailRes clubPostDetailRes = clubPostService.updateClubPost(id, updateClubPostReq);
+        clubPostService.updateClubPost(id, updateClubPostReq, images);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(clubPostDetailRes)
+                .information("글이 수정되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

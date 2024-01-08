@@ -46,7 +46,7 @@ public class BannerService {
     public BannerDetailRes uploadBanner(MultipartFile file, String title, Type type, Long userId) throws IOException {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         // s3에 파일 저장 & DB에 파일 정보 저장
         // - 동일 파일명을 피하기 위해 random값 사용
@@ -134,7 +134,7 @@ public class BannerService {
     // 배너 상세 조회
     public BannerDetailRes getDetailBanner(Long id) {
         Banner banner = bannerRepository.findById(id)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
 
         return convertToBannerDetailRes(banner);
     }
@@ -143,14 +143,14 @@ public class BannerService {
     @Transactional
     public BannerDetailRes updateBanner(MultipartFile file, String title, Long bannerId) throws IOException {
         Banner banner = bannerRepository.findById(bannerId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
 
         // s3에 올라가있는 파일 삭제
-        // boolean isDelete = deleteS3File(banner.getSaveFileUrl());
+        boolean isDelete = deleteS3File(banner.getSaveFileUrl());
 
-        // if (!isDelete) {
-        //     throw new RuntimeException("파일 삭제에 실패했습니다.");
-        // }
+        if (!isDelete) {
+             throw new RuntimeException("파일 삭제에 실패했습니다.");
+        }
 
         String originalFileName = file.getOriginalFilename();
         String saveFileName = createSaveFileName(originalFileName);
@@ -168,16 +168,16 @@ public class BannerService {
         return convertToBannerDetailRes(banner);
     }
 
-    // private boolean deleteS3File(String fileName) {
-    //     try {
-    //         amazonS3Client.deleteObject(bucket, fileName);
-    //         return true;
-    //     } catch (AmazonServiceException e) {
-    //         // 삭제 실패
-    //         e.printStackTrace();
-    //         return false;
-    //     }
-    // }
+    private boolean deleteS3File(String fileName) {
+         try {
+             amazonS3Client.deleteObject(bucket, fileName);
+             return true;
+         } catch (AmazonServiceException e) {
+             // 삭제 실패
+             e.printStackTrace();
+             return false;
+         }
+    }
 
     // 배너 삭제하기
     @Transactional
@@ -185,7 +185,7 @@ public class BannerService {
         Banner banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
-    //     deleteS3File(banner.getSaveFileUrl());
+        deleteS3File(banner.getSaveFileUrl());
 
         bannerRepository.delete(banner);
     }

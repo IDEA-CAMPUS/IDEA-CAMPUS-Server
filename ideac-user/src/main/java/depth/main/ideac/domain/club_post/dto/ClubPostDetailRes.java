@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,6 +22,7 @@ public class ClubPostDetailRes {
 
     private String nickname;
 
-    // 이미지 path는 추후 추가
-    // private List<ClubPostImage> clubPostImages;
+    private String thumbnail;
+
+    private List<String> otherImages;
 }

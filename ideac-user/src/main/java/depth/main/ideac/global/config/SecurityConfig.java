@@ -1,6 +1,9 @@
 package depth.main.ideac.global.config;
 
+import depth.main.ideac.domain.auth.application.CustomDefaultOAuth2UserService;
 import depth.main.ideac.domain.auth.application.CustomUserDetailsService;
+import depth.main.ideac.global.config.security.handler.CustomSimpleUrlAuthenticationFailureHandler;
+import depth.main.ideac.global.config.security.handler.CustomSimpleUrlAuthenticationSuccessHandler;
 import depth.main.ideac.global.config.security.token.CustomAuthenticationEntryPoint;
 import depth.main.ideac.global.config.security.token.CustomOncePerRequestFilter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import depth.main.ideac.domain.auth.domain.repository.CustomAuthorizationRequestRepository;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -29,6 +33,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomDefaultOAuth2UserService customOAuth2UserService;
+    private final CustomSimpleUrlAuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomSimpleUrlAuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final CustomAuthorizationRequestRepository customAuthorizationRequestRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -65,7 +73,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET,"/api/club", "/api/club/{id}")
+                        .permitAll()
                         .requestMatchers( "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
+                        .permitAll()
+                        .requestMatchers("/","/login/**","/auth/**", "/oauth2/**")
                         .permitAll()
                         .requestMatchers("/error")
                         .permitAll()
@@ -84,7 +96,18 @@ public class SecurityConfig {
                         .requestMatchers("/mail/**")
                         .permitAll()
                         .anyRequest()
-                        .authenticated());
+                        .authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                    .authorizationEndpoint(authorization -> authorization
+                            .baseUri("/oauth2/authorize")
+                            .authorizationRequestRepository(customAuthorizationRequestRepository))
+                .redirectionEndpoint(redirection -> redirection
+                        //callbackUri
+                        .baseUri("/oauth2/callback/google"))
+                .userInfoEndpoint(userInfo -> userInfo
+                        .userService(customOAuth2UserService))
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler));
 
         http.addFilterBefore(customOncePerRequestFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

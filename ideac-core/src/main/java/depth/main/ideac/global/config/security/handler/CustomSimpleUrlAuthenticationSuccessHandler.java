@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import static depth.main.ideac.domain.auth.domain.repository.CustomAuthorization
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 
     private final CustomTokenProviderService customTokenProviderService;
@@ -38,7 +40,7 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
         DefaultAssert.isAuthentication(!response.isCommitted());
 
         String targetUrl = determineTargetUrl(request, response, authentication);
-
+        log.info(targetUrl);
         TokenMapping token = customTokenProviderService.createToken(authentication);
         CustomCookie.addCookie(response, "Authorization", "Bearer_" + token.getAccessToken(), (int) oAuth2Config.getAuth().getAccessTokenExpirationMsec());
         CustomCookie.addCookie(response, "Refresh_Token", "Bearer_" + token.getRefreshToken(), (int) oAuth2Config.getAuth().getRefreshTokenExpirationMsec());
@@ -52,8 +54,10 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
 
         DefaultAssert.isAuthentication( !(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) );
 
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
+//        String targetUrl = redirectUri.orElse(getDefaultTargetUrl()); //
+        String targetUrl = redirectUri.orElse("/auth/sign-up");    //회원가입창으로 리다이렉트
+        log.info(targetUrl);
+        System.out.println("targetUrl = " + targetUrl);
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
         Token token = Token.builder()
                             .userEmail(tokenMapping.getUserEmail())

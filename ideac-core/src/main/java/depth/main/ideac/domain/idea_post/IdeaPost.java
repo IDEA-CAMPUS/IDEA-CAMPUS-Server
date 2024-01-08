@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.idea_post;
 
 import depth.main.ideac.domain.common.BaseEntity;
-import depth.main.ideac.domain.idea_post.dto.UpdateIdeaReq;
 import depth.main.ideac.domain.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

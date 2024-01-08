@@ -25,7 +25,7 @@ public class CustomSimpleUrlAuthenticationFailureHandler extends SimpleUrlAuthen
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String targetUrl = CustomCookie.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .orElse(("/auth/test"));    //이 주소는 추후 프론트와 협의 후 리다이렉트 주소 수정할 예정
+                .orElse(("/auth/sign-in"));    //실패시 로그인창으로 다시 리다이렉트
 
 
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)

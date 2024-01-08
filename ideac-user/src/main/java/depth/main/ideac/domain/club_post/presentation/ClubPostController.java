@@ -71,10 +71,10 @@ public class ClubPostController {
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
                                             @Valid @RequestPart ClubPostReq clubPostReq,
                                             @RequestPart("images") List<MultipartFile> images) throws IOException {
-        ClubPostDetailRes clubPostDetailRes = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
+        Long clubPostId = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(clubPostDetailRes)
+                .information(clubPostId)
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -88,10 +88,10 @@ public class ClubPostController {
 
         checkPermission(id, userPrincipal.getId());
 
-        ClubPostDetailRes clubPostDetailRes = clubPostService.updateClubPost(id, updateClubPostReq, images);
+        clubPostService.updateClubPost(id, updateClubPostReq, images);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(clubPostDetailRes)
+                .information("글이 수정되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

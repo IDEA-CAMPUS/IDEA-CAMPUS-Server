@@ -43,7 +43,12 @@ public class ClubPostService {
         Page<ClubPost> posts = clubPostRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         List<ClubPostRes> clubPostResList = posts.getContent().stream()
-                .map(this::convertToClubPostRes)
+                .map(clubPost -> ClubPostRes.builder()
+                        .title(clubPost.getTitle())
+                        .description(clubPost.getDetailedDescription())
+                        .createdAt(clubPost.getCreatedAt())
+                        .nickname(clubPost.getUser().getNickname())
+                        .build())
                 .collect(Collectors.toList());
 
         return new PageImpl<>(clubPostResList, pageable, posts.getTotalElements());
@@ -66,6 +71,7 @@ public class ClubPostService {
     public ClubPostDetailRes getDetailClubPosts(Long clubId) {
         ClubPost clubPost = clubPostRepository.findById(clubId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+
         String thumbnailPath = clubPost.getClubPostImages().stream()
                 .filter(ClubPostImage::isThumbnail)
                 .findFirst()
@@ -75,6 +81,7 @@ public class ClubPostService {
                 .filter(image -> !image.isThumbnail())
                 .map(ClubPostImage::getImagePath)
                 .toList();
+
         return ClubPostDetailRes.builder()
                 .title(clubPost.getTitle())
                 .description(clubPost.getDetailedDescription())
@@ -125,7 +132,7 @@ public class ClubPostService {
         clubPost.setDetailedDescription(updateClubPostReq.getDescription());
         clubPost.setUrl1(updateClubPostReq.getUrl1());
         clubPost.setUrl2(updateClubPostReq.getUrl2());
-        // 이미지 추가 필요
+        
         this.deleteFile(clubPostId);
         this.uploadFile(clubPost, images);
         return ClubPostDetailRes.builder()
@@ -135,9 +142,7 @@ public class ClubPostService {
                 .url2(clubPost.getUrl2())
                 .nickname(clubPost.getUser().getNickname())
                 .createdAt(clubPost.getCreatedAt())
-                // ImagePath 추후 추가
                 .build();
-
     }
 
     // 글 삭제

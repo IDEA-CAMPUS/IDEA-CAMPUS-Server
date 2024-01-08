@@ -15,9 +15,11 @@ import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.global.service.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,6 +39,7 @@ public class ProjectPostService {
     private final ProjectPostRepository projectPostRepository;
     private final ProjectPostImageRepository projectPostImageRepository;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public Long postProject(Long userId, PostProjectReq postProjectReq, List<MultipartFile> images) throws IOException {
@@ -54,6 +59,7 @@ public class ProjectPostService {
                 .booleanApp(postProjectReq.isBooleanApp())
                 .booleanAi(postProjectReq.isBooleanAi())
                 .team(user.getOrganization())
+                .hits(0L)
                 .user(user)
                 .build();
         this.uploadFile(projectPost, images);
@@ -61,7 +67,14 @@ public class ProjectPostService {
         return projectPost.getId();
     }
 
-    public Page<ProjectRes> getAllProjects(Pageable pageable) {
+    public Page<ProjectRes> getAllProjects(int page, int size, String sortBy) {
+        Pageable pageable;
+        if (sortBy.equals("hits")) {
+            pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        }
+
         Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
@@ -85,7 +98,14 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
-    public Page<ProjectRes> getProjectsByKeyword(Pageable pageable, ProjectKeywordReq projectKeywordReq) {
+    public Page<ProjectRes> getProjectsByKeyword(int page, int size, String sortBy, ProjectKeywordReq projectKeywordReq) {
+        Pageable pageable;
+        if (sortBy.equals("hits")) {
+            pageable = PageRequest.of(page, size, Sort.by("hits").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        }
+
         boolean booleanWeb = projectKeywordReq.isBooleanWeb();
         boolean booleanApp = projectKeywordReq.isBooleanApp();
         boolean booleanAi = projectKeywordReq.isBooleanAi();
@@ -113,6 +133,7 @@ public class ProjectPostService {
                 .toList();
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
+
     public ProjectDetailRes getProjectDetail(Long projectId) {
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트 내용을 찾을 수 없습니다."));
@@ -133,6 +154,7 @@ public class ProjectPostService {
                 .githubUrl(projectPost.getGithubUrl())
                 .webUrl(projectPost.getWebUrl())
                 .googlePlayUrl(projectPost.getGooglePlayUrl())
+                .hits(projectPost.getHits())
                 .booleanWeb(projectPost.isBooleanWeb())
                 .booleanApp(projectPost.isBooleanApp())
                 .booleanAi(projectPost.isBooleanAi())
@@ -205,5 +227,32 @@ public class ProjectPostService {
             fileService.deleteFile(image.getS3key()); //s3 삭제
             projectPostImageRepository.deleteById(image.getId()); //엔티티 삭제
         }
+
+    @Transactional
+    public void addHitToRedis(Long id) {
+        String key = "projectPostHitCnt::" + id;
+        ValueOperations<String,String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(key);
+        if(value==null)
+            valueOperations.set(key, "1");
+        else {
+            Long incrementedValue = Long.parseLong(value) + 1L;
+            valueOperations.set(key, String.valueOf(incrementedValue));
+        }
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0/3 * * * ?")
+    public void deleteHitFromRedis() {
+        Set<String> keys = redisTemplate.keys("projectPostHitCnt*");
+        for (String data : keys) {
+            Long id = Long.parseLong(data.split("::")[1]);
+            Long hits = Long.parseLong(Objects.requireNonNull(redisTemplate.opsForValue().get(data)));
+
+            projectPostRepository.updateHits(id, hits);
+            redisTemplate.delete(data);
+        }
+
+        System.out.println("projectPost hits update complete");
     }
 }

@@ -24,6 +24,7 @@ public class ProjectDetailRes {
     private String githubUrl;
     private String webUrl;
     private String googlePlayUrl;
+    private Long hits;
     private boolean booleanWeb;
     private boolean booleanApp;
     private boolean booleanAi;

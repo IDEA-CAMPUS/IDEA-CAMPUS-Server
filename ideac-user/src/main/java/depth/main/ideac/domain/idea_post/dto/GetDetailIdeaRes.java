@@ -14,4 +14,5 @@ public class GetDetailIdeaRes {
     private String detailedDescription;
     private String url1;
     private String url2;
+    private Long hits;
 }

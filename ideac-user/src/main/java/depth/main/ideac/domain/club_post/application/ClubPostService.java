@@ -8,6 +8,7 @@ import depth.main.ideac.domain.club_post.repository.ClubPostImageRepository;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.club_post.dto.ClubPostDetailRes;
 import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
+import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.ProjectPostImage;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
@@ -85,24 +86,8 @@ public class ClubPostService {
                 .user(user)
                 .build();
 
-        // 이미지 업로드 및 thumbnail 설정
-        List<ClubPostImage> clubPostImages = new ArrayList<>();
-        boolean isFirstImage = true;
+        this.uploadFile(clubPost, images);
 
-        for (MultipartFile image : images) {
-            String imageUrl = fileService.uploadFile(image, getClass().getSimpleName());
-
-            // 첫 번째 이미지인 경우에만 thumbnail로 설정
-            boolean isThumbnail = isFirstImage;
-            isFirstImage = false;
-
-            clubPostImages.add(ClubPostImage.builder()
-                    .imagePath(imageUrl)
-                    .isThumbnail(isThumbnail)
-                    .clubPost(clubPost)
-                    .build());
-        }
-        clubPostImageRepository.saveAll(clubPostImages);
         clubPostRepository.save(clubPost);
 
         return ClubPostDetailRes.builder()
@@ -117,7 +102,7 @@ public class ClubPostService {
 
     // 글 수정
     @Transactional
-    public ClubPostDetailRes updateClubPost(Long clubPostId, UpdateClubPostReq updateClubPostReq) {
+    public ClubPostDetailRes updateClubPost(Long clubPostId, UpdateClubPostReq updateClubPostReq, List<MultipartFile> images) throws IOException {
 
         ClubPost clubPost = clubPostRepository.findById(clubPostId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
@@ -127,7 +112,8 @@ public class ClubPostService {
         clubPost.setUrl1(updateClubPostReq.getUrl1());
         clubPost.setUrl2(updateClubPostReq.getUrl2());
         // 이미지 추가 필요
-
+        this.deleteFile(clubPostId);
+        this.uploadFile(clubPost, images);
         return ClubPostDetailRes.builder()
                 .title(clubPost.getTitle())
                 .description(clubPost.getDetailedDescription())
@@ -145,7 +131,7 @@ public class ClubPostService {
     public void deleteClubPost(Long clubPostId) {
         ClubPost clubPost = clubPostRepository.findById(clubPostId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
-
+        this.deleteFile(clubPostId);
         clubPostRepository.delete(clubPost);
     }
 
@@ -163,6 +149,35 @@ public class ClubPostService {
         return isAdmin || isWriter;
     }
 
+    @Transactional
+    public void uploadFile(ClubPost clubPost, List<MultipartFile> images) throws IOException {
+        // 이미지 업로드 및 thumbnail 설정
+        List<ClubPostImage> clubPostImages = new ArrayList<>();
+        boolean isFirstImage = true;
 
+        for (MultipartFile image : images) {
+            String s3ImageKey = fileService.uploadFile(image, getClass().getSimpleName());
 
+            // 첫 번째 이미지인 경우에만 thumbnail로 설정
+            boolean isThumbnail = isFirstImage;
+            isFirstImage = false;
+
+            clubPostImages.add(ClubPostImage.builder()
+                    .imagePath(fileService.getFilePath(s3ImageKey))
+                    .isThumbnail(isThumbnail)
+                    .s3key(s3ImageKey)
+                    .clubPost(clubPost)
+                    .build());
+        }
+        clubPostImageRepository.saveAll(clubPostImages);
+    }
+
+    @Transactional
+    public void deleteFile(Long clubId){
+        List<ClubPostImage> images = clubPostImageRepository.findByClubPostId(clubId);
+        for(ClubPostImage image : images) {
+            fileService.deleteFile(image.getS3key()); //s3 삭제
+            clubPostImageRepository.deleteById(image.getId()); //엔티티 삭제
+        }
+    }
 }

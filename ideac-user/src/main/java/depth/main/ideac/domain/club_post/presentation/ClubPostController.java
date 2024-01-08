@@ -83,11 +83,12 @@ public class ClubPostController {
     @Operation(summary = "글 수정", description = "동아리/학회 글을 수정하는 API입니다.")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
-                                            @Valid @RequestBody UpdateClubPostReq updateClubPostReq) {
+                                            @Valid @RequestPart UpdateClubPostReq updateClubPostReq,
+                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
 
         checkPermission(id, userPrincipal.getId());
 
-        ClubPostDetailRes clubPostDetailRes = clubPostService.updateClubPost(id, updateClubPostReq);
+        ClubPostDetailRes clubPostDetailRes = clubPostService.updateClubPost(id, updateClubPostReq, images);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(clubPostDetailRes)

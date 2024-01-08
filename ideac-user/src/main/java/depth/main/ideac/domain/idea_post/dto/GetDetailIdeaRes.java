@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetDetailIdeaRes {
-//    private String profile;
+
+    private String color;
     private String nickName;
     private String title;
     private String keyWord;

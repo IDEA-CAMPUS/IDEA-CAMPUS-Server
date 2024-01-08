@@ -39,14 +39,17 @@ public class FileService {
         String s3ImageKey = "image/" + className + "/" + fileName;
         return s3ImageKey;
     }
+
     public void deleteFile(String s3ImageKey) {
         amazonS3.deleteObject(new DeleteObjectRequest(BUCKET, s3ImageKey));
     }
+
     public String convertToRandomName(String originalFileName) {
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         return UUID.randomUUID().toString().concat(fileExtension);
     }
-    public String getFilePath(String s3ImageKey){
-        return BUCKET + "/" + s3ImageKey;
+
+    public String getUrl(String s3ImageKey) {
+        return amazonS3.getUrl(BUCKET, s3ImageKey).toString();
     }
 }

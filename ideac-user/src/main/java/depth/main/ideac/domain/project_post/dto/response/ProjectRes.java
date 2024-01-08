@@ -13,4 +13,5 @@ public class ProjectRes {
     private String team;
     private String title;
     private String simpleDescription;
+    private String thumbnail;
 }

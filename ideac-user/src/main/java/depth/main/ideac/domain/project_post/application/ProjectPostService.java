@@ -65,16 +65,23 @@ public class ProjectPostService {
         Page<ProjectPost> projectPosts = projectPostRepository.findAll(pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
-                .map(projectPost -> ProjectRes.builder()
-                        .booleanWeb(projectPost.isBooleanWeb())
-                        .booleanApp(projectPost.isBooleanApp())
-                        .booleanAi(projectPost.isBooleanAi())
-                        .team(projectPost.getTeam())
-                        .title(projectPost.getTitle())
-                        .simpleDescription(projectPost.getSimpleDescription())
-                        .build())
+                .map(projectPost -> {
+                    String thumbnail = projectPost.getProjectPostImages().stream()
+                            .filter(ProjectPostImage::isThumbnail)
+                            .findFirst()
+                            .map(ProjectPostImage::getImagePath)
+                            .orElse(null);
+                    return ProjectRes.builder()
+                            .booleanWeb(projectPost.isBooleanWeb())
+                            .booleanApp(projectPost.isBooleanApp())
+                            .booleanAi(projectPost.isBooleanAi())
+                            .team(projectPost.getTeam())
+                            .title(projectPost.getTitle())
+                            .simpleDescription(projectPost.getSimpleDescription())
+                            .thumbnail(thumbnail)
+                            .build();
+                })
                 .toList();
-
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
@@ -87,21 +94,37 @@ public class ProjectPostService {
                 .findByBooleanWebAndBooleanAppAndBooleanAi(booleanWeb, booleanApp, booleanAi, pageable);
         List<ProjectRes> projectResList = projectPosts.getContent()
                 .stream()
-                .map(projectPost -> ProjectRes.builder()
-                        .booleanWeb(projectPost.isBooleanWeb())
-                        .booleanApp(projectPost.isBooleanApp())
-                        .booleanAi(projectPost.isBooleanAi())
-                        .team(projectPost.getTeam())
-                        .title(projectPost.getTitle())
-                        .simpleDescription(projectPost.getSimpleDescription())
-                        .build())
+                .map(projectPost -> {
+                    String thumbnail = projectPost.getProjectPostImages().stream()
+                            .filter(ProjectPostImage::isThumbnail)
+                            .findFirst()
+                            .map(ProjectPostImage::getImagePath)
+                            .orElse(null);
+                    return ProjectRes.builder()
+                            .booleanWeb(projectPost.isBooleanWeb())
+                            .booleanApp(projectPost.isBooleanApp())
+                            .booleanAi(projectPost.isBooleanAi())
+                            .team(projectPost.getTeam())
+                            .title(projectPost.getTitle())
+                            .simpleDescription(projectPost.getSimpleDescription())
+                            .thumbnail(thumbnail)
+                            .build();
+                })
                 .toList();
-
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
     public ProjectDetailRes getProjectDetail(Long projectId) {
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트 내용을 찾을 수 없습니다."));
+        String thumbnailPath = projectPost.getProjectPostImages().stream()
+                .filter(ProjectPostImage::isThumbnail)
+                .findFirst()
+                .map(ProjectPostImage::getImagePath)
+                .orElse(null);
+        List<String> otherImagePaths = projectPost.getProjectPostImages().stream()
+                .filter(image -> !image.isThumbnail())
+                .map(ProjectPostImage::getImagePath)
+                .toList();
         return ProjectDetailRes.builder()
                 .title(projectPost.getTitle())
                 .simpleDescription(projectPost.getSimpleDescription())
@@ -113,6 +136,8 @@ public class ProjectPostService {
                 .booleanWeb(projectPost.isBooleanWeb())
                 .booleanApp(projectPost.isBooleanApp())
                 .booleanAi(projectPost.isBooleanAi())
+                .thumbnail(thumbnailPath)
+                .otherImages(otherImagePaths)
                 .build();
     }
 
@@ -164,7 +189,7 @@ public class ProjectPostService {
             isFirstImage = false;
 
             projectPostImages.add(ProjectPostImage.builder()
-                    .imagePath(fileService.getFilePath(s3ImageKey))
+                    .imagePath(fileService.getUrl(s3ImageKey))
                     .isThumbnail(isThumbnail)
                     .s3key(s3ImageKey)
                     .projectPost(projectPost)

@@ -7,6 +7,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,4 +27,6 @@ public class ProjectDetailRes {
     private boolean booleanWeb;
     private boolean booleanApp;
     private boolean booleanAi;
+    private String thumbnail;
+    private List<String> otherImages;
 }

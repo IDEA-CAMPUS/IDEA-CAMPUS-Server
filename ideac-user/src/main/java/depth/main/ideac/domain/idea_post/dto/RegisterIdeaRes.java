@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ResisterIdeaRes {
+public class RegisterIdeaRes {
     private String title;
     private String simpleDescription;
     private String detailedDescription;

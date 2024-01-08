@@ -22,7 +22,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -39,15 +38,15 @@ public class IdeaPostService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public Long resisterIdea(UserPrincipal userPrincipal, ResisterIdeaReq resisterIdeaReq){
+    public Long registerIdea(UserPrincipal userPrincipal, RegisterIdeaReq registerIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
         IdeaPost ideapost = IdeaPost.builder()
-                .title(resisterIdeaReq.getTitle())
-                .keyword(resisterIdeaReq.getKeyword())
-                .simpleDescription(resisterIdeaReq.getSimpleDescription())
-                .detailedDescription(resisterIdeaReq.getDetailedDescription())
-                .url1(resisterIdeaReq.getUrl1())
-                .url2(resisterIdeaReq.getUrl2())
+                .title(registerIdeaReq.getTitle())
+                .keyword(registerIdeaReq.getKeyword())
+                .simpleDescription(registerIdeaReq.getSimpleDescription())
+                .detailedDescription(registerIdeaReq.getDetailedDescription())
+                .url1(registerIdeaReq.getUrl1())
+                .url2(registerIdeaReq.getUrl2())
                 .hits(0L)
                 .user(user)
                 .build();

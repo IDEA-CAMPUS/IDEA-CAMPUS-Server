@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class ResisterIdeaReq {
+public class RegisterIdeaReq {
     @NotBlank(message = "제목이 입력되지 않았습니다.")
     @Size(max = 15, message = "제목은 최대 15자까지 입력 가능합니다.")
     private String title;

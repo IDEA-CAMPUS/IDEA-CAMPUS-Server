@@ -54,18 +54,9 @@ public class IdeaPostService {
 
         ideaPostRepository.save(ideapost);
 
-        ResisterIdeaRes resisterIdeaRes = ResisterIdeaRes.builder()
-                .title(resisterIdeaReq.getTitle())
-                .simpleDescription(resisterIdeaReq.getSimpleDescription())
-                .keyWord(resisterIdeaReq.getKeyword())
-                .detailedDescription(resisterIdeaReq.getDetailedDescription())
-                .url1(resisterIdeaReq.getUrl1())
-                .url2(resisterIdeaReq.getUrl2())
-                .build();
-
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(resisterIdeaRes)
+                .information(ideapost.getId())
                 .message("아이디어를 만들었어요!")
                 .build();
 
@@ -77,7 +68,7 @@ public class IdeaPostService {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
-                //이미지 추가
+                .color(ideaPost.getUser().getColor())
                 .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
                 .simpleDescription(ideaPost.getSimpleDescription())
@@ -137,6 +128,7 @@ public class IdeaPostService {
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
                 .map(tmp -> new GetAllIdeasRes(
+                        tmp.getUser().getColor(),
                         tmp.getUser().getNickname(),
                         tmp.getTitle(),
                         tmp.getSimpleDescription(),

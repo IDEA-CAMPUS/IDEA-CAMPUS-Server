@@ -29,12 +29,6 @@ public class Google extends OAuth2UserInfo {
         
         return (String) attributes.get("email");
     }
-
-    @Override
-    public String getImageUrl() {
-        
-        return (String) attributes.get("picture");
-    }
     
     @Override
     public String getProvider(){

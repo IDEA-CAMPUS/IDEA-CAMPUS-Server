@@ -117,7 +117,7 @@ public class ProjectPostService {
     }
 
     @Transactional
-    public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq) {
+    public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq, List<MultipartFile> images) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
@@ -133,6 +133,9 @@ public class ProjectPostService {
         projectPost.setBooleanWeb(updateProjectReq.isBooleanWeb());
         projectPost.setBooleanApp(updateProjectReq.isBooleanApp());
         projectPost.setBooleanAi(updateProjectReq.isBooleanAi());
+        this.deleteFile(projectId);
+        this.uploadFile(projectPost, images);
+
     }
 
     @Transactional
@@ -143,6 +146,7 @@ public class ProjectPostService {
         if (user.getRole() != Role.OWNER && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
+        this.deleteFile(projectId);
         projectPostRepository.deleteById(projectId);
     }
 
@@ -167,5 +171,14 @@ public class ProjectPostService {
                     .build());
         }
         projectPostImageRepository.saveAll(projectPostImages);
+    }
+
+    @Transactional
+    public void deleteFile(Long projectId){
+        List<ProjectPostImage> images = projectPostImageRepository.findByProjectPostId(projectId);
+        for(ProjectPostImage image : images) {
+            fileService.deleteFile(image.getS3key()); //s3 삭제
+            projectPostImageRepository.deleteById(image.getId()); //엔티티 삭제
+        }
     }
 }

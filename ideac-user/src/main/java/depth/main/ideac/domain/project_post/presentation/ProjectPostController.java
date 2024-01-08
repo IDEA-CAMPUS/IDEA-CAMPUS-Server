@@ -89,8 +89,9 @@ public class ProjectPostController {
     @PutMapping("/{project-id}")
     public ResponseEntity<?> updateProject(@CurrentUser UserPrincipal userPrincipal,
                                            @PathVariable("project-id") Long projectId,
-                                           @Valid @RequestBody PostProjectReq updateProjectReq) {
-        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq);
+                                           @Valid @RequestPart PostProjectReq updateProjectReq,
+                                           @RequestPart("images") List<MultipartFile> images) throws IOException {
+        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq, images);
         return ResponseEntity.ok().build();
     }
 

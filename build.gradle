@@ -67,6 +67,10 @@ subprojects {
         // Mail 설정
         implementation 'org.springframework.boot:spring-boot-starter-mail'
         implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+        // aws 설정
+        implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     }
 
     test {
@@ -104,6 +108,7 @@ project(':ideac-user') {
         // 컴파일시 core 모듈을 가져온다.
         implementation project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     }
 
     springBoot {

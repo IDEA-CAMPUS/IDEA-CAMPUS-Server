@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.club_post.dto;
 
+import depth.main.ideac.domain.club_post.ClubPost;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,5 +18,6 @@ public class ClubPostRes {
 
     private String nickname;
 
-    // private String thumbnail; imagePath
+     private String thumbnail;
+
 }

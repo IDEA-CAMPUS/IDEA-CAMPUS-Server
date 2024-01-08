@@ -5,7 +5,6 @@ import depth.main.ideac.domain.banner.Type;
 import depth.main.ideac.domain.banner.application.BannerService;
 import depth.main.ideac.domain.banner.dto.BannerDetailRes;
 import depth.main.ideac.domain.banner.dto.BannerListRes;
-import depth.main.ideac.domain.banner.dto.PagedBannerRes;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
@@ -40,7 +39,7 @@ public class BannerController {
     // 배너 목록 보기
     @Operation(summary = "특정 타입의 배너 목록 조회", description = "특정 타입의 배너를 전체 조회하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))}),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = BannerListRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping
@@ -68,7 +67,7 @@ public class BannerController {
     // 배너 검색
     @Operation(summary = "특정 타입의 배너 검색", description = "특정 타입의 배너를 제목으로 검색하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedBannerRes.class))}),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = BannerListRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping("/search")

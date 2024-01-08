@@ -26,14 +26,14 @@ public class AdminService {
 
     public boolean isAdmin(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         return user.getRole() == Role.ADMIN || user.getRole() == Role.OWNER;
     }
 
     public boolean isOwner(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         return user.getRole() == Role.OWNER;
     }
@@ -75,7 +75,7 @@ public class AdminService {
     @Transactional
     public UserRes setStatus(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getStatus() == Status.ACTIVE) {
             user.updateStatus(Status.SUSPENDED);
@@ -89,7 +89,7 @@ public class AdminService {
     @Transactional
     public UserRes setRole(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getRole() == Role.USER) {
             user.updateRole(Role.ADMIN);

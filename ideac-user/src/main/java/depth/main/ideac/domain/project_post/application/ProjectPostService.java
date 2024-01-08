@@ -227,6 +227,7 @@ public class ProjectPostService {
             fileService.deleteFile(image.getS3key()); //s3 삭제
             projectPostImageRepository.deleteById(image.getId()); //엔티티 삭제
         }
+    }
 
     @Transactional
     public void addHitToRedis(Long id) {

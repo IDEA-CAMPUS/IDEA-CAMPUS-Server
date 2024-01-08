@@ -61,4 +61,10 @@ public class AuthController {
         return authService.findId(findIdReq);
     }
 
+    @GetMapping(value = "test")
+    public ResponseEntity<?> test(){
+
+        return ResponseEntity.ok("test");
+    }
+
 }

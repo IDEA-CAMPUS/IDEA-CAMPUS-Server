@@ -20,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @Tag(name = "ClubPost API", description = "동아리/학회 관련 API입니다.")
@@ -72,11 +74,11 @@ public class ClubPostController {
                                             @Valid @RequestPart ClubPostReq clubPostReq,
                                             @RequestPart("images") List<MultipartFile> images) throws IOException {
         Long clubPostId = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(clubPostId)
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(clubPostId)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     // 글 수정하기

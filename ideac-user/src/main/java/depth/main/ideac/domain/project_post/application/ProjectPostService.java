@@ -124,6 +124,7 @@ public class ProjectPostService {
                 .githubUrl(projectPost.getGithubUrl())
                 .webUrl(projectPost.getWebUrl())
                 .googlePlayUrl(projectPost.getGooglePlayUrl())
+                .hits(projectPost.getHits())
                 .booleanWeb(projectPost.isBooleanWeb())
                 .booleanApp(projectPost.isBooleanApp())
                 .booleanAi(projectPost.isBooleanAi())

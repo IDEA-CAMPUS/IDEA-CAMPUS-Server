@@ -85,6 +85,7 @@ public class IdeaPostService {
                 .detailedDescription(ideaPost.getDetailedDescription())
                 .url1(ideaPost.getUrl1())
                 .url2(ideaPost.getUrl2())
+                .hits(ideaPost.getHits())
                 .build();
 
         ApiResponse apiResponse = ApiResponse.builder()

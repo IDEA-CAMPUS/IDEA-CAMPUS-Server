@@ -39,7 +39,7 @@ public class IdeaPostService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public ResponseEntity<?> resisterIdea(UserPrincipal userPrincipal, ResisterIdeaReq resisterIdeaReq){
+    public Long resisterIdea(UserPrincipal userPrincipal, ResisterIdeaReq resisterIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
         IdeaPost ideapost = IdeaPost.builder()
                 .title(resisterIdeaReq.getTitle())
@@ -54,13 +54,7 @@ public class IdeaPostService {
 
         ideaPostRepository.save(ideapost);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(ideapost.getId())
-                .message("아이디어를 만들었어요!")
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
+        return ideapost.getId();
     }
 
     @Transactional

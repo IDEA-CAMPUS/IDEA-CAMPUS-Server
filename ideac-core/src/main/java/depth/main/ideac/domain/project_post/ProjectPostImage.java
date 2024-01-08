@@ -1,7 +1,6 @@
 
 package depth.main.ideac.domain.project_post;
 
-import depth.main.ideac.domain.project_post.ProjectPost;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +21,8 @@ public class ProjectPostImage {
     private String imagePath;
 
     private boolean isThumbnail;
+
+    private String s3key;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_post_id")

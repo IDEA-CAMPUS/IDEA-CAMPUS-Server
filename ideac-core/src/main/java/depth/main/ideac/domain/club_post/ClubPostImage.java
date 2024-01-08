@@ -22,6 +22,8 @@ public class ClubPostImage {
 
     private boolean isThumbnail;
 
+    private String s3key;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_post_id")
     private ClubPost clubPost;

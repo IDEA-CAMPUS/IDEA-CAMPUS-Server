@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.admin.presentation;
 
 import depth.main.ideac.domain.admin.application.AdminService;
-import depth.main.ideac.domain.admin.dto.PagedUserRes;
 import depth.main.ideac.domain.admin.dto.UserRes;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Admin API", description = "관리자 기능 관련 API입니다.")
@@ -31,9 +29,7 @@ public class AdminController {
 
     @Operation(summary = "사용자 전체 조회", description = "사용자를 전체 조회하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))
-            }),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping
@@ -60,7 +56,7 @@ public class AdminController {
     // 검색
     @Operation(summary = "사용자 검색", description = "사용자를 닉네임 또는 이름으로 검색하는 API입니다.")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PagedUserRes.class))}),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Success", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserRes.class))}),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "No Content")
     })
     @GetMapping("/search")

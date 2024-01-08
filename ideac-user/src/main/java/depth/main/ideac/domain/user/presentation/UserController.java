@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
-    @Operation(summary = "메일보내기", description = "비밀번호를 찾기위해 메일을 보낸다.")
+    @Operation(summary = "비밀번호 바꾸기", description = "비밀번호를 바꾼다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 바꾸기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "비밀번호 바꾸기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})

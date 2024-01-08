@@ -55,6 +55,10 @@ public class ClubPostService {
                 .description(clubPost.getDetailedDescription())
                 .createdAt(clubPost.getCreatedAt())
                 .nickname(clubPost.getUser().getNickname())
+                .thumbnail(clubPost.getClubPostImages().stream()
+                        .filter(ClubPostImage::isThumbnail)
+                        .findFirst()
+                        .map(ClubPostImage::getImagePath).orElse(null))
                 .build();
     }
 
@@ -62,13 +66,23 @@ public class ClubPostService {
     public ClubPostDetailRes getDetailClubPosts(Long clubId) {
         ClubPost clubPost = clubPostRepository.findById(clubId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
-
+        String thumbnailPath = clubPost.getClubPostImages().stream()
+                .filter(ClubPostImage::isThumbnail)
+                .findFirst()
+                .map(ClubPostImage::getImagePath)
+                .orElse(null);
+        List<String> otherImagePaths = clubPost.getClubPostImages().stream()
+                .filter(image -> !image.isThumbnail())
+                .map(ClubPostImage::getImagePath)
+                .toList();
         return ClubPostDetailRes.builder()
                 .title(clubPost.getTitle())
                 .description(clubPost.getDetailedDescription())
                 .url1(clubPost.getUrl1())
                 .url2(clubPost.getUrl2())
                 .nickname(clubPost.getUser().getNickname())
+                .thumbnail(thumbnailPath)
+                .otherImages(otherImagePaths)
                 .createdAt(clubPost.getCreatedAt())
                 .build();
     }
@@ -163,7 +177,7 @@ public class ClubPostService {
             isFirstImage = false;
 
             clubPostImages.add(ClubPostImage.builder()
-                    .imagePath(fileService.getFilePath(s3ImageKey))
+                    .imagePath(fileService.getUrl(s3ImageKey))
                     .isThumbnail(isThumbnail)
                     .s3key(s3ImageKey)
                     .clubPost(clubPost)

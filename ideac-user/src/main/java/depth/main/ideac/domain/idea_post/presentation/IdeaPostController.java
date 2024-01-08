@@ -21,6 +21,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,7 +41,13 @@ public class IdeaPostController {
     ResponseEntity<?> resisterIdea(@Parameter(description = "Access Token을 입력해주세요.", required = true)
                                    @CurrentUser UserPrincipal userPrincipal,
                                    @Valid @RequestBody ResisterIdeaReq resisterIdeaReq){
-        return ideaPostService.resisterIdea(userPrincipal, resisterIdeaReq);
+
+        Long id = ideaPostService.resisterIdea(userPrincipal, resisterIdeaReq);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "글 전체 조회", description = "아이디어의 글을 정렬하여 조회한다.")

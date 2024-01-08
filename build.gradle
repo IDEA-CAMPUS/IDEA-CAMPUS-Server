@@ -104,6 +104,7 @@ project(':ideac-user') {
         // 컴파일시 core 모듈을 가져온다.
         implementation project(':ideac-core')
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     }
 
     springBoot {

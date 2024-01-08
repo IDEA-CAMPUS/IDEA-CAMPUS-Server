@@ -33,19 +33,15 @@ public class ClubPostService {
         Page<ClubPost> posts = clubPostRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         List<ClubPostRes> clubPostResList = posts.getContent().stream()
-                .map(this::convertToClubPostRes)
+                .map(clubPost -> ClubPostRes.builder()
+                        .title(clubPost.getTitle())
+                        .description(clubPost.getDetailedDescription())
+                        .createdAt(clubPost.getCreatedAt())
+                        .nickname(clubPost.getUser().getNickname())
+                        .build())
                 .collect(Collectors.toList());
 
         return new PageImpl<>(clubPostResList, pageable, posts.getTotalElements());
-    }
-
-    private ClubPostRes convertToClubPostRes(ClubPost clubPost) {
-        return ClubPostRes.builder()
-                .title(clubPost.getTitle())
-                .description(clubPost.getDetailedDescription())
-                .createdAt(clubPost.getCreatedAt())
-                .nickname(clubPost.getUser().getNickname())
-                .build();
     }
 
     // 상세 조회
@@ -53,6 +49,10 @@ public class ClubPostService {
         ClubPost clubPost = clubPostRepository.findById(clubId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
 
+        return convertToCLubPostDetailRes(clubPost);
+    }
+
+    private ClubPostDetailRes convertToCLubPostDetailRes(ClubPost clubPost) {
         return ClubPostDetailRes.builder()
                 .title(clubPost.getTitle())
                 .description(clubPost.getDetailedDescription())
@@ -78,15 +78,7 @@ public class ClubPostService {
                 .build();
         clubPostRepository.save(clubPost);
 
-        return ClubPostDetailRes.builder()
-                .title(clubPost.getTitle())
-                .description(clubPost.getDetailedDescription())
-                .url1(clubPost.getUrl1())
-                .url2(clubPost.getUrl2())
-                .nickname(clubPost.getUser().getNickname())
-                .createdAt(clubPost.getCreatedAt())
-                // ImagePath 추후 추가
-                .build();
+        return convertToCLubPostDetailRes(clubPost);
     }
 
     // 글 수정
@@ -102,15 +94,7 @@ public class ClubPostService {
         clubPost.setUrl2(updateClubPostReq.getUrl2());
         // 이미지 추가 필요
 
-        return ClubPostDetailRes.builder()
-                .title(clubPost.getTitle())
-                .description(clubPost.getDetailedDescription())
-                .url1(clubPost.getUrl1())
-                .url2(clubPost.getUrl2())
-                .nickname(clubPost.getUser().getNickname())
-                .createdAt(clubPost.getCreatedAt())
-                // ImagePath 추후 추가
-                .build();
+        return convertToCLubPostDetailRes(clubPost);
 
     }
 

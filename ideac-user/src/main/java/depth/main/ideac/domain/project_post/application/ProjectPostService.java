@@ -56,25 +56,7 @@ public class ProjectPostService {
                 .team(user.getOrganization())
                 .user(user)
                 .build();
-
-        // 이미지 업로드 및 thumbnail 설정
-        List<ProjectPostImage> projectPostImages = new ArrayList<>();
-        boolean isFirstImage = true;
-
-        for (MultipartFile image : images) {
-            String imageUrl = fileService.uploadFile(image, getClass().getSimpleName());
-
-            // 첫 번째 이미지인 경우에만 thumbnail로 설정
-            boolean isThumbnail = isFirstImage;
-            isFirstImage = false;
-
-            projectPostImages.add(ProjectPostImage.builder()
-                    .imagePath(imageUrl)
-                    .isThumbnail(isThumbnail)
-                    .projectPost(projectPost)
-                    .build());
-        }
-        projectPostImageRepository.saveAll(projectPostImages);
+        this.uploadFile(projectPost, images);
         projectPostRepository.save(projectPost);
         return projectPost.getId();
     }
@@ -162,5 +144,28 @@ public class ProjectPostService {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
         projectPostRepository.deleteById(projectId);
+    }
+
+    @Transactional
+    public void uploadFile(ProjectPost projectPost, List<MultipartFile> images) throws IOException {
+        // 이미지 업로드 및 thumbnail 설정
+        List<ProjectPostImage> projectPostImages = new ArrayList<>();
+        boolean isFirstImage = true;
+
+        for (MultipartFile image : images) {
+            String s3ImageKey = fileService.uploadFile(image, getClass().getSimpleName());
+
+            // 첫 번째 이미지인 경우에만 thumbnail로 설정
+            boolean isThumbnail = isFirstImage;
+            isFirstImage = false;
+
+            projectPostImages.add(ProjectPostImage.builder()
+                    .imagePath(fileService.getFilePath(s3ImageKey))
+                    .isThumbnail(isThumbnail)
+                    .s3key(s3ImageKey)
+                    .projectPost(projectPost)
+                    .build());
+        }
+        projectPostImageRepository.saveAll(projectPostImages);
     }
 }

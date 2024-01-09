@@ -164,4 +164,21 @@ public class AuthService {
         return true;
     }
 
+    public ResponseEntity<?> doubleCheckNickname(String nickname) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(userRepository.existsByNickname(nickname))
+                .message("닉네임 검증 완료")
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    public ResponseEntity<?> doubleCheckEmail(String email) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(userRepository.existsByEmail(email))
+                .message("이메일 검증 완료")
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 }

@@ -38,9 +38,9 @@ public class AuthService {
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
 
-        //검증
-        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
-        DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
+//        //검증
+//        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
+//        DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
 
         User user = User.builder()
                         .email(signUpRequest.getIdEmail())
@@ -167,7 +167,7 @@ public class AuthService {
     public ResponseEntity<?> doubleCheckNickname(String nickname) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(userRepository.existsByNickname(nickname))
+                .information(userRepository.findByNickname(nickname).isEmpty())
                 .message("닉네임 검증 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);
@@ -176,7 +176,7 @@ public class AuthService {
     public ResponseEntity<?> doubleCheckEmail(String email) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(userRepository.existsByEmail(email))
+                .information(userRepository.findByEmail(email).isEmpty())
                 .message("이메일 검증 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);

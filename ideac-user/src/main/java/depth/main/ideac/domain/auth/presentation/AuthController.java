@@ -61,10 +61,32 @@ public class AuthController {
         return authService.findId(findIdReq);
     }
 
-    @GetMapping(value = "test")
-    public ResponseEntity<?> test(){
+    @Operation(summary = "닉네임검증", description = "닉네임검증")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "닉네임 검증 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "닉네임 검증 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @GetMapping(value = "/nickname/{nickname}")
+    public ResponseEntity<?> doubleCheckNickname(@PathVariable(value = "nickname") String nickname){
 
-        return ResponseEntity.ok("test");
+        return authService.doubleCheckNickname(nickname);
     }
+
+    @Operation(summary = "이메일검증", description = "닉네임검증")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 검증 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "이메일 검증 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @GetMapping(value = "/email/{email}")
+    public ResponseEntity<?> doubleCheckEmail(@PathVariable(value = "email") String email){
+
+        return authService.doubleCheckEmail(email);
+    }
+
+//    @GetMapping(value = "test")
+//    public ResponseEntity<?> test(){
+//
+//        return ResponseEntity.ok("test");
+//    }
 
 }

@@ -92,6 +92,8 @@ public class ProjectPostService {
                             .team(projectPost.getTeam())
                             .title(projectPost.getTitle())
                             .simpleDescription(projectPost.getSimpleDescription())
+                            .hits(projectPost.getHits())
+                            .createdAt(projectPost.getCreatedAt())
                             .thumbnail(thumbnail)
                             .build();
                 })
@@ -129,6 +131,8 @@ public class ProjectPostService {
                             .team(projectPost.getTeam())
                             .title(projectPost.getTitle())
                             .simpleDescription(projectPost.getSimpleDescription())
+                            .hits(projectPost.getHits())
+                            .createdAt(projectPost.getCreatedAt())
                             .thumbnail(thumbnail)
                             .build();
                 })
@@ -160,6 +164,8 @@ public class ProjectPostService {
                 .booleanWeb(projectPost.isBooleanWeb())
                 .booleanApp(projectPost.isBooleanApp())
                 .booleanAi(projectPost.isBooleanAi())
+                .hits(projectPost.getHits())
+                .createdAt(projectPost.getCreatedAt())
                 .thumbnail(thumbnailPath)
                 .otherImages(otherImagePaths)
                 .build();

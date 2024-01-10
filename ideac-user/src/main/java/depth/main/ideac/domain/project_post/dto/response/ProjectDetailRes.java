@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -30,4 +31,5 @@ public class ProjectDetailRes {
     private boolean booleanAi;
     private String thumbnail;
     private List<String> otherImages;
+    private LocalDateTime createdAt;
 }

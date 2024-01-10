@@ -46,6 +46,7 @@ public class AuthController {
     @PostMapping(value = "/sign-in")
     public ResponseEntity<?> signIn(@Parameter(description = "Schemas의 SignInRequest를 참고해주세요.")
                                     @Valid @RequestBody SignInReq signInReq){
+        System.out.println("\"zzz\" = " + "zzz");
 
         return authService.signIn(signInReq);
     }

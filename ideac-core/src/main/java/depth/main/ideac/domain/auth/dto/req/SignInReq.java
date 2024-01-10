@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.Getter;
 
 
-@Data
+@Getter
 public class SignInReq {
 
     @Schema( type = "string", example = "idea00@naver.com", description="계정 이메일 입니다.")

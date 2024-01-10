@@ -18,6 +18,7 @@ import depth.main.ideac.global.payload.ApiResponse;
 import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +32,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
@@ -71,7 +73,7 @@ public class AuthService {
     //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
-
+        System.out.println("signInReq.getEmail() = " + signInReq.getEmail());
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
 
@@ -79,7 +81,6 @@ public class AuthService {
         if (findUser.getStatus() == Status.SUSPENDED || findUser.getStatus() == Status.DELETE){
             throw new DefaultException(ErrorCode.INVALID_CHECK, "정지되었거나 탈퇴된 유저입니다.");
         }
-
 
         boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
         DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
@@ -90,7 +91,6 @@ public class AuthService {
                     signInReq.getPassword()
             )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
@@ -104,7 +104,6 @@ public class AuthService {
         AuthRes authResponse = AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken()).build();
-
         return ResponseEntity.ok(authResponse);
     }
 

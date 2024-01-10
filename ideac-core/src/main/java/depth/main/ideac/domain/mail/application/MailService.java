@@ -45,10 +45,13 @@ public class MailService {
             simpleMailMessage.setTo(receiveList);
 
             // 2. 메일 제목 설정
-            simpleMailMessage.setSubject("test_title");
+            simpleMailMessage.setSubject("IDEA CAMPUS 비밀번호 재설정");
 
             // 3. 메일 내용 설정
-            simpleMailMessage.setText("http://localhost:8080/mail/send-email/" + code);
+            simpleMailMessage.setText("안녕하세요. IDEA CAMPUS입니다.\n" +
+                    "서비스 이용을 위한 하단 계정의 비밀번호 재설정 이메일 요청 메일입니다.\n" +
+                    "‘비밀번호 재설정’ 버튼을 클릭하여 재설정이 완료하실 수 있습니다." +
+                    "http://localhost:8080/mail/send-email/" + code);
 
             // 4. 메일 전송
             javaMailSender.send(simpleMailMessage);

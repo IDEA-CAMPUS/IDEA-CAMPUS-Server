@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProjectRes {
+    private Long id;
     private boolean booleanWeb;
     private boolean booleanApp;
     private boolean booleanAi;

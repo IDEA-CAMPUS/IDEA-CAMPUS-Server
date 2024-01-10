@@ -38,10 +38,6 @@ public class AuthService {
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
 
-//        //검증
-//        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
-//        DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
-
         User user = User.builder()
                         .email(signUpRequest.getIdEmail())
                         .password(passwordEncoder.encode(signUpRequest.getPassword()))
@@ -164,6 +160,7 @@ public class AuthService {
         return true;
     }
 
+    // 닉네임 중복검증
     public ResponseEntity<?> doubleCheckNickname(String nickname) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
@@ -173,6 +170,7 @@ public class AuthService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 이메일 중복검증
     public ResponseEntity<?> doubleCheckEmail(String email) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)

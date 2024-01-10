@@ -42,7 +42,7 @@ public class UserService {
         Verify verify = mailRepository.findByCode(code);
 
         if (verify == null){
-            throw new DefaultException(ErrorCode.INVALID_CHECK, "이미변경되었습니다?");
+            throw new DefaultException(ErrorCode.INVALID_CHECK, "이미변경되었습니다.");
         }
 
         DefaultAssert.isTrue(verify.checkExpiration(LocalDateTime.now()), "만료되었습니다.");
@@ -58,7 +58,7 @@ public class UserService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("비밀번호를 바꾸었어요")
+                .message("비밀번호를 바꾸었습니다.")
                 .build();
 
         return ResponseEntity.ok(apiResponse);
@@ -86,7 +86,7 @@ public class UserService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("회원탈퇴 완료!")
+                .message("회원탈퇴 완료하였습니다.")
                 .build();
 
         return ResponseEntity.ok(apiResponse);

@@ -83,10 +83,5 @@ public class AuthController {
         return authService.doubleCheckEmail(email);
     }
 
-//    @GetMapping(value = "test")
-//    public ResponseEntity<?> test(){
-//
-//        return ResponseEntity.ok("test");
-//    }
 
 }

@@ -2,6 +2,8 @@ package depth.main.ideac.domain.project_post.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,4 +17,6 @@ public class ProjectRes {
     private String title;
     private String simpleDescription;
     private String thumbnail;
+    private Long hits;
+    private LocalDateTime createdAt;
 }

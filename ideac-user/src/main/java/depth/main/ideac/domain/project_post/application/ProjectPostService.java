@@ -85,6 +85,7 @@ public class ProjectPostService {
                             .map(ProjectPostImage::getImagePath)
                             .orElse(null);
                     return ProjectRes.builder()
+                            .id(projectPost.getId())
                             .booleanWeb(projectPost.isBooleanWeb())
                             .booleanApp(projectPost.isBooleanApp())
                             .booleanAi(projectPost.isBooleanAi())
@@ -121,6 +122,7 @@ public class ProjectPostService {
                             .map(ProjectPostImage::getImagePath)
                             .orElse(null);
                     return ProjectRes.builder()
+                            .id(projectPost.getId())
                             .booleanWeb(projectPost.isBooleanWeb())
                             .booleanApp(projectPost.isBooleanApp())
                             .booleanAi(projectPost.isBooleanAi())

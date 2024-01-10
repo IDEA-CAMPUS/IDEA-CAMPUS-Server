@@ -2,10 +2,9 @@ package depth.main.ideac.domain.user.application;
 
 import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
-import depth.main.ideac.domain.auth.dto.SignUpReq;
+import depth.main.ideac.domain.auth.dto.req.SignUpReq;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
-import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;

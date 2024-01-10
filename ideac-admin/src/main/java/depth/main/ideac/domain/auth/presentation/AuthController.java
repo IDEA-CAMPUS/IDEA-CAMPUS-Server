@@ -3,12 +3,9 @@ package depth.main.ideac.domain.auth.presentation;
 
 import depth.main.ideac.domain.admin.application.AdminService;
 import depth.main.ideac.domain.auth.application.AuthService;
-import depth.main.ideac.domain.auth.dto.AuthRes;
-import depth.main.ideac.domain.auth.dto.FindIdReq;
-import depth.main.ideac.domain.auth.dto.SignInReq;
-import depth.main.ideac.domain.auth.dto.SignUpReq;
-import depth.main.ideac.domain.user.application.UserService;
-import depth.main.ideac.domain.user.domain.User;
+import depth.main.ideac.domain.auth.dto.res.AuthRes;
+import depth.main.ideac.domain.auth.dto.req.FindIdReq;
+import depth.main.ideac.domain.auth.dto.req.SignInReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API", description = "Authorization 관련 API입니다.")

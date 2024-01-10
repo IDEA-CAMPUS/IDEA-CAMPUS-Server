@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.auth.dto;
+package depth.main.ideac.domain.auth.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

@@ -2,7 +2,7 @@ package depth.main.ideac.domain.home.presentation;
 
 import depth.main.ideac.domain.club_post.dto.ClubPostRes;
 import depth.main.ideac.domain.home.application.HomeService;
-import depth.main.ideac.domain.idea_post.dto.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.res.GetAllIdeasRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;
 import depth.main.ideac.global.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;

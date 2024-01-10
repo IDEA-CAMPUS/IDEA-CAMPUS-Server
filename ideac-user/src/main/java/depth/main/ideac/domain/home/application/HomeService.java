@@ -5,7 +5,7 @@ import depth.main.ideac.domain.club_post.ClubPostImage;
 import depth.main.ideac.domain.club_post.dto.ClubPostRes;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.res.GetAllIdeasRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.ProjectPostImage;

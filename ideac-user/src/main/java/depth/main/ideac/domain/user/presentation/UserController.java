@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.user.presentation;
 
-import depth.main.ideac.domain.auth.dto.SignUpReq;
-import depth.main.ideac.domain.mail.application.MailService;
+import depth.main.ideac.domain.auth.dto.req.SignUpReq;
 import depth.main.ideac.domain.user.application.UserService;
 import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;

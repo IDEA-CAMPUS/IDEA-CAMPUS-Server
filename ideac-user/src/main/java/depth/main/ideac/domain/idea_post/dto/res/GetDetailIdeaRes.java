@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.idea_post.dto;
+package depth.main.ideac.domain.idea_post.dto.res;
 
 import lombok.Builder;
 import lombok.Getter;

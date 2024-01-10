@@ -1,6 +1,6 @@
 package depth.main.ideac.domain.user.domain;
 
-import depth.main.ideac.domain.auth.dto.SignUpReq;
+import depth.main.ideac.domain.auth.dto.req.SignUpReq;
 import depth.main.ideac.domain.club_post.ClubPost;
 import depth.main.ideac.domain.common.BaseEntity;
 import depth.main.ideac.domain.idea_post.IdeaPost;

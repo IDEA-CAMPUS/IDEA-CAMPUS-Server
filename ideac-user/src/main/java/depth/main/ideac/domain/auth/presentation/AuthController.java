@@ -2,10 +2,10 @@ package depth.main.ideac.domain.auth.presentation;
 
 
 import depth.main.ideac.domain.auth.application.AuthService;
-import depth.main.ideac.domain.auth.dto.AuthRes;
-import depth.main.ideac.domain.auth.dto.FindIdReq;
-import depth.main.ideac.domain.auth.dto.SignInReq;
-import depth.main.ideac.domain.auth.dto.SignUpReq;
+import depth.main.ideac.domain.auth.dto.res.AuthRes;
+import depth.main.ideac.domain.auth.dto.req.FindIdReq;
+import depth.main.ideac.domain.auth.dto.req.SignInReq;
+import depth.main.ideac.domain.auth.dto.req.SignUpReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;

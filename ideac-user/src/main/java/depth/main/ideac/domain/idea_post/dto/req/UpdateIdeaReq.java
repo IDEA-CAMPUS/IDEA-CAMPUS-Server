@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.idea_post.dto;
+package depth.main.ideac.domain.idea_post.dto.req;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

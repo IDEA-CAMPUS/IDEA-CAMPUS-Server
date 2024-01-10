@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.idea_post.dto;
+package depth.main.ideac.domain.idea_post.dto.res;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

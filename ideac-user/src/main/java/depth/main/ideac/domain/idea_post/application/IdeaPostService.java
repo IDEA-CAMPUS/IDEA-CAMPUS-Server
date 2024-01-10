@@ -61,6 +61,7 @@ public class IdeaPostService {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
+                .id(ideaPost.getId())
                 .color(ideaPost.getUser().getColor())
                 .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
@@ -70,6 +71,7 @@ public class IdeaPostService {
                 .url1(ideaPost.getUrl1())
                 .url2(ideaPost.getUrl2())
                 .hits(ideaPost.getHits())
+                .createdAt(ideaPost.getCreatedAt())
                 .build();
 
         ApiResponse apiResponse = ApiResponse.builder()
@@ -120,12 +122,15 @@ public class IdeaPostService {
         }
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
-                .map(tmp -> new GetAllIdeasRes(
-                        tmp.getUser().getColor(),
-                        tmp.getUser().getNickname(),
-                        tmp.getTitle(),
-                        tmp.getSimpleDescription(),
-                        tmp.getKeyword()))
+                .map(tmp -> GetAllIdeasRes.builder()
+                                .id(tmp.getId())
+                                .color(tmp.getUser().getColor())
+                                .nickName(tmp.getUser().getNickname())
+                                .title(tmp.getTitle())
+                                .simpleDescription(tmp.getSimpleDescription())
+                                .keyword(tmp.getKeyword())
+                                .hits(tmp.getHits())
+                                .createdAt(tmp.getCreatedAt()).build())
                 .collect(Collectors.toList());
 
         ApiResponse apiResponse = ApiResponse.builder()
@@ -138,10 +143,10 @@ public class IdeaPostService {
 
     public boolean isAdminOrWriter(Long ideaId, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         IdeaPost ideaPost = ideaPostRepository.findById(ideaId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
 
         boolean isAdmin = user.getRole() == Role.ADMIN || user.getRole() == Role.OWNER ;
         boolean isWriter = ideaPost.getUser().getId().equals(userId);

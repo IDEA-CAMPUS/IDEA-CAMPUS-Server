@@ -1,6 +1,7 @@
 package depth.main.ideac.domain.project_post.dto.response;
 
 import depth.main.ideac.domain.user.domain.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Schema(description = "프로젝트 상세 조회 Response")
 public class ProjectDetailRes {
     @NotBlank(message = "제목이 입력되지 않았습니다.")
     private String title;

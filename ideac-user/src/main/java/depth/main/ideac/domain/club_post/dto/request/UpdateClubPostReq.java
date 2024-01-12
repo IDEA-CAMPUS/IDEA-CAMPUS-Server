@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.club_post.dto;
+package depth.main.ideac.domain.club_post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,7 +23,5 @@ public class UpdateClubPostReq {
     private String url1;
 
     private String url2;
-
-    // private List<ClubPostImage> clubPostImages;
 
 }

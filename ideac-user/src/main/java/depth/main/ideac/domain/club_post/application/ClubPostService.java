@@ -2,12 +2,12 @@ package depth.main.ideac.domain.club_post.application;
 
 import depth.main.ideac.domain.club_post.ClubPost;
 import depth.main.ideac.domain.club_post.ClubPostImage;
-import depth.main.ideac.domain.club_post.dto.ClubPostReq;
-import depth.main.ideac.domain.club_post.dto.ClubPostRes;
+import depth.main.ideac.domain.club_post.dto.request.ClubPostReq;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
 import depth.main.ideac.domain.club_post.repository.ClubPostImageRepository;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
-import depth.main.ideac.domain.club_post.dto.ClubPostDetailRes;
-import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostDetailRes;
+import depth.main.ideac.domain.club_post.dto.request.UpdateClubPostReq;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.global.error.DefaultException;
@@ -42,6 +42,7 @@ public class ClubPostService {
 
         List<ClubPostRes> clubPostResList = posts.getContent().stream()
                 .map(clubPost -> ClubPostRes.builder()
+                        .id(clubPost.getId())
                         .title(clubPost.getTitle())
                         .description(clubPost.getDetailedDescription())
                         .createdAt(clubPost.getCreatedAt())
@@ -72,6 +73,7 @@ public class ClubPostService {
                 .toList();
 
         return ClubPostDetailRes.builder()
+                .id(clubPost.getId())
                 .title(clubPost.getTitle())
                 .description(clubPost.getDetailedDescription())
                 .url1(clubPost.getUrl1())

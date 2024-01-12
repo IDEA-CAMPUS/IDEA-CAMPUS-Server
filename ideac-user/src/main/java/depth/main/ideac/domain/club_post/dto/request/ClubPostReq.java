@@ -1,18 +1,15 @@
-package depth.main.ideac.domain.club_post.dto;
+package depth.main.ideac.domain.club_post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class UpdateClubPostReq {
+public class ClubPostReq {
 
     @NotBlank(message = "제목을 입력해야 합니다.")
     @Size(max = 100, message = "제목은 최대 100자까지 입력 가능합니다.")
@@ -24,7 +21,5 @@ public class UpdateClubPostReq {
     private String url1;
 
     private String url2;
-
-    // private List<ClubPostImage> clubPostImages;
 
 }

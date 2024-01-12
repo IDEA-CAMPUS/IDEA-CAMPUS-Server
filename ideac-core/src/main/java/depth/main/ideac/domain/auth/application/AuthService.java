@@ -109,10 +109,12 @@ public class AuthService {
 
     // 핸드폰번호로 아이디(이메일) 찾기
     public ResponseEntity<?> findId(FindIdReq findIdReq) {
+        System.out.println("findIdReq.getPhoneNumber() = " + findIdReq.getPhoneNumber());
         Optional<User> findUser = userRepository.findByPhoneNumber(findIdReq.getPhoneNumber());
         DefaultAssert.isTrue(findUser.isPresent(), "해당이메일을 갖고 있는 유저가 없습니다.");
-
+        
         User user = findUser.get();
+        System.out.println("user.getEmail() = " + user.getEmail());
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(user.getEmail())

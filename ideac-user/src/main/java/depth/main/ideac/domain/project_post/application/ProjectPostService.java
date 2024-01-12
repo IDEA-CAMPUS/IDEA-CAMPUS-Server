@@ -85,12 +85,15 @@ public class ProjectPostService {
                             .map(ProjectPostImage::getImagePath)
                             .orElse(null);
                     return ProjectRes.builder()
+                            .id(projectPost.getId())
                             .booleanWeb(projectPost.isBooleanWeb())
                             .booleanApp(projectPost.isBooleanApp())
                             .booleanAi(projectPost.isBooleanAi())
                             .team(projectPost.getTeam())
                             .title(projectPost.getTitle())
                             .simpleDescription(projectPost.getSimpleDescription())
+                            .hits(projectPost.getHits())
+                            .createdAt(projectPost.getCreatedAt())
                             .thumbnail(thumbnail)
                             .build();
                 })
@@ -121,12 +124,15 @@ public class ProjectPostService {
                             .map(ProjectPostImage::getImagePath)
                             .orElse(null);
                     return ProjectRes.builder()
+                            .id(projectPost.getId())
                             .booleanWeb(projectPost.isBooleanWeb())
                             .booleanApp(projectPost.isBooleanApp())
                             .booleanAi(projectPost.isBooleanAi())
                             .team(projectPost.getTeam())
                             .title(projectPost.getTitle())
                             .simpleDescription(projectPost.getSimpleDescription())
+                            .hits(projectPost.getHits())
+                            .createdAt(projectPost.getCreatedAt())
                             .thumbnail(thumbnail)
                             .build();
                 })
@@ -158,6 +164,8 @@ public class ProjectPostService {
                 .booleanWeb(projectPost.isBooleanWeb())
                 .booleanApp(projectPost.isBooleanApp())
                 .booleanAi(projectPost.isBooleanAi())
+                .hits(projectPost.getHits())
+                .createdAt(projectPost.getCreatedAt())
                 .thumbnail(thumbnailPath)
                 .otherImages(otherImagePaths)
                 .build();

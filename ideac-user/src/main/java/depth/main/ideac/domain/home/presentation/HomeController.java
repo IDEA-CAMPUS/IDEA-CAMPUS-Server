@@ -1,6 +1,6 @@
 package depth.main.ideac.domain.home.presentation;
 
-import depth.main.ideac.domain.club_post.dto.ClubPostRes;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
 import depth.main.ideac.domain.home.application.HomeService;
 import depth.main.ideac.domain.idea_post.dto.res.GetAllIdeasRes;
 import depth.main.ideac.domain.project_post.dto.response.ProjectRes;

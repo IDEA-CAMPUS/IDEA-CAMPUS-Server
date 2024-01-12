@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -15,7 +16,7 @@ public class GetAllIdeasRes {
     private String title;
     @NotBlank(message = "내용이 입력되지 않았습니다.")
     private String simpleDescription;
-    private String keyword;
+    private List<String> keyword;
     private String nickName;
     private String color;
     private Long hits;

@@ -1,7 +1,9 @@
 package depth.main.ideac.domain.idea_post.application;
 
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.*;
+import depth.main.ideac.domain.idea_post.dto.request.*;
+import depth.main.ideac.domain.idea_post.dto.response.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.response.GetDetailIdeaRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
@@ -22,10 +24,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +39,7 @@ public class IdeaPostService {
     @Transactional
     public Long registerIdea(UserPrincipal userPrincipal, RegisterIdeaReq registerIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
+
         IdeaPost ideapost = IdeaPost.builder()
                 .title(registerIdeaReq.getTitle())
                 .keyword(registerIdeaReq.getKeyword())
@@ -60,13 +60,18 @@ public class IdeaPostService {
     public ResponseEntity<?> getDetailIdea(Long id) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
+        String[] split = ideaPost.getKeyword().split(",");
+//        for (String s : split) {
+//            System.out.println("s = " + s);
+//        }
+        List<String> list = Arrays.asList(split);
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
                 .id(ideaPost.getId())
                 .color(ideaPost.getUser().getColor())
                 .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
                 .simpleDescription(ideaPost.getSimpleDescription())
-                .keyWord(ideaPost.getKeyword())
+                .keyWord(list)
                 .detailedDescription(ideaPost.getDetailedDescription())
                 .url1(ideaPost.getUrl1())
                 .url2(ideaPost.getUrl2())
@@ -85,7 +90,11 @@ public class IdeaPostService {
     @Transactional
     public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
-
+        String[] split = updateIdeaReq.getKeyWord().split(",");
+//        for (String s : split) {
+//            System.out.println("s = " + s);
+//        }
+        List<String> list = Arrays.asList(split);
         ideaPost.setTitle(updateIdeaReq.getTitle());
         ideaPost.setKeyword(updateIdeaReq.getKeyWord());
         ideaPost.setSimpleDescription(updateIdeaReq.getSimpleDescription());
@@ -128,7 +137,7 @@ public class IdeaPostService {
                                 .nickName(tmp.getUser().getNickname())
                                 .title(tmp.getTitle())
                                 .simpleDescription(tmp.getSimpleDescription())
-                                .keyword(tmp.getKeyword())
+                                .keyword(Arrays.asList(tmp.getKeyword().split(",")))
                                 .hits(tmp.getHits())
                                 .createdAt(tmp.getCreatedAt()).build())
                 .collect(Collectors.toList());

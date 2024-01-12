@@ -27,7 +27,6 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final MailRepository mailRepository;
-    private final PasswordEncoder passwordEncoder;
     @Transactional
     public ResponseEntity<?> sendEmail(FindPasswordReq findPasswordReq) {
         // 이메일이 존재하는지 확인

@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.club_post.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class  UserController {
     private final UserService userService;
     @Operation(summary = "비밀번호 바꾸기", description = "비밀번호를 바꾼다.")
     @ApiResponses(value = {

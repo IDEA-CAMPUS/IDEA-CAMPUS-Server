@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +36,8 @@ public class HomeService {
                         .id(ideaPost.getId())
                         .title(ideaPost.getTitle())
                         .simpleDescription(ideaPost.getSimpleDescription())
-                        .keyword(ideaPost.getKeyword())
                         .hits(ideaPost.getHits())
+                        .keyword(Arrays.asList(ideaPost.getKeyword().split(",")))
                         .color(ideaPost.getUser().getColor())
                         .nickName(ideaPost.getUser().getNickname())
                         .createdAt(ideaPost.getCreatedAt())

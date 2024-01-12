@@ -1,14 +1,17 @@
-package depth.main.ideac.domain.club_post.dto;
+package depth.main.ideac.domain.club_post.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class ClubPostDetailRes {
+
+    private Long id;
 
     private String title;
 

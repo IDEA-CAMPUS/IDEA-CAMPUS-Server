@@ -2,10 +2,10 @@ package depth.main.ideac.domain.home.application;
 
 import depth.main.ideac.domain.club_post.ClubPost;
 import depth.main.ideac.domain.club_post.ClubPostImage;
-import depth.main.ideac.domain.club_post.dto.ClubPostRes;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.response.GetAllIdeasRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.project_post.ProjectPost;
 import depth.main.ideac.domain.project_post.ProjectPostImage;
@@ -27,17 +27,19 @@ public class HomeService {
     private final IdeaPostRepository ideaPostRepository;
     private final ProjectPostRepository projectPostRepository;
 
-    // 아이디어
     public List<GetAllIdeasRes> getIdeas() {
         List<IdeaPost> ideaPosts = ideaPostRepository.findTop3ByOrderByCreatedAtDesc();
 
         return ideaPosts.stream()
                 .map(ideaPost -> GetAllIdeasRes.builder()
+                        .id(ideaPost.getId())
                         .title(ideaPost.getTitle())
                         .simpleDescription(ideaPost.getSimpleDescription())
                         .keyword(ideaPost.getKeyword())
+                        .hits(ideaPost.getHits())
                         .color(ideaPost.getUser().getColor())
                         .nickName(ideaPost.getUser().getNickname())
+                        .createdAt(ideaPost.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -54,12 +56,15 @@ public class HomeService {
                             .map(ProjectPostImage::getImagePath)
                             .orElse(null);
                     return ProjectRes.builder()
+                            .id(projectPost.getId())
                             .booleanWeb(projectPost.isBooleanWeb())
                             .booleanApp(projectPost.isBooleanApp())
                             .booleanAi(projectPost.isBooleanAi())
                             .team(projectPost.getTeam())
                             .title(projectPost.getTitle())
                             .simpleDescription(projectPost.getSimpleDescription())
+                            .hits(projectPost.getHits())
+                            .createdAt(projectPost.getCreatedAt())
                             .thumbnail(thumbnail)
                             .build();
                 })
@@ -72,6 +77,7 @@ public class HomeService {
 
         return clubPosts.stream()
                 .map(clubPost -> ClubPostRes.builder()
+                        .id(clubPost.getId())
                         .title(clubPost.getTitle())
                         .description(clubPost.getDetailedDescription())
                         .thumbnail(clubPost.getClubPostImages().stream()

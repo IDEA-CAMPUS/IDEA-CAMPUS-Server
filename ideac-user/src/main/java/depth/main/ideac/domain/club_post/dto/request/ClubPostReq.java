@@ -1,12 +1,13 @@
-package depth.main.ideac.domain.club_post.dto;
+package depth.main.ideac.domain.club_post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClubPostReq {
@@ -22,5 +23,4 @@ public class ClubPostReq {
 
     private String url2;
 
-    // 이미지 path는 추후 추가
 }

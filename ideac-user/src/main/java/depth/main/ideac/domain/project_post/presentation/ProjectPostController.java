@@ -114,4 +114,11 @@ public class ProjectPostController {
         projectPostService.deleteProject(userPrincipal.getId(), projectId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "권한 확인", description = "프로젝트 수정/삭제 권한을 확인하는 API입니다. true: 가능, false: 불가능")
+    @GetMapping("/check/{id}")
+    private boolean checkPermission(@CurrentUser UserPrincipal userPrincipal,
+                                    @PathVariable Long id) {
+        return projectPostService.isAdminOrWriter(id, userPrincipal.getId()); // true: 권한있음
+    }
 }

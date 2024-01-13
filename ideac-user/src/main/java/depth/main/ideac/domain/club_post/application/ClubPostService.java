@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,8 +108,10 @@ public class ClubPostService {
 
     // 글 수정
     @Transactional
-    public void updateClubPost(Long clubPostId, UpdateClubPostReq updateClubPostReq, List<MultipartFile> images) throws IOException {
-
+    public void updateClubPost(Long clubPostId, Long userId, UpdateClubPostReq updateClubPostReq, List<MultipartFile> images) throws IOException {
+        if (!isAdminOrWriter(clubPostId, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         ClubPost clubPost = clubPostRepository.findById(clubPostId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
 
@@ -123,7 +126,10 @@ public class ClubPostService {
 
     // 글 삭제
     @Transactional
-    public void deleteClubPost(Long clubPostId) {
+    public void deleteClubPost(Long clubPostId, Long userId) {
+        if (!isAdminOrWriter(clubPostId, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         ClubPost clubPost = clubPostRepository.findById(clubPostId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
         this.deleteFile(clubPostId);

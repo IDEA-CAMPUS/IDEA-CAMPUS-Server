@@ -3,12 +3,10 @@ package depth.main.ideac.domain.auth.presentation;
 
 import depth.main.ideac.domain.admin.application.AdminService;
 import depth.main.ideac.domain.auth.application.AuthService;
-import depth.main.ideac.domain.auth.dto.AuthRes;
-import depth.main.ideac.domain.auth.dto.FindIdReq;
-import depth.main.ideac.domain.auth.dto.SignInReq;
-import depth.main.ideac.domain.auth.dto.SignUpReq;
-import depth.main.ideac.domain.user.application.UserService;
-import depth.main.ideac.domain.user.domain.User;
+import depth.main.ideac.domain.auth.dto.response.AuthRes;
+import depth.main.ideac.domain.auth.dto.request.FindIdReq;
+import depth.main.ideac.domain.auth.dto.request.SignInReq;
+import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +20,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API", description = "Authorization 관련 API입니다.")
@@ -66,4 +63,15 @@ public class AuthController {
         return authService.findId(findIdReq);
     }
 
+    @Operation(summary = "비밀번호 바꾸기", description = "비밀번호를 바꾼다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 바꾸기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "비밀번호 바꾸기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @PostMapping(value = "/change-password/{code}")
+    public ResponseEntity<?> changePassword(@Parameter(description = "Schemas의 PassWordReq를 참고해주세요.")
+                                            @Valid @RequestBody PasswordReq passwordReq,
+                                            @PathVariable String code) {
+        return authService.changePassword(passwordReq,code);
+    }
 }

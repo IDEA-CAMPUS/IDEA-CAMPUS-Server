@@ -43,19 +43,12 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
-        if(userOptional.isPresent()) {
-            user = userOptional.get();
-            DefaultAssert.isAuthentication(user.getProvider().equals(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId())));
-//            user = updateExistingUser(user, oAuth2UserInfo);
-        } else {
-            user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
-            log.info("통과1");
-
-        }
+        user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
+    // oauth2 회원 등록
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         User user = User.builder()
                     .provider(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
@@ -67,12 +60,4 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
                     .build();
         return userRepository.save(user);
     }
-
-//    private User updateExistingUser(User user, OAuth2UserInfo oAuth2UserInfo) {
-////        추후 사용시 바뀔예정인 함수
-////        user.updateName(oAuth2UserInfo.getName());
-////        user.updateImageUrl(oAuth2UserInfo.getImageUrl());
-//
-//        return userRepository.save(user);
-//    }
 }

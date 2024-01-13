@@ -23,17 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    @Operation(summary = "메일 보내기", description = "비밀번호를 찾기위해 메일을 보낸다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "비밀번호 바꾸기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
-            @ApiResponse(responseCode = "400", description = "비밀번호 바꾸기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
-    })
-    @PostMapping(value = "/change-password/{code}")
-            public ResponseEntity<?> changePassword(@Parameter(description = "Schemas의 PassWordReq를 참고해주세요.")
-                                                        @Valid @RequestBody PasswordReq passwordReq,
-                                                    @PathVariable String code) {
-        return userService.changePassword(passwordReq,code);
-    }
 
     @Operation(summary = "로그아웃", description = "로그아웃 API입니다.")
     @ApiResponses(value = {

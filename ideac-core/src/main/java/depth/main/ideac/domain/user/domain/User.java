@@ -27,7 +27,6 @@ public class User extends BaseEntity {
     private Long id;
 
     @Email(message = "이메일 형식이어야 합니다.")
-    // @Pattern
     @NotBlank(message = "이메일이 입력되지 않았습니다.")
     private String email;
 

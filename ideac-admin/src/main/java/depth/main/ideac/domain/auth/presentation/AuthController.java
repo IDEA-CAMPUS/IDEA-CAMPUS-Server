@@ -6,7 +6,7 @@ import depth.main.ideac.domain.auth.application.AuthService;
 import depth.main.ideac.domain.auth.dto.response.AuthRes;
 import depth.main.ideac.domain.auth.dto.request.FindIdReq;
 import depth.main.ideac.domain.auth.dto.request.SignInReq;
-import depth.main.ideac.domain.user.dto.PasswordReq;
+import depth.main.ideac.domain.auth.dto.request.PasswordReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;

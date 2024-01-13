@@ -31,7 +31,7 @@ jobs:
       - name: Set IDEAC-CORE YML
         run: |
           mkdir -p ideac-core/src/main/resources
-          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application-mail.yml
           mkdir -p ideac-core/src/main/resources/oauth2
           echo "${{ secrets.APPLICATION_OAUTH2_YML }}" | base64 --decode > ideac-core/src/main/resources/oauth2/application-oauth2.yml
 
@@ -89,7 +89,7 @@ jobs:
       - name: Set IDEAC-CORE YML
         run: |
           mkdir -p ideac-core/src/main/resources
-          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_MAIL_YML }}" | base64 --decode > ideac-core/src/main/resources/application-mail.yml
           mkdir -p ideac-core/src/main/resources/oauth2
           echo "${{ secrets.APPLICATION_OAUTH2_YML }}" | base64 --decode > ideac-core/src/main/resources/oauth2/application-oauth2.yml
 

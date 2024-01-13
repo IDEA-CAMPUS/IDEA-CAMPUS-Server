@@ -97,8 +97,8 @@ public class ProjectPostController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @Operation(summary = "프로젝트 수정", description = "프로젝트 게시글 한 건을 삭제하는 API입니다.")
-    @PutMapping("/{project-id}")
+    @Operation(summary = "프로젝트 수정", description = "프로젝트 게시글 한 건을 수정하는 API입니다.")
+    @PutMapping(path = "/{project-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProject(@CurrentUser UserPrincipal userPrincipal,
                                            @PathVariable("project-id") Long projectId,
                                            @Valid @RequestPart PostProjectReq updateProjectReq,

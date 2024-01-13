@@ -44,12 +44,4 @@ public class IdeaPost extends BaseEntity {
     private User user;
 
     private Long hits;
-
-//    public void updateIdea(UpdateIdeaReq updateIdeaReq) {
-//        this.title = updateIdeaReq.getTitle();
-//        this.simpleDescription = updateIdeaReq.getSimpleDescription();
-//        this.detailedDescription = updateIdeaReq.getDetailedDescription();
-//        this.url1 = updateIdeaReq.getUrl1();
-//        this.url2 = updateIdeaReq.getUrl2();
-//    }
 }

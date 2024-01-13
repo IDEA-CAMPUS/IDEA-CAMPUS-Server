@@ -10,6 +10,7 @@ import depth.main.ideac.global.payload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/project")
 @RequiredArgsConstructor
+@Tag(name = "ProjectPost API", description = "프로젝트 갤러리 관련 API입니다.")
 public class ProjectPostController {
 
     private final ProjectPostService projectPostService;

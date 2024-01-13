@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.project_post.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Schema(description = "프로젝트 목록 조회 Response")
 public class ProjectRes {
     private Long id;
     private boolean booleanWeb;

@@ -64,9 +64,6 @@ public class IdeaPostService {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         String[] split = ideaPost.getKeyword().split(",");
-//        for (String s : split) {
-//            System.out.println("s = " + s);
-//        }
         List<String> list = Arrays.asList(split);
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
                 .id(ideaPost.getId())
@@ -85,7 +82,6 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(getDetailIdeaRes)
-                .message("상세내용을 가져왔습니다.")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -105,7 +101,6 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("아이디어가 업데이트 되었습니다.!")
                 .build();
 
         return ResponseEntity.ok(apiResponse);
@@ -118,7 +113,6 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("아이디어가 삭제되었습니다.")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -147,7 +141,6 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(getAllIdeasRes)
-                .message("조회목록들입니다.")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

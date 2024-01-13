@@ -14,7 +14,7 @@ import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
-import depth.main.ideac.domain.user.dto.PasswordReq;
+import depth.main.ideac.domain.auth.dto.request.PasswordReq;
 import depth.main.ideac.global.DefaultAssert;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
@@ -52,6 +52,8 @@ public class AuthService {
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
 
+        DefaultAssert.isTrue(signUpRequest.getPassword().equals(signUpRequest.getCheckPassword()), "비밀번호가 서로 다릅니다.");
+
         User user = User.builder()
                         .email(signUpRequest.getIdEmail())
                         .password(passwordEncoder.encode(signUpRequest.getPassword()))
@@ -80,7 +82,6 @@ public class AuthService {
     //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
-        System.out.println("signInReq.getEmail() = " + signInReq.getEmail());
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
 

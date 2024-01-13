@@ -1,7 +1,6 @@
 package depth.main.ideac.domain.user.presentation;
 
 import depth.main.ideac.domain.user.application.UserService;
-import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ErrorResponse;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -6,6 +6,7 @@ import depth.main.ideac.domain.auth.dto.res.AuthRes;
 import depth.main.ideac.domain.auth.dto.req.FindIdReq;
 import depth.main.ideac.domain.auth.dto.req.SignInReq;
 import depth.main.ideac.domain.auth.dto.req.SignUpReq;
+import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -82,6 +83,18 @@ public class AuthController {
     public ResponseEntity<?> doubleCheckEmail(@PathVariable(value = "email") String email){
 
         return authService.doubleCheckEmail(email);
+    }
+
+    @Operation(summary = "비밀번호 바꾸기", description = "비밀번호를 바꾼다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 바꾸기 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "비밀번호 바꾸기 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @PostMapping(value = "/change-password/{code}")
+    public ResponseEntity<?> changePassword(@Parameter(description = "Schemas의 PassWordReq를 참고해주세요.")
+                                            @Valid @RequestBody PasswordReq passwordReq,
+                                            @PathVariable String code) {
+        return authService.changePassword(passwordReq,code);
     }
 
 

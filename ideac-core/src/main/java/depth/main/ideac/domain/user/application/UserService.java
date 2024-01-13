@@ -30,38 +30,7 @@ import java.util.Optional;
 public class UserService {
     private final MailRepository mailRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
-    @Transactional
-    public ResponseEntity<?> changePassword(@Valid PasswordReq passwordReq, String code){
-
-        //검증
-        DefaultAssert.isTrue(passwordReq.getPassword().equals(passwordReq.getRePassword()), "비밀번호가 서로 다릅니다.");
-        //만료시간 검증
-        Verify verify = mailRepository.findByCode(code);
-
-        if (verify == null){
-            throw new DefaultException(ErrorCode.INVALID_CHECK, "이미변경되었습니다.");
-        }
-
-        DefaultAssert.isTrue(verify.checkExpiration(LocalDateTime.now()), "만료되었습니다.");
-
-        Optional<User> findUser = userRepository.findByEmail(verify.getEmail());
-
-        User user = findUser.get();
-        user.updatePassWord(passwordEncoder.encode(passwordReq.getPassword()));
-
-        // 인증완료 후 삭제
-        mailRepository.delete(verify);
-
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(null)
-                .message("비밀번호를 바꾸었습니다.")
-                .build();
-
-        return ResponseEntity.ok(apiResponse);
-    }
 
     @Transactional
     public ResponseEntity<?> deleteUser(UserPrincipal userPrincipal) {

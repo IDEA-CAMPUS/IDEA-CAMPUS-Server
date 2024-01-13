@@ -94,11 +94,7 @@ public class IdeaPostService {
     @Transactional
     public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
-        String[] split = updateIdeaReq.getKeyWord().split(",");
-//        for (String s : split) {
-//            System.out.println("s = " + s);
-//        }
-        List<String> list = Arrays.asList(split);
+
         ideaPost.setTitle(updateIdeaReq.getTitle());
         ideaPost.setKeyword(updateIdeaReq.getKeyWord());
         ideaPost.setSimpleDescription(updateIdeaReq.getSimpleDescription());

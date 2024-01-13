@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +59,7 @@ public class IdeaPostService {
         return ideapost.getId();
     }
 
-    //상세아디이어 조회
+    //상세 조회
     @Transactional
     public ResponseEntity<?> getDetailIdea(Long id) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
@@ -88,7 +89,10 @@ public class IdeaPostService {
 
     //아이디어 수정
     @Transactional
-    public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
+    public ResponseEntity<?> updateIdea(Long id, Long userId,  UpdateIdeaReq updateIdeaReq) {
+        if (!isAdminOrWriter(id, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         ideaPost.setTitle(updateIdeaReq.getTitle());
@@ -107,7 +111,10 @@ public class IdeaPostService {
     }
     //아이디어 삭제
     @Transactional
-    public ResponseEntity<?> deleteIdea(Long id) {
+    public ResponseEntity<?> deleteIdea(Long id, Long userId) {
+        if (!isAdminOrWriter(id, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
         ideaPostRepository.delete(ideaPost);
         ApiResponse apiResponse = ApiResponse.builder()

@@ -80,8 +80,7 @@ public class IdeaPostController {
     public ResponseEntity<?> updateIdea(@CurrentUser UserPrincipal userPrincipal,
                                         @PathVariable Long id,
                                         @Valid @RequestBody UpdateIdeaReq updateIdeaReq) {
-        checkPermission(id, userPrincipal.getId());
-        return ideaPostService.updateIdea(id, updateIdeaReq);
+        return ideaPostService.updateIdea(id, userPrincipal.getId(), updateIdeaReq);
     }
 
     @Operation(summary = "글 삭제", description = "아이디어의 글을 삭제한다.")
@@ -92,13 +91,13 @@ public class IdeaPostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteIdea(@CurrentUser UserPrincipal userPrincipal,
                                         @PathVariable Long id) {
-        checkPermission(id, userPrincipal.getId());
-        return ideaPostService.deleteIdea(id);
+        return ideaPostService.deleteIdea(id, userPrincipal.getId());
     }
 
-    private void checkPermission(Long clubPostId, Long userId) {
-        if (!ideaPostService.isAdminOrWriter(clubPostId, userId)) {
-            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
-        }
+    @Operation(summary = "권한 확인", description = "아이디어 수정/삭제 권한을 확인하는 API입니다. true: 가능, false: 불가능")
+    @GetMapping("/check/{id}")
+    private boolean checkPermission(@CurrentUser UserPrincipal userPrincipal,
+                                    @PathVariable Long id) {
+        return ideaPostService.isAdminOrWriter(id, userPrincipal.getId()); // true: 권한있음
     }
 }

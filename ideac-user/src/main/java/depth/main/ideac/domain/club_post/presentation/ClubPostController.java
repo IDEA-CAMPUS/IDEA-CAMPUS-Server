@@ -68,7 +68,6 @@ public class ClubPostController {
 
     // 글 등록하기
     @Operation(summary = "글 등록", description = "동아리/학회 글을 등록하는 API입니다.")
-    // @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'OWNER')")
     @PostMapping
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
                                             @Valid @RequestPart ClubPostReq clubPostReq,
@@ -87,36 +86,23 @@ public class ClubPostController {
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
                                             @Valid @RequestPart UpdateClubPostReq updateClubPostReq,
                                             @RequestPart("images") List<MultipartFile> images) throws IOException {
-
-        checkPermission(id, userPrincipal.getId());
-
-        clubPostService.updateClubPost(id, updateClubPostReq, images);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("글이 수정되었습니다.")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        clubPostService.updateClubPost(id, userPrincipal.getId(), updateClubPostReq, images);
+        return ResponseEntity.ok().build();
     }
 
     // 글 삭제하기
     @Operation(summary = "글 삭제", description = "동아리/학회 글을 삭제하는 API입니다.")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id) {
-
-        checkPermission(id, userPrincipal.getId());
-
-        clubPostService.deleteClubPost(id);
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information("글이 삭제되었습니다.")
-                .build();
-        return ResponseEntity.ok(apiResponse);
+        clubPostService.deleteClubPost(id, userPrincipal.getId());
+        return ResponseEntity.ok().build();
     }
 
-    private void checkPermission(Long clubPostId, Long userId) {
-        if (!clubPostService.isAdminOrWriter(clubPostId, userId)) {
-            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
-        }
+    @Operation(summary = "권한 확인", description = "동아리/학회 수정/삭제 권한을 확인하는 API입니다. true: 가능, false: 불가능")
+    @GetMapping("/check/{id}")
+    private boolean checkPermission(@CurrentUser UserPrincipal userPrincipal,
+                                    @PathVariable Long id) {
+        return clubPostService.isAdminOrWriter(id, userPrincipal.getId()); // true: 권한있음
     }
 
 }

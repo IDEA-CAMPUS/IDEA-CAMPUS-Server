@@ -172,12 +172,12 @@ public class ProjectPostService {
 
     @Transactional
     public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq, List<MultipartFile> images) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
-        ProjectPost projectPost = projectPostRepository.findById(projectId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
-        if (user.getRole() != Role.OWNER && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+        if (!isAdminOrWriter(projectId, userId)) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+
         projectPost.setTitle(updateProjectReq.getTitle());
         projectPost.setSimpleDescription(updateProjectReq.getSimpleDescription());
         projectPost.setDetailedDescription(updateProjectReq.getDetailedDescription());
@@ -194,10 +194,7 @@ public class ProjectPostService {
 
     @Transactional
     public void deleteProject(Long userId, Long projectId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
-        ProjectPost projectPost = projectPostRepository.findById(projectId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
-        if (user.getRole() != Role.OWNER && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+        if (!isAdminOrWriter(projectId, userId)) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
         this.deleteFile(projectId);
@@ -262,5 +259,13 @@ public class ProjectPostService {
         }
 
         System.out.println("projectPost hits update complete");
+    }
+
+    public boolean isAdminOrWriter(Long projectId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+
+        return user.getRole() == Role.OWNER || user.getRole() == Role.ADMIN || userId.equals(projectPost.getUser().getId());
     }
 }

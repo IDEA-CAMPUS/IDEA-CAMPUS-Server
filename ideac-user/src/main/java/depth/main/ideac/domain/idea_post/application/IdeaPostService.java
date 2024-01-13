@@ -1,7 +1,8 @@
 package depth.main.ideac.domain.idea_post.application;
 
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.request.*;
+import depth.main.ideac.domain.idea_post.dto.request.RegisterIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.request.UpdateIdeaReq;
 import depth.main.ideac.domain.idea_post.dto.response.GetAllIdeasRes;
 import depth.main.ideac.domain.idea_post.dto.response.GetDetailIdeaRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,7 @@ public class IdeaPostService {
     private final UserRepository userRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
+    //아이디어 등록
     @Transactional
     public Long registerIdea(UserPrincipal userPrincipal, RegisterIdeaReq registerIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
@@ -56,14 +59,12 @@ public class IdeaPostService {
         return ideapost.getId();
     }
 
+    //상세 조회
     @Transactional
     public ResponseEntity<?> getDetailIdea(Long id) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
         String[] split = ideaPost.getKeyword().split(",");
-//        for (String s : split) {
-//            System.out.println("s = " + s);
-//        }
         List<String> list = Arrays.asList(split);
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
                 .id(ideaPost.getId())
@@ -82,19 +83,18 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(getDetailIdeaRes)
-                .message("상세내용을 가져왔어요!")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
 
+    //아이디어 수정
     @Transactional
-    public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
+    public ResponseEntity<?> updateIdea(Long id, Long userId,  UpdateIdeaReq updateIdeaReq) {
+        if (!isAdminOrWriter(id, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
-        String[] split = updateIdeaReq.getKeyWord().split(",");
-//        for (String s : split) {
-//            System.out.println("s = " + s);
-//        }
-        List<String> list = Arrays.asList(split);
+
         ideaPost.setTitle(updateIdeaReq.getTitle());
         ideaPost.setKeyword(updateIdeaReq.getKeyWord());
         ideaPost.setSimpleDescription(updateIdeaReq.getSimpleDescription());
@@ -105,23 +105,26 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("업데이트 했어요!")
                 .build();
 
         return ResponseEntity.ok(apiResponse);
     }
+    //아이디어 삭제
     @Transactional
-    public ResponseEntity<?> deleteIdea(Long id) {
+    public ResponseEntity<?> deleteIdea(Long id, Long userId) {
+        if (!isAdminOrWriter(id, userId)) {
+            throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
+        }
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
         ideaPostRepository.delete(ideaPost);
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("삭제 했어요!")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
 
+    //모든 아이디어들 조회
     public ResponseEntity<?> getAllIdea(int page, int size, String sortBy) {
         Pageable pageable;
         if (sortBy.equals("hits")) {
@@ -145,11 +148,11 @@ public class IdeaPostService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(getAllIdeasRes)
-                .message("조회목록들이에요")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
 
+    //권한 검증
     public boolean isAdminOrWriter(Long ideaId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));

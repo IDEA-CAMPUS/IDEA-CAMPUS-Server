@@ -13,9 +13,8 @@ import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ErrorCode;
-import depth.main.ideac.global.service.FileService;
+import depth.main.ideac.global.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -35,7 +34,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ProjectPostService {
 
-    private final FileService fileService;
+    private final S3Service s3Service;
     private final ProjectPostRepository projectPostRepository;
     private final ProjectPostImageRepository projectPostImageRepository;
     private final UserRepository userRepository;
@@ -173,12 +172,12 @@ public class ProjectPostService {
 
     @Transactional
     public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq, List<MultipartFile> images) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
-        ProjectPost projectPost = projectPostRepository.findById(projectId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
-        if (user.getRole() != Role.OWNER && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+        if (!isAdminOrWriter(projectId, userId)) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+
         projectPost.setTitle(updateProjectReq.getTitle());
         projectPost.setSimpleDescription(updateProjectReq.getSimpleDescription());
         projectPost.setDetailedDescription(updateProjectReq.getDetailedDescription());
@@ -195,10 +194,7 @@ public class ProjectPostService {
 
     @Transactional
     public void deleteProject(Long userId, Long projectId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
-        ProjectPost projectPost = projectPostRepository.findById(projectId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
-        if (user.getRole() != Role.OWNER && user.getRole() != Role.ADMIN && !userId.equals(projectPost.getUser().getId())) {
+        if (!isAdminOrWriter(projectId, userId)) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "삭제 권한이 없습니다.");
         }
         this.deleteFile(projectId);
@@ -212,16 +208,16 @@ public class ProjectPostService {
         boolean isFirstImage = true;
 
         for (MultipartFile image : images) {
-            String s3ImageKey = fileService.uploadFile(image, getClass().getSimpleName());
+            String s3key = s3Service.uploadFile(image, getClass().getSimpleName());
 
             // 첫 번째 이미지인 경우에만 thumbnail로 설정
             boolean isThumbnail = isFirstImage;
             isFirstImage = false;
 
             projectPostImages.add(ProjectPostImage.builder()
-                    .imagePath(fileService.getUrl(s3ImageKey))
+                    .imagePath(s3Service.getUrl(s3key))
                     .isThumbnail(isThumbnail)
-                    .s3key(s3ImageKey)
+                    .s3key(s3key)
                     .projectPost(projectPost)
                     .build());
         }
@@ -232,7 +228,7 @@ public class ProjectPostService {
     public void deleteFile(Long projectId){
         List<ProjectPostImage> images = projectPostImageRepository.findByProjectPostId(projectId);
         for(ProjectPostImage image : images) {
-            fileService.deleteFile(image.getS3key()); //s3 삭제
+            s3Service.deleteFile(image.getS3key()); //s3 삭제
             projectPostImageRepository.deleteById(image.getId()); //엔티티 삭제
         }
     }
@@ -263,5 +259,13 @@ public class ProjectPostService {
         }
 
         System.out.println("projectPost hits update complete");
+    }
+
+    public boolean isAdminOrWriter(Long projectId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        ProjectPost projectPost = projectPostRepository.findById(projectId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
+
+        return user.getRole() == Role.OWNER || user.getRole() == Role.ADMIN || userId.equals(projectPost.getUser().getId());
     }
 }

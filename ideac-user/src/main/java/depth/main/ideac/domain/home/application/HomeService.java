@@ -28,6 +28,7 @@ public class HomeService {
     private final IdeaPostRepository ideaPostRepository;
     private final ProjectPostRepository projectPostRepository;
 
+    // 아이디어
     public List<GetAllIdeasRes> getIdeas() {
         List<IdeaPost> ideaPosts = ideaPostRepository.findTop3ByOrderByCreatedAtDesc();
 

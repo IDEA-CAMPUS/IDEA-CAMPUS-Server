@@ -3,16 +3,26 @@ package depth.main.ideac.domain.auth.application;
 import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
 import depth.main.ideac.domain.auth.dto.*;
+import depth.main.ideac.domain.auth.dto.request.FindIdReq;
+import depth.main.ideac.domain.auth.dto.request.RefreshTokenReq;
+import depth.main.ideac.domain.auth.dto.request.SignInReq;
+import depth.main.ideac.domain.auth.dto.request.SignUpReq;
+import depth.main.ideac.domain.auth.dto.response.AuthRes;
+import depth.main.ideac.domain.mail.domain.Verify;
+import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
+import depth.main.ideac.domain.auth.dto.request.PasswordReq;
 import depth.main.ideac.global.DefaultAssert;
 import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
 import depth.main.ideac.global.payload.ErrorCode;
 import depth.main.ideac.global.payload.Message;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,12 +30,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
@@ -34,13 +47,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final MailRepository mailRepository;
 
     // 회원가입 하기
     public ResponseEntity<?> signUp(SignUpReq signUpRequest){
 
-//        //검증
-//        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpRequest.getIdEmail()), "해당 이메일이 존재합니다.");
-//        DefaultAssert.isTrue(!userRepository.existsByNickname(signUpRequest.getNickname()), "이미 존재하는 닉네임입니다.");
+        DefaultAssert.isTrue(signUpRequest.getPassword().equals(signUpRequest.getCheckPassword()), "비밀번호가 서로 다릅니다.");
 
         User user = User.builder()
                         .email(signUpRequest.getIdEmail())
@@ -70,7 +82,6 @@ public class AuthService {
     //로그인 하기
     public ResponseEntity<?> signIn(SignInReq signInReq){
 
-
         Optional<User> user = userRepository.findByEmail(signInReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "이메일이 틀렸습니다.");
 
@@ -78,7 +89,6 @@ public class AuthService {
         if (findUser.getStatus() == Status.SUSPENDED || findUser.getStatus() == Status.DELETE){
             throw new DefaultException(ErrorCode.INVALID_CHECK, "정지되었거나 탈퇴된 유저입니다.");
         }
-
 
         boolean checkPassword = passwordEncoder.matches(signInReq.getPassword(), findUser.getPassword());
         DefaultAssert.isTrue(checkPassword, "비밀번호가 틀렸습니다");
@@ -89,7 +99,6 @@ public class AuthService {
                     signInReq.getPassword()
             )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TokenMapping tokenMapping = customTokenProviderService.createToken(authentication);
@@ -103,20 +112,20 @@ public class AuthService {
         AuthRes authResponse = AuthRes.builder()
                 .accessToken(tokenMapping.getAccessToken())
                 .refreshToken(token.getRefreshToken()).build();
-
         return ResponseEntity.ok(authResponse);
     }
 
     // 핸드폰번호로 아이디(이메일) 찾기
     public ResponseEntity<?> findId(FindIdReq findIdReq) {
+        System.out.println("findIdReq.getPhoneNumber() = " + findIdReq.getPhoneNumber());
         Optional<User> findUser = userRepository.findByPhoneNumber(findIdReq.getPhoneNumber());
         DefaultAssert.isTrue(findUser.isPresent(), "해당이메일을 갖고 있는 유저가 없습니다.");
-
+        
         User user = findUser.get();
+        System.out.println("user.getEmail() = " + user.getEmail());
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(user.getEmail())
-                .message("가입하신 아이디를 찾아왔어요!")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -164,21 +173,51 @@ public class AuthService {
         return true;
     }
 
+    // 닉네임 중복검증
     public ResponseEntity<?> doubleCheckNickname(String nickname) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(userRepository.findByNickname(nickname).isEmpty())
-                .message("닉네임 검증 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 이메일 중복검증
     public ResponseEntity<?> doubleCheckEmail(String email) {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(userRepository.findByEmail(email).isEmpty())
-                .message("이메일 검증 완료")
                 .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @Transactional
+    public ResponseEntity<?> changePassword(@Valid PasswordReq passwordReq, String code){
+
+        //검증
+        DefaultAssert.isTrue(passwordReq.getPassword().equals(passwordReq.getRePassword()), "비밀번호가 서로 다릅니다.");
+        //만료시간 검증
+        Verify verify = mailRepository.findByCode(code);
+
+        if (verify == null){
+            throw new DefaultException(ErrorCode.INVALID_CHECK, "이미변경되었습니다.");
+        }
+
+        DefaultAssert.isTrue(verify.checkExpiration(LocalDateTime.now()), "만료되었습니다.");
+
+        Optional<User> findUser = userRepository.findByEmail(verify.getEmail());
+
+        User user = findUser.get();
+        user.updatePassWord(passwordEncoder.encode(passwordReq.getPassword()));
+
+        // 인증완료 후 삭제
+        mailRepository.delete(verify);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(null)
+                .build();
+
         return ResponseEntity.ok(apiResponse);
     }
 }

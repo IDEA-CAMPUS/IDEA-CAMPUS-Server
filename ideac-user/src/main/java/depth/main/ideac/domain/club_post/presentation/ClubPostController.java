@@ -1,10 +1,10 @@
 package depth.main.ideac.domain.club_post.presentation;
 
 import depth.main.ideac.domain.club_post.application.ClubPostService;
-import depth.main.ideac.domain.club_post.dto.ClubPostDetailRes;
-import depth.main.ideac.domain.club_post.dto.ClubPostReq;
-import depth.main.ideac.domain.club_post.dto.ClubPostRes;
-import depth.main.ideac.domain.club_post.dto.UpdateClubPostReq;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostDetailRes;
+import depth.main.ideac.domain.club_post.dto.request.ClubPostReq;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
+import depth.main.ideac.domain.club_post.dto.request.UpdateClubPostReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
@@ -38,7 +38,7 @@ public class ClubPostController {
     @Operation(summary = "글 전체 조회", description = "동아리/학회 페이지의 글을 전체 조회하는 API입니다.")
     @GetMapping
     public ResponseEntity<?> getAllClubPosts(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size) {
+                                             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ClubPostRes> posts = clubPostService.getAllClubPosts(pageable);
 

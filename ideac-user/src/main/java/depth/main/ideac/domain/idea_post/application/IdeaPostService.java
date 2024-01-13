@@ -1,7 +1,9 @@
 package depth.main.ideac.domain.idea_post.application;
 
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.*;
+import depth.main.ideac.domain.idea_post.dto.request.*;
+import depth.main.ideac.domain.idea_post.dto.response.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.response.GetDetailIdeaRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
@@ -22,10 +24,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +39,7 @@ public class IdeaPostService {
     @Transactional
     public Long registerIdea(UserPrincipal userPrincipal, RegisterIdeaReq registerIdeaReq){
         User user = userRepository.findById(userPrincipal.getId()).get();
+
         IdeaPost ideapost = IdeaPost.builder()
                 .title(registerIdeaReq.getTitle())
                 .keyword(registerIdeaReq.getKeyword())
@@ -60,16 +60,23 @@ public class IdeaPostService {
     public ResponseEntity<?> getDetailIdea(Long id) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
 
+        String[] split = ideaPost.getKeyword().split(",");
+//        for (String s : split) {
+//            System.out.println("s = " + s);
+//        }
+        List<String> list = Arrays.asList(split);
         GetDetailIdeaRes getDetailIdeaRes = GetDetailIdeaRes.builder()
+                .id(ideaPost.getId())
                 .color(ideaPost.getUser().getColor())
                 .nickName(ideaPost.getUser().getNickname())
                 .title(ideaPost.getTitle())
                 .simpleDescription(ideaPost.getSimpleDescription())
-                .keyWord(ideaPost.getKeyword())
+                .keyWord(list)
                 .detailedDescription(ideaPost.getDetailedDescription())
                 .url1(ideaPost.getUrl1())
                 .url2(ideaPost.getUrl2())
                 .hits(ideaPost.getHits())
+                .createdAt(ideaPost.getCreatedAt())
                 .build();
 
         ApiResponse apiResponse = ApiResponse.builder()
@@ -83,7 +90,11 @@ public class IdeaPostService {
     @Transactional
     public ResponseEntity<?> updateIdea(Long id, UpdateIdeaReq updateIdeaReq) {
         IdeaPost ideaPost = ideaPostRepository.findById(id).get();
-
+        String[] split = updateIdeaReq.getKeyWord().split(",");
+//        for (String s : split) {
+//            System.out.println("s = " + s);
+//        }
+        List<String> list = Arrays.asList(split);
         ideaPost.setTitle(updateIdeaReq.getTitle());
         ideaPost.setKeyword(updateIdeaReq.getKeyWord());
         ideaPost.setSimpleDescription(updateIdeaReq.getSimpleDescription());
@@ -120,12 +131,15 @@ public class IdeaPostService {
         }
         Page<IdeaPost> pageResult = ideaPostRepository.findAll(pageable);
         List<GetAllIdeasRes> getAllIdeasRes = pageResult.getContent().stream()
-                .map(tmp -> new GetAllIdeasRes(
-                        tmp.getUser().getColor(),
-                        tmp.getUser().getNickname(),
-                        tmp.getTitle(),
-                        tmp.getSimpleDescription(),
-                        tmp.getKeyword()))
+                .map(tmp -> GetAllIdeasRes.builder()
+                                .id(tmp.getId())
+                                .color(tmp.getUser().getColor())
+                                .nickName(tmp.getUser().getNickname())
+                                .title(tmp.getTitle())
+                                .simpleDescription(tmp.getSimpleDescription())
+                                .keyword(Arrays.asList(tmp.getKeyword().split(",")))
+                                .hits(tmp.getHits())
+                                .createdAt(tmp.getCreatedAt()).build())
                 .collect(Collectors.toList());
 
         ApiResponse apiResponse = ApiResponse.builder()
@@ -138,10 +152,10 @@ public class IdeaPostService {
 
     public boolean isAdminOrWriter(Long ideaId, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
         IdeaPost ideaPost = ideaPostRepository.findById(ideaId)
-                .orElseThrow(() -> new DefaultException(ErrorCode.INVALID_PARAMETER));
+                .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND));
 
         boolean isAdmin = user.getRole() == Role.ADMIN || user.getRole() == Role.OWNER ;
         boolean isWriter = ideaPost.getUser().getId().equals(userId);

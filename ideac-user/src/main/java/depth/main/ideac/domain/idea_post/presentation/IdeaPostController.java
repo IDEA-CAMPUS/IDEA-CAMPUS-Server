@@ -1,8 +1,8 @@
 package depth.main.ideac.domain.idea_post.presentation;
 
 import depth.main.ideac.domain.idea_post.application.IdeaPostService;
-import depth.main.ideac.domain.idea_post.dto.req.RegisterIdeaReq;
-import depth.main.ideac.domain.idea_post.dto.req.UpdateIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.request.RegisterIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.request.UpdateIdeaReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ErrorResponse;

@@ -1,10 +1,10 @@
 package depth.main.ideac.domain.idea_post.application;
 
 import depth.main.ideac.domain.idea_post.IdeaPost;
-import depth.main.ideac.domain.idea_post.dto.req.RegisterIdeaReq;
-import depth.main.ideac.domain.idea_post.dto.req.UpdateIdeaReq;
-import depth.main.ideac.domain.idea_post.dto.res.GetAllIdeasRes;
-import depth.main.ideac.domain.idea_post.dto.res.GetDetailIdeaRes;
+import depth.main.ideac.domain.idea_post.dto.request.RegisterIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.request.UpdateIdeaReq;
+import depth.main.ideac.domain.idea_post.dto.response.GetAllIdeasRes;
+import depth.main.ideac.domain.idea_post.dto.response.GetDetailIdeaRes;
 import depth.main.ideac.domain.idea_post.repository.IdeaPostRepository;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;

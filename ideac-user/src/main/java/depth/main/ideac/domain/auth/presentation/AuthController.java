@@ -2,10 +2,10 @@ package depth.main.ideac.domain.auth.presentation;
 
 
 import depth.main.ideac.domain.auth.application.AuthService;
-import depth.main.ideac.domain.auth.dto.res.AuthRes;
-import depth.main.ideac.domain.auth.dto.req.FindIdReq;
-import depth.main.ideac.domain.auth.dto.req.SignInReq;
-import depth.main.ideac.domain.auth.dto.req.SignUpReq;
+import depth.main.ideac.domain.auth.dto.response.AuthRes;
+import depth.main.ideac.domain.auth.dto.request.FindIdReq;
+import depth.main.ideac.domain.auth.dto.request.SignInReq;
+import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.payload.ErrorResponse;
 import depth.main.ideac.global.payload.Message;
@@ -47,7 +47,6 @@ public class AuthController {
     @PostMapping(value = "/sign-in")
     public ResponseEntity<?> signIn(@Parameter(description = "Schemas의 SignInRequest를 참고해주세요.")
                                     @Valid @RequestBody SignInReq signInReq){
-        System.out.println("\"zzz\" = " + "zzz");
 
         return authService.signIn(signInReq);
     }

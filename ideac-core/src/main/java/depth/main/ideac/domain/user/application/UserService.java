@@ -2,26 +2,19 @@ package depth.main.ideac.domain.user.application;
 
 import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
-import depth.main.ideac.domain.auth.dto.req.SignUpReq;
-import depth.main.ideac.domain.mail.domain.Verify;
+import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.Status;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
-import depth.main.ideac.domain.user.dto.PasswordReq;
 import depth.main.ideac.global.DefaultAssert;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
-import depth.main.ideac.global.error.DefaultException;
 import depth.main.ideac.global.payload.ApiResponse;
-import depth.main.ideac.global.payload.ErrorCode;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service

@@ -1,4 +1,4 @@
-package depth.main.ideac.domain.auth.dto.req;
+package depth.main.ideac.domain.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

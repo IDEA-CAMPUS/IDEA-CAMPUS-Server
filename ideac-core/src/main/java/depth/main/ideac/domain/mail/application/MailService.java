@@ -62,7 +62,6 @@ public class MailService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(verify.getCode())
-                .message("메일을 보냈어요!")
                 .build();
 
         return ResponseEntity.ok(apiResponse);

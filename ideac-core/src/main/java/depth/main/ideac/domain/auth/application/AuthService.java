@@ -3,11 +3,11 @@ package depth.main.ideac.domain.auth.application;
 import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
 import depth.main.ideac.domain.auth.dto.*;
-import depth.main.ideac.domain.auth.dto.req.FindIdReq;
-import depth.main.ideac.domain.auth.dto.req.RefreshTokenReq;
-import depth.main.ideac.domain.auth.dto.req.SignInReq;
-import depth.main.ideac.domain.auth.dto.req.SignUpReq;
-import depth.main.ideac.domain.auth.dto.res.AuthRes;
+import depth.main.ideac.domain.auth.dto.request.FindIdReq;
+import depth.main.ideac.domain.auth.dto.request.RefreshTokenReq;
+import depth.main.ideac.domain.auth.dto.request.SignInReq;
+import depth.main.ideac.domain.auth.dto.request.SignUpReq;
+import depth.main.ideac.domain.auth.dto.response.AuthRes;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.Role;
@@ -125,7 +125,6 @@ public class AuthService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(user.getEmail())
-                .message("가입하신 아이디를 찾아왔어요!")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -178,7 +177,6 @@ public class AuthService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(userRepository.findByNickname(nickname).isEmpty())
-                .message("닉네임 검증 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -188,7 +186,6 @@ public class AuthService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(userRepository.findByEmail(email).isEmpty())
-                .message("이메일 검증 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -218,7 +215,6 @@ public class AuthService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("비밀번호를 바꾸었습니다.")
                 .build();
 
         return ResponseEntity.ok(apiResponse);

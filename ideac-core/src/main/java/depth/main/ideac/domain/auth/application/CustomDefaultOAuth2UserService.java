@@ -40,16 +40,19 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         //회원가입하는 함수
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
         DefaultAssert.isAuthentication(!oAuth2UserInfo.getEmail().isEmpty());
-        
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
-        user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
-
+        if (userOptional.isPresent()){
+            user = userOptional.get();
+        }else{
+            user = registerNewUser(oAuth2UserRequest,oAuth2UserInfo);
+        }
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
     // oauth2 회원 등록
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+
         User user = User.builder()
                     .provider(Provider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                     .providerId(oAuth2UserInfo.getId())

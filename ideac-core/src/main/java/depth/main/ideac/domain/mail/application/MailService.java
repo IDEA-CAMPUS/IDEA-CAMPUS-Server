@@ -30,7 +30,7 @@ public class MailService {
         Optional<User> user = userRepository.findByEmail(findPasswordReq.getEmail());
         DefaultAssert.isTrue(user.isPresent(), "존재하지 않은 유저입니다.");
         String code = RandomStringUtils.random(20, 33, 125, true, true);
-        Verify verify = saveCode(findPasswordReq.getEmail(),code);
+        saveCode(findPasswordReq.getEmail(),code);
 
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -46,8 +46,7 @@ public class MailService {
             // 3. 메일 내용 설정
             simpleMailMessage.setText("안녕하세요. IDEA CAMPUS입니다.\n" +
                     "서비스 이용을 위한 하단 계정의 비밀번호 재설정 이메일 요청 메일입니다.\n" +
-                    "‘비밀번호 재설정’ 버튼을 클릭하여 재설정이 완료하실 수 있습니다." +
-                    "http://localhost:8080/mail/send-email/" + code);
+                    "‘비밀번호 재설정’ 버튼을 클릭하여 재설정이 완료하실 수 있습니다.");
 
             // 4. 메일 전송
             javaMailSender.send(simpleMailMessage);
@@ -58,7 +57,7 @@ public class MailService {
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information(verify.getCode())
+                .information("https://ideacampus.site:8080/auth/change-password/" + code)
                 .build();
 
         return ResponseEntity.ok(apiResponse);

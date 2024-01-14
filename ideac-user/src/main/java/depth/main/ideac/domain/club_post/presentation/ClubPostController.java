@@ -1,10 +1,9 @@
 package depth.main.ideac.domain.club_post.presentation;
 
 import depth.main.ideac.domain.club_post.application.ClubPostService;
-import depth.main.ideac.domain.club_post.dto.response.ClubPostDetailRes;
 import depth.main.ideac.domain.club_post.dto.request.ClubPostReq;
+import depth.main.ideac.domain.club_post.dto.response.ClubPostDetailRes;
 import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
-import depth.main.ideac.domain.club_post.dto.request.UpdateClubPostReq;
 import depth.main.ideac.global.config.security.token.CurrentUser;
 import depth.main.ideac.global.config.security.token.UserPrincipal;
 import depth.main.ideac.global.payload.ApiResponse;
@@ -17,14 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
 
 @Tag(name = "ClubPost API", description = "동아리/학회 관련 API입니다.")
 @RequiredArgsConstructor
@@ -70,9 +66,8 @@ public class ClubPostController {
     @Operation(summary = "글 등록", description = "동아리/학회 글을 등록하는 API입니다.")
     @PostMapping
     public ResponseEntity<?> createClubPost(@CurrentUser UserPrincipal userPrincipal,
-                                            @Valid @RequestPart ClubPostReq clubPostReq,
-                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
-        Long clubPostId = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq, images);
+                                            @Valid @ModelAttribute ClubPostReq clubPostReq) throws IOException {
+        Long clubPostId = clubPostService.createClubPost(userPrincipal.getId(), clubPostReq);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(clubPostId)
@@ -84,9 +79,8 @@ public class ClubPostController {
     @Operation(summary = "글 수정", description = "동아리/학회 글을 수정하는 API입니다.")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateClubPost(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id,
-                                            @Valid @RequestPart UpdateClubPostReq updateClubPostReq,
-                                            @RequestPart("images") List<MultipartFile> images) throws IOException {
-        clubPostService.updateClubPost(id, userPrincipal.getId(), updateClubPostReq, images);
+                                            @Valid @ModelAttribute ClubPostReq updateClubPostReq) throws IOException {
+        clubPostService.updateClubPost(id, userPrincipal.getId(), updateClubPostReq);
         return ResponseEntity.ok().build();
     }
 

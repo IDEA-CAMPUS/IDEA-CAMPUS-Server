@@ -2,6 +2,7 @@ package depth.main.ideac.domain.user.application;
 
 import depth.main.ideac.domain.auth.domain.Token;
 import depth.main.ideac.domain.auth.domain.repository.TokenRepository;
+import depth.main.ideac.domain.auth.dto.request.GoogleSignUpReq;
 import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.Status;
@@ -76,7 +77,7 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
     @Transactional
-    public ResponseEntity<?> googleUpdate(UserPrincipal userPrincipal, SignUpReq signUpReq) {
+    public ResponseEntity<?> googleUpdate(UserPrincipal userPrincipal, GoogleSignUpReq signUpReq) {
         DefaultAssert.isTrue(!userRepository.existsByNickname(signUpReq.getNickname()), "이미 존재하는 닉네임입니다.");
 
         User user = userRepository.findById(userPrincipal.getId()).get();
@@ -85,7 +86,6 @@ public class UserService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
-                .message("구글 회원가입 완료")
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

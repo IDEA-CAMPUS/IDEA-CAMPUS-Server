@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.user.domain;
 
+import depth.main.ideac.domain.auth.dto.request.GoogleSignUpReq;
 import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.club_post.ClubPost;
 import depth.main.ideac.domain.common.BaseEntity;
@@ -80,7 +81,7 @@ public class User extends BaseEntity {
     public void updateNickName(String nickname) {
         this.nickname = nickname;
     }
-    public void googleUpdate(SignUpReq signUpReq){
+    public void googleUpdate(GoogleSignUpReq signUpReq){
         this.email = signUpReq.getIdEmail();
         this.name = signUpReq.getName();
         this.nickname = signUpReq.getNickname();

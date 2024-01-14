@@ -20,11 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
-    Boolean existsByEmail(String email);
 
     Boolean existsByNickname(String nickname);
-
-    List<User> findByIdNot(Long id);
 
     @Query("SELECT u FROM User u WHERE u.status != 'DELETE'")
     Page<User> getUsersByStatusNotDelete(Pageable pageable);

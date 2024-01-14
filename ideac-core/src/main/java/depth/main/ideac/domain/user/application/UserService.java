@@ -81,6 +81,7 @@ public class UserService {
         DefaultAssert.isTrue(!userRepository.existsByNickname(signUpReq.getNickname()), "이미 존재하는 닉네임입니다.");
 
         User user = userRepository.findById(userPrincipal.getId()).get();
+        user.setStatus(Status.ACTIVE);
         user.googleUpdate(signUpReq);
 
         ApiResponse apiResponse = ApiResponse.builder()

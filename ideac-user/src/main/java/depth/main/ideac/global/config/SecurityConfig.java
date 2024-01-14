@@ -82,8 +82,6 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/banner")
                         .permitAll()
-                        .requestMatchers("/api/user/google")
-                        .permitAll()
                         .requestMatchers("/api/home/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/club", "/api/club/{id}")

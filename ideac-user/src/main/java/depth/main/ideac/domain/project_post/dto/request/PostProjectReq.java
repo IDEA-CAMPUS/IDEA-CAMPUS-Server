@@ -5,8 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
+@Setter
 @RequiredArgsConstructor
 @Schema(description = "프로젝트 게시 Request")
 public class PostProjectReq {
@@ -26,5 +31,5 @@ public class PostProjectReq {
     private boolean booleanWeb;
     private boolean booleanApp;
     private boolean booleanAi;
-
+    private List<MultipartFile> images;
 }

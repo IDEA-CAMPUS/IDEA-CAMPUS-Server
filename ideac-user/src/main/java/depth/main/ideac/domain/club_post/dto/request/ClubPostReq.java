@@ -5,10 +5,15 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class ClubPostReq {
 
     @NotBlank(message = "제목을 입력해야 합니다.")
@@ -21,5 +26,7 @@ public class ClubPostReq {
     private String url1;
 
     private String url2;
+
+    private List<MultipartFile> images;
 
 }

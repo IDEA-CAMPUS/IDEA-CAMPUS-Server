@@ -1,5 +1,6 @@
 package depth.main.ideac.domain.user.presentation;
 
+import depth.main.ideac.domain.auth.dto.request.GoogleSignUpReq;
 import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.user.application.UserService;
 import depth.main.ideac.global.config.security.token.CurrentUser;
@@ -55,7 +56,7 @@ public class  UserController {
     })
     @PostMapping(value = "/google")
     public ResponseEntity<?> googleUpdate(@Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-                                          @Valid @RequestBody SignUpReq signUpReq) {
+                                          @Valid @RequestBody GoogleSignUpReq signUpReq) {
         return userService.googleUpdate(userPrincipal,signUpReq);
     }
 }

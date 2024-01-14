@@ -96,10 +96,10 @@ public class AuthController {
         return authService.changePassword(passwordReq,code);
     }
 
-    @Operation(summary = "구글 로그인 리다이렉트", description = "구글 로그인 시 리다이렉트 되는 API(기능 없음)")
+    @Operation(summary = "구글 로그인 리다이렉트", description = "구글 로그인 시 리다이렉트 되는 API입니다. ")
     @GetMapping(value = "/google")
     public ResponseEntity<?> redirectSignUpUrl(@RequestParam("token") String token) {
-        return ResponseEntity.ok().build();
+        return authService.getGoogleInfoByToken(token);
     }
 
 

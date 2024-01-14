@@ -8,13 +8,6 @@ import lombok.Getter;
 
 @Getter
 public class GoogleSignUpReq {
-    @Schema( type = "string", example = "idea00@naver.com", description="아이디(이메일)")
-    private String idEmail;
-
-    @Schema( type = "string", example = "홍길동", description="이름")
-    @Size(min = 2, message = "2자 이상 입력해주세요")
-    @NotBlank
-    private String name;
 
     @Schema( type = "string", example = "스프링화이팅", description="닉네임")
     @NotBlank

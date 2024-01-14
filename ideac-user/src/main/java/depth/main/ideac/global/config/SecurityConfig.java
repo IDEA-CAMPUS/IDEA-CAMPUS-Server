@@ -92,8 +92,6 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/idea","/api/idea/{id}")
                         .permitAll()
-                        .requestMatchers("/","/oauth2/**","/login/**", "/auth/**")
-                        .permitAll()
                         .requestMatchers("/mail/**")
                         .permitAll()
                         .anyRequest()

@@ -8,6 +8,7 @@ import depth.main.ideac.domain.auth.dto.request.RefreshTokenReq;
 import depth.main.ideac.domain.auth.dto.request.SignInReq;
 import depth.main.ideac.domain.auth.dto.request.SignUpReq;
 import depth.main.ideac.domain.auth.dto.response.AuthRes;
+import depth.main.ideac.domain.auth.dto.response.GoogleRes;
 import depth.main.ideac.domain.mail.domain.Verify;
 import depth.main.ideac.domain.mail.domain.repository.MailRepository;
 import depth.main.ideac.domain.user.domain.Role;
@@ -216,6 +217,23 @@ public class AuthService {
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
                 .information(null)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    public ResponseEntity<?> getGoogleInfoByToken(String token) {
+        Long userId = customTokenProviderService.getUserIdFromToken(token);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
+        GoogleRes googleRes = GoogleRes.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(googleRes)
                 .build();
 
         return ResponseEntity.ok(apiResponse);

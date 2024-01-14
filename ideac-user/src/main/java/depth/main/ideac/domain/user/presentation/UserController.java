@@ -51,7 +51,7 @@ public class  UserController {
 
     @Operation(summary = "구글 회원가입", description = "구글회원가입을 위해 추가정보를 업데이트한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "구글 회원가입 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "200", description = "구글 회원가입 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GoogleSignUpReq.class))}),
             @ApiResponse(responseCode = "400", description = "구글 회원가입 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping(value = "/google")

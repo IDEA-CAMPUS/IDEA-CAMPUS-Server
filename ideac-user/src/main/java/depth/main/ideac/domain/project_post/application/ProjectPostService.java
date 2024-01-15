@@ -100,17 +100,14 @@ public class ProjectPostService {
         return new PageImpl<>(projectResList, pageable, projectPosts.getTotalElements());
     }
 
-    public Page<ProjectRes> getProjectsByKeyword(int page, int size, String sortBy, ProjectKeywordReq projectKeywordReq) {
+    public Page<ProjectRes> getProjectsByKeyword(int page, int size, String sortBy,
+                                                 boolean booleanWeb, boolean booleanApp, boolean booleanAi) {
         Pageable pageable;
         if (sortBy.equals("hits")) {
             pageable = PageRequest.of(page, size, Sort.by("hits").descending());
         } else {
             pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         }
-
-        boolean booleanWeb = projectKeywordReq.isBooleanWeb();
-        boolean booleanApp = projectKeywordReq.isBooleanApp();
-        boolean booleanAi = projectKeywordReq.isBooleanAi();
 
         Page<ProjectPost> projectPosts = projectPostRepository
                 .findByBooleanWebAndBooleanAppAndBooleanAi(booleanWeb, booleanApp, booleanAi, pageable);

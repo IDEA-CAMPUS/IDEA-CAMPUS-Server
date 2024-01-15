@@ -73,8 +73,10 @@ public class ProjectPostController {
                                                   @RequestParam(defaultValue = "createdAt") String sortBy,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "12") int size,
-                                                  @RequestBody ProjectKeywordReq projectKeywordReq) {
-        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(page, size, sortBy, projectKeywordReq);
+                                                  @RequestParam(defaultValue = "false") boolean booleanWeb,
+                                                  @RequestParam(defaultValue = "false") boolean booleanApp,
+                                                  @RequestParam(defaultValue = "false") boolean booleanAi) {
+        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(page, size, sortBy, booleanWeb, booleanApp, booleanAi);
         if (projectRes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -96,8 +98,8 @@ public class ProjectPostController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @Operation(summary = "프로젝트 수정", description = "프로젝트 게시글 한 건을 삭제하는 API입니다.")
-    @PutMapping("/{project-id}")
+    @Operation(summary = "프로젝트 수정", description = "프로젝트 게시글 한 건을 수정하는 API입니다.")
+    @PutMapping(path = "/{project-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProject(@CurrentUser UserPrincipal userPrincipal,
                                            @PathVariable("project-id") Long projectId,
                                            @Valid @ModelAttribute PostProjectReq updateProjectReq) throws IOException {

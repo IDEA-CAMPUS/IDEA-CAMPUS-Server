@@ -42,7 +42,6 @@ public class CustomDefaultOAuth2UserService extends DefaultOAuth2UserService{
         DefaultAssert.isAuthentication(!oAuth2UserInfo.getEmail().isEmpty());
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
-        System.out.println("회원가입 ");
         if (userOptional.isPresent()){
             user = userOptional.get();
         }else{

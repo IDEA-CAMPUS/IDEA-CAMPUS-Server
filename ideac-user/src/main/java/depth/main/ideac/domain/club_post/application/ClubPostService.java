@@ -7,7 +7,6 @@ import depth.main.ideac.domain.club_post.dto.response.ClubPostRes;
 import depth.main.ideac.domain.club_post.repository.ClubPostImageRepository;
 import depth.main.ideac.domain.club_post.repository.ClubPostRepository;
 import depth.main.ideac.domain.club_post.dto.response.ClubPostDetailRes;
-import depth.main.ideac.domain.club_post.dto.request.UpdateClubPostReq;
 import depth.main.ideac.domain.user.domain.Role;
 import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.global.error.DefaultException;
@@ -87,7 +86,7 @@ public class ClubPostService {
     }
 
     @Transactional
-    public Long createClubPost(Long userId, ClubPostReq clubPostReq, List<MultipartFile> images) throws IOException {
+    public Long createClubPost(Long userId, ClubPostReq clubPostReq) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
 
@@ -99,7 +98,7 @@ public class ClubPostService {
                 .user(user)
                 .build();
 
-        this.uploadFile(clubPost, images);
+        this.uploadFile(clubPost, clubPostReq.getImages());
 
         clubPostRepository.save(clubPost);
 
@@ -108,7 +107,7 @@ public class ClubPostService {
 
     // 글 수정
     @Transactional
-    public void updateClubPost(Long clubPostId, Long userId, UpdateClubPostReq updateClubPostReq, List<MultipartFile> images) throws IOException {
+    public void updateClubPost(Long clubPostId, Long userId, ClubPostReq updateClubPostReq) throws IOException {
         if (!isAdminOrWriter(clubPostId, userId)) {
             throw new AccessDeniedException("해당 게시글에 대한 권한이 없습니다.");
         }
@@ -121,7 +120,7 @@ public class ClubPostService {
         clubPost.setUrl2(updateClubPostReq.getUrl2());
         
         this.deleteFile(clubPostId);
-        this.uploadFile(clubPost, images);
+        this.uploadFile(clubPost, updateClubPostReq.getImages());
     }
 
     // 글 삭제

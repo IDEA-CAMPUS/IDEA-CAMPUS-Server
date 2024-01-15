@@ -82,8 +82,6 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
     public void googleUpdate(GoogleSignUpReq signUpReq){
-        this.email = signUpReq.getIdEmail();
-        this.name = signUpReq.getName();
         this.nickname = signUpReq.getNickname();
         this.phoneNumber = signUpReq.getPhoneNumber();
         this.organization = signUpReq.getOrganization();

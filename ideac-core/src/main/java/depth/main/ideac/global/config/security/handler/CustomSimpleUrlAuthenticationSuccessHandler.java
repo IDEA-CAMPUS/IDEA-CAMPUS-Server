@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,13 +38,16 @@ public class CustomSimpleUrlAuthenticationSuccessHandler extends SimpleUrlAuthen
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         DefaultAssert.isAuthentication(!response.isCommitted());
 
         String targetUrl = determineTargetUrl(request, response, authentication);
-        log.info(targetUrl);
+
         TokenMapping token = customTokenProviderService.createToken(authentication);
+
         CustomCookie.addCookie(response, "Authorization", "Bearer_" + token.getAccessToken(), (int) oAuth2Config.getAuth().getAccessTokenExpirationMsec());
         CustomCookie.addCookie(response, "Refresh_Token", "Bearer_" + token.getRefreshToken(), (int) oAuth2Config.getAuth().getRefreshTokenExpirationMsec());
+        CustomCookie.addCookie(response, "email", oAuth2User.get, (int) oAuth2Config.getAuth().getRefreshTokenExpirationMsec());
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

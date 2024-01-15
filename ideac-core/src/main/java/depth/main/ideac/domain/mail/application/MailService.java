@@ -7,6 +7,8 @@ import depth.main.ideac.domain.user.domain.User;
 import depth.main.ideac.domain.user.domain.repository.UserRepository;
 import depth.main.ideac.global.DefaultAssert;
 import depth.main.ideac.global.payload.ApiResponse;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.ResponseEntity;
@@ -33,23 +35,47 @@ public class MailService {
         saveCode(findPasswordReq.getEmail(),code);
 
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-
+        MimeMessage message = javaMailSender.createMimeMessage();
         try {
             // 1. 메일 수신자 설정
             String receiveList = findPasswordReq.getEmail();
-            simpleMailMessage.setTo(receiveList);
+            message.addRecipients(MimeMessage.RecipientType.TO, receiveList);
 
             // 2. 메일 제목 설정
-            simpleMailMessage.setSubject("IDEA CAMPUS 비밀번호 재설정");
+            message.setSubject("IDEA CAMPUS 비밀번호 재설정");
 
-            // 3. 메일 내용 설정
-            simpleMailMessage.setText("안녕하세요. IDEA CAMPUS입니다.\n" +
-                    "서비스 이용을 위한 하단 계정의 비밀번호 재설정 이메일 요청 메일입니다.\n" +
-                    "‘비밀번호 재설정’ 버튼을 클릭하여 재설정이 완료하실 수 있습니다.");
+            // 3. 보내는 사람
+            message.setFrom(new InternetAddress("ideac2587@gmail.com", "아이디어캠퍼스"));
 
+            // 4. 메일 내용 설정
+            String body = "<div>"
+                    + "<h1>안녕하세요. IDEA CAMPUS입니다.</h1>"
+                    + "<br>"
+                    + "<p>서비스 이용을 위한 하단 계정의 비밀번호 재설정 이메일 요청 메일입니다.</p>"
+                    + "<p>'비밀번호 재설정' 버튼을 클릭하여 재설정을 완료하실 수 있습니다.</p>"
+                    + "<br>"
+                    + "<a href='https://ideacampus.site:8080/auth/change-password/" + code + "' style='"
+                    + "display: inline-block;"
+                    + "font-weight: bold;"
+                    + "padding: 10px 20px;"
+                    + "font-size: 16px;"
+                    + "text-align: center;"
+                    + "text-decoration: none;"
+                    + "background-color: #B034F7;"  // 요청한 보라색 배경
+                    + "color: white;"
+                    + "border-radius: 10px;"  // 라운딩 처리
+                    + "'>비밀번호 재설정</a>"
+                    + "<p style='color: #A6A6A6; margin-top: 10px;'>비밀번호 재설정 메일은 1시간 후 만료됩니다.</p> "
+                    + "<p style='color: #A6A6A6; margin-top: 10px;'>만료 시, 비밀번호 찾기를 통해 메일을 재요청해 주세요.</p>"
+                    + "</div>";
+
+
+
+
+
+            message.setText(body, "utf-8", "html");// 내용, charset 타입, subtype
             // 4. 메일 전송
-            javaMailSender.send(simpleMailMessage);
+            javaMailSender.send(message);
 
         } catch (Exception e) {
             System.out.println("e = " + e);

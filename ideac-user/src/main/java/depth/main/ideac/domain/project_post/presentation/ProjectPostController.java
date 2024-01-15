@@ -74,8 +74,10 @@ public class ProjectPostController {
                                                   @RequestParam(defaultValue = "createdAt") String sortBy,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "12") int size,
-                                                  @RequestBody ProjectKeywordReq projectKeywordReq) {
-        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(page, size, sortBy, projectKeywordReq);
+                                                  @RequestParam(defaultValue = "false") boolean booleanWeb,
+                                                  @RequestParam(defaultValue = "false") boolean booleanApp,
+                                                  @RequestParam(defaultValue = "false") boolean booleanAi) {
+        Page<ProjectRes> projectRes = projectPostService.getProjectsByKeyword(page, size, sortBy, booleanWeb, booleanApp, booleanAi);
         if (projectRes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

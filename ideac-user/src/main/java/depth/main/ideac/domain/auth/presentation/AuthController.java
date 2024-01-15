@@ -101,6 +101,4 @@ public class AuthController {
     public ResponseEntity<?> redirectSignUpUrl(@RequestParam("token") String token) {
         return authService.getGoogleInfoByToken(token);
     }
-
-
 }

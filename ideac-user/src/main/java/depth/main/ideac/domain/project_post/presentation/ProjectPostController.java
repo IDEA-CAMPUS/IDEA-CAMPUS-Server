@@ -38,9 +38,8 @@ public class ProjectPostController {
     @Operation(summary = "프로젝트 게시", description = "프로젝트 게시글을 생성하는 API입니다.")
     @PostMapping(path= "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> postProject(@CurrentUser UserPrincipal userPrincipal,
-                                         @Valid @RequestPart PostProjectReq postProjectReq,
-                                         @RequestPart("images") List<MultipartFile> images) throws IOException {
-        Long createdProjectId = projectPostService.postProject(userPrincipal.getId(), postProjectReq, images);
+                                         @Valid @ModelAttribute PostProjectReq postProjectReq) throws IOException {
+        Long createdProjectId = projectPostService.postProject(userPrincipal.getId(), postProjectReq);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{project-id}")
                 .buildAndExpand(createdProjectId)
@@ -103,9 +102,8 @@ public class ProjectPostController {
     @PutMapping(path = "/{project-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProject(@CurrentUser UserPrincipal userPrincipal,
                                            @PathVariable("project-id") Long projectId,
-                                           @Valid @RequestPart PostProjectReq updateProjectReq,
-                                           @RequestPart("images") List<MultipartFile> images) throws IOException {
-        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq, images);
+                                           @Valid @ModelAttribute PostProjectReq updateProjectReq) throws IOException {
+        projectPostService.updateProject(userPrincipal.getId(), projectId, updateProjectReq);
         return ResponseEntity.ok().build();
     }
 

@@ -41,7 +41,7 @@ public class ProjectPostService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public Long postProject(Long userId, PostProjectReq postProjectReq, List<MultipartFile> images) throws IOException {
+    public Long postProject(Long userId, PostProjectReq postProjectReq) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
         if (!postProjectReq.isBooleanWeb() && !postProjectReq.isBooleanApp() && !postProjectReq.isBooleanAi()) {
             throw new DefaultException(ErrorCode.INVALID_PARAMETER, "키워드는 하나 이상 표시해야 합니다.");
@@ -61,7 +61,7 @@ public class ProjectPostService {
                 .hits(0L)
                 .user(user)
                 .build();
-        this.uploadFile(projectPost, images);
+        this.uploadFile(projectPost, postProjectReq.getImages());
         projectPostRepository.save(projectPost);
         return projectPost.getId();
     }
@@ -168,7 +168,7 @@ public class ProjectPostService {
     }
 
     @Transactional
-    public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq, List<MultipartFile> images) throws IOException {
+    public void updateProject(Long userId, Long projectId, PostProjectReq updateProjectReq) throws IOException {
         if (!isAdminOrWriter(projectId, userId)) {
             throw new DefaultException(ErrorCode.UNAUTHORIZED, "수정 권한이 없습니다.");
         }
@@ -185,7 +185,7 @@ public class ProjectPostService {
         projectPost.setBooleanApp(updateProjectReq.isBooleanApp());
         projectPost.setBooleanAi(updateProjectReq.isBooleanAi());
         this.deleteFile(projectId);
-        this.uploadFile(projectPost, images);
+        this.uploadFile(projectPost, updateProjectReq.getImages());
 
     }
 

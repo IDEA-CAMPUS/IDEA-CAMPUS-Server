@@ -43,7 +43,12 @@ public class ProjectPostService {
     @Transactional
     public Long postProject(Long userId, PostProjectReq postProjectReq) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new DefaultException(ErrorCode.USER_NOT_FOUND));
-        if (!postProjectReq.isBooleanWeb() && !postProjectReq.isBooleanApp() && !postProjectReq.isBooleanAi()) {
+
+        boolean isBooleanWeb = Boolean.parseBoolean(postProjectReq.getBooleanWeb());
+        boolean isBooleanApp = Boolean.parseBoolean(postProjectReq.getBooleanApp());
+        boolean isBooleanAi = Boolean.parseBoolean(postProjectReq.getBooleanAi());
+
+        if (!isBooleanWeb && !isBooleanApp && !isBooleanAi) {
             throw new DefaultException(ErrorCode.INVALID_PARAMETER, "키워드는 하나 이상 표시해야 합니다.");
         }
         ProjectPost projectPost = ProjectPost.builder()
@@ -54,9 +59,9 @@ public class ProjectPostService {
                 .githubUrl(postProjectReq.getGithubUrl())
                 .webUrl(postProjectReq.getWebUrl())
                 .googlePlayUrl(postProjectReq.getGooglePlayUrl())
-                .booleanWeb(postProjectReq.isBooleanWeb())
-                .booleanApp(postProjectReq.isBooleanApp())
-                .booleanAi(postProjectReq.isBooleanAi())
+                .booleanWeb(isBooleanWeb)
+                .booleanApp(isBooleanApp)
+                .booleanAi(isBooleanAi)
                 .team(user.getOrganization())
                 .hits(0L)
                 .user(user)
@@ -178,15 +183,19 @@ public class ProjectPostService {
         ProjectPost projectPost = projectPostRepository.findById(projectId)
                 .orElseThrow(() -> new DefaultException(ErrorCode.CONTENTS_NOT_FOUND, "프로젝트를 찾을 수 없습니다."));
 
+        boolean isBooleanWeb = Boolean.parseBoolean(updateProjectReq.getBooleanWeb());
+        boolean isBooleanApp = Boolean.parseBoolean(updateProjectReq.getBooleanApp());
+        boolean isBooleanAi = Boolean.parseBoolean(updateProjectReq.getBooleanAi());
+
         projectPost.setTitle(updateProjectReq.getTitle());
         projectPost.setSimpleDescription(updateProjectReq.getSimpleDescription());
         projectPost.setDetailedDescription(updateProjectReq.getDetailedDescription());
         projectPost.setTeamInformation(updateProjectReq.getTeamInformation());
         projectPost.setGithubUrl(updateProjectReq.getGithubUrl());
         projectPost.setWebUrl(updateProjectReq.getWebUrl());
-        projectPost.setBooleanWeb(updateProjectReq.isBooleanWeb());
-        projectPost.setBooleanApp(updateProjectReq.isBooleanApp());
-        projectPost.setBooleanAi(updateProjectReq.isBooleanAi());
+        projectPost.setBooleanWeb(isBooleanWeb);
+        projectPost.setBooleanApp(isBooleanApp);
+        projectPost.setBooleanAi(isBooleanAi);
         this.deleteFile(projectId);
         this.uploadFile(projectPost, updateProjectReq.getImages());
 

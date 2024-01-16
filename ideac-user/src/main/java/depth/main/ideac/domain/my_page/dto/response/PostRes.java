@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Schema(description = "내 게시물 조회 Response")
 public class PostRes {
+    private Long id;
     private String title;
     private String type;
     private LocalDateTime createdAt;

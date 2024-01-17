@@ -67,6 +67,7 @@ public class MyPageService {
 
         postResList.addAll(projectPosts.stream()
                 .map(post -> PostRes.builder()
+                        .id(post.getId())
                         .title(post.getTitle())
                         .type(post.getClass().getSimpleName())
                         .createdAt(post.getCreatedAt())
@@ -74,6 +75,7 @@ public class MyPageService {
                 .toList());
         postResList.addAll(clubPosts.stream()
                 .map(post -> PostRes.builder()
+                        .id(post.getId())
                         .title(post.getTitle())
                         .type(post.getClass().getSimpleName())
                         .createdAt(post.getCreatedAt())
@@ -81,6 +83,7 @@ public class MyPageService {
                 .toList());
         postResList.addAll(ideaPosts.stream()
                 .map(post -> PostRes.builder()
+                        .id(post.getId())
                         .title(post.getTitle())
                         .type(post.getClass().getSimpleName())
                         .createdAt(post.getCreatedAt())

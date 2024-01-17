@@ -28,8 +28,8 @@ public class PostProjectReq {
     private String githubUrl;
     private String webUrl;
     private String googlePlayUrl;
-    private boolean booleanWeb;
-    private boolean booleanApp;
-    private boolean booleanAi;
+    private String booleanWeb;
+    private String booleanApp;
+    private String booleanAi;
     private List<MultipartFile> images;
 }

@@ -54,7 +54,7 @@ public class MailService {
                     + "<p>서비스 이용을 위한 하단 계정의 비밀번호 재설정 이메일 요청 메일입니다.</p>"
                     + "<p>'비밀번호 재설정' 버튼을 클릭하여 재설정을 완료하실 수 있습니다.</p>"
                     + "<br>"
-                    + "<a href='https://ideacampus.site:8080/auth/change-password/" + code + "' style='"
+                    + "<a href='http://localhost:3000/resetPW" + "' style='"
                     + "display: inline-block;"
                     + "font-weight: bold;"
                     + "padding: 10px 20px;"

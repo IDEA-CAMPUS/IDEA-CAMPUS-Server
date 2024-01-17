@@ -83,7 +83,7 @@ public class MailService {
 
         ApiResponse apiResponse = ApiResponse.builder()
                 .check(true)
-                .information("https://ideacampus.site:8080/auth/change-password/" + code)
+                .information("http://localhost:3000/resetPW" + code)
                 .build();
 
         return ResponseEntity.ok(apiResponse);
